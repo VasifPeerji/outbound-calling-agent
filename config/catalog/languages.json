@@ -1,0 +1,760 @@
+{
+  "_readme": "Languages the agent can speak, with the ISO code ElevenLabs expects. The console shows 'English (en)' so nobody has to know the code. `tts` lists which ElevenLabs models support the language: flash = eleven_flash_v2_5 / turbo_v2_5, multi = eleven_multilingual_v2, v3 = eleven_v3. `native` is the language's own name, used to write the opener in-language.",
+  "_source": "Eleven v3 speaks all of these (74). `tts` says which engines can: flash = eleven_flash_v2_5 / turbo_v2_5 (32), multi = eleven_multilingual_v2 (29), v3 = eleven_v3 (all 74). A language without \"flash\" needs the agent switched to v3 or it will not speak it.",
+  "languages": [
+    {
+      "code": "af",
+      "iso3": "afr",
+      "name": "Afrikaans",
+      "native": "Afrikaans",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "ar",
+      "iso3": "ara",
+      "name": "Arabic",
+      "native": "العربية",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ],
+      "rtl": true
+    },
+    {
+      "code": "hy",
+      "iso3": "hye",
+      "name": "Armenian",
+      "native": "Հայերեն",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "as",
+      "iso3": "asm",
+      "name": "Assamese",
+      "native": "অসমীয়া",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "az",
+      "iso3": "aze",
+      "name": "Azerbaijani",
+      "native": "Azərbaycan",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "be",
+      "iso3": "bel",
+      "name": "Belarusian",
+      "native": "Беларуская",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "bn",
+      "iso3": "ben",
+      "name": "Bengali",
+      "native": "বাংলা",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "bs",
+      "iso3": "bos",
+      "name": "Bosnian",
+      "native": "Bosanski",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "bg",
+      "iso3": "bul",
+      "name": "Bulgarian",
+      "native": "Български",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "ca",
+      "iso3": "cat",
+      "name": "Catalan",
+      "native": "Català",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "ceb",
+      "iso3": "ceb",
+      "name": "Cebuano",
+      "native": "Cebuano",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "ny",
+      "iso3": "nya",
+      "name": "Chichewa",
+      "native": "Chichewa",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "zh",
+      "iso3": "cmn",
+      "name": "Chinese (Mandarin)",
+      "native": "中文",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "hr",
+      "iso3": "hrv",
+      "name": "Croatian",
+      "native": "Hrvatski",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "cs",
+      "iso3": "ces",
+      "name": "Czech",
+      "native": "Čeština",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "da",
+      "iso3": "dan",
+      "name": "Danish",
+      "native": "Dansk",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "nl",
+      "iso3": "nld",
+      "name": "Dutch",
+      "native": "Nederlands",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "en",
+      "iso3": "eng",
+      "name": "English",
+      "native": "English",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "et",
+      "iso3": "est",
+      "name": "Estonian",
+      "native": "Eesti",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "fil",
+      "iso3": "fil",
+      "name": "Filipino",
+      "native": "Filipino",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "fi",
+      "iso3": "fin",
+      "name": "Finnish",
+      "native": "Suomi",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "fr",
+      "iso3": "fra",
+      "name": "French",
+      "native": "Français",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "gl",
+      "iso3": "glg",
+      "name": "Galician",
+      "native": "Galego",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "ka",
+      "iso3": "kat",
+      "name": "Georgian",
+      "native": "ქართული",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "de",
+      "iso3": "deu",
+      "name": "German",
+      "native": "Deutsch",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "el",
+      "iso3": "ell",
+      "name": "Greek",
+      "native": "Ελληνικά",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "gu",
+      "iso3": "guj",
+      "name": "Gujarati",
+      "native": "ગુજરાતી",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "ha",
+      "iso3": "hau",
+      "name": "Hausa",
+      "native": "Hausa",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "he",
+      "iso3": "heb",
+      "name": "Hebrew",
+      "native": "עברית",
+      "tts": [
+        "v3"
+      ],
+      "rtl": true
+    },
+    {
+      "code": "hi",
+      "iso3": "hin",
+      "name": "Hindi",
+      "native": "हिन्दी",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "hu",
+      "iso3": "hun",
+      "name": "Hungarian",
+      "native": "Magyar",
+      "tts": [
+        "flash",
+        "v3"
+      ]
+    },
+    {
+      "code": "is",
+      "iso3": "isl",
+      "name": "Icelandic",
+      "native": "Íslenska",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "id",
+      "iso3": "ind",
+      "name": "Indonesian",
+      "native": "Bahasa Indonesia",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "ga",
+      "iso3": "gle",
+      "name": "Irish",
+      "native": "Gaeilge",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "it",
+      "iso3": "ita",
+      "name": "Italian",
+      "native": "Italiano",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "ja",
+      "iso3": "jpn",
+      "name": "Japanese",
+      "native": "日本語",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "jv",
+      "iso3": "jav",
+      "name": "Javanese",
+      "native": "Basa Jawa",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "kn",
+      "iso3": "kan",
+      "name": "Kannada",
+      "native": "ಕನ್ನಡ",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "kk",
+      "iso3": "kaz",
+      "name": "Kazakh",
+      "native": "Қазақша",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "ko",
+      "iso3": "kor",
+      "name": "Korean",
+      "native": "한국어",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "ky",
+      "iso3": "kir",
+      "name": "Kyrgyz",
+      "native": "Кыргызча",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "lv",
+      "iso3": "lav",
+      "name": "Latvian",
+      "native": "Latviešu",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "ln",
+      "iso3": "lin",
+      "name": "Lingala",
+      "native": "Lingála",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "lt",
+      "iso3": "lit",
+      "name": "Lithuanian",
+      "native": "Lietuvių",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "lb",
+      "iso3": "ltz",
+      "name": "Luxembourgish",
+      "native": "Lëtzebuergesch",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "mk",
+      "iso3": "mkd",
+      "name": "Macedonian",
+      "native": "Македонски",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "ms",
+      "iso3": "msa",
+      "name": "Malay",
+      "native": "Bahasa Melayu",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "ml",
+      "iso3": "mal",
+      "name": "Malayalam",
+      "native": "മലയാളം",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "mr",
+      "iso3": "mar",
+      "name": "Marathi",
+      "native": "मराठी",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "ne",
+      "iso3": "nep",
+      "name": "Nepali",
+      "native": "नेपाली",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "no",
+      "iso3": "nor",
+      "name": "Norwegian",
+      "native": "Norsk",
+      "tts": [
+        "flash",
+        "v3"
+      ]
+    },
+    {
+      "code": "ps",
+      "iso3": "pus",
+      "name": "Pashto",
+      "native": "پښتو",
+      "tts": [
+        "v3"
+      ],
+      "rtl": true
+    },
+    {
+      "code": "fa",
+      "iso3": "fas",
+      "name": "Persian",
+      "native": "فارسی",
+      "tts": [
+        "v3"
+      ],
+      "rtl": true
+    },
+    {
+      "code": "pl",
+      "iso3": "pol",
+      "name": "Polish",
+      "native": "Polski",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "pt",
+      "iso3": "por",
+      "name": "Portuguese",
+      "native": "Português",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "pa",
+      "iso3": "pan",
+      "name": "Punjabi",
+      "native": "ਪੰਜਾਬੀ",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "ro",
+      "iso3": "ron",
+      "name": "Romanian",
+      "native": "Română",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "ru",
+      "iso3": "rus",
+      "name": "Russian",
+      "native": "Русский",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "sr",
+      "iso3": "srp",
+      "name": "Serbian",
+      "native": "Српски",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "sd",
+      "iso3": "snd",
+      "name": "Sindhi",
+      "native": "سنڌي",
+      "tts": [
+        "v3"
+      ],
+      "rtl": true
+    },
+    {
+      "code": "sk",
+      "iso3": "slk",
+      "name": "Slovak",
+      "native": "Slovenčina",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "sl",
+      "iso3": "slv",
+      "name": "Slovenian",
+      "native": "Slovenščina",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "so",
+      "iso3": "som",
+      "name": "Somali",
+      "native": "Soomaali",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "es",
+      "iso3": "spa",
+      "name": "Spanish",
+      "native": "Español",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "sw",
+      "iso3": "swa",
+      "name": "Swahili",
+      "native": "Kiswahili",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "sv",
+      "iso3": "swe",
+      "name": "Swedish",
+      "native": "Svenska",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "ta",
+      "iso3": "tam",
+      "name": "Tamil",
+      "native": "தமிழ்",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "te",
+      "iso3": "tel",
+      "name": "Telugu",
+      "native": "తెలుగు",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "th",
+      "iso3": "tha",
+      "name": "Thai",
+      "native": "ไทย",
+      "tts": [
+        "v3"
+      ]
+    },
+    {
+      "code": "tr",
+      "iso3": "tur",
+      "name": "Turkish",
+      "native": "Türkçe",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "uk",
+      "iso3": "ukr",
+      "name": "Ukrainian",
+      "native": "Українська",
+      "tts": [
+        "flash",
+        "multi",
+        "v3"
+      ]
+    },
+    {
+      "code": "ur",
+      "iso3": "urd",
+      "name": "Urdu",
+      "native": "اردو",
+      "tts": [
+        "v3"
+      ],
+      "rtl": true
+    },
+    {
+      "code": "vi",
+      "iso3": "vie",
+      "name": "Vietnamese",
+      "native": "Tiếng Việt",
+      "tts": [
+        "flash",
+        "v3"
+      ]
+    },
+    {
+      "code": "cy",
+      "iso3": "cym",
+      "name": "Welsh",
+      "native": "Cymraeg",
+      "tts": [
+        "v3"
+      ]
+    }
+  ],
+  "_aliases": {
+    "_note": "Languages a country may list that are not separately supported by the TTS models. We speak them via the closest supported code, which is how a real bilingual agent handles a creole or a regional variant.",
+    "Cantonese": "zh",
+    "Mandarin": "zh",
+    "Mauritian Creole": "fr",
+    "Malagasy": "fr",
+    "Greenlandic": "da",
+    "Dhivehi": "en",
+    "Shona": "en",
+    "Ndebele": "en",
+    "Setswana": "en",
+    "Zulu": "en",
+    "Sinhala": "en",
+    "Nepali": "hi",
+    "Punjabi": "hi",
+    "Marathi": "hi",
+    "Telugu": "ta",
+    "Gujarati": "hi",
+    "Malayalam": "ta",
+    "Kannada": "ta"
+  }
+}

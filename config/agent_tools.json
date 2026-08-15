@@ -1,0 +1,193 @@
+{
+  "version": "1.0",
+  "webhook_base": "/api/agent-tool",
+  "_note": "Source of truth for OmniReach agent tools. Register these on the ONE ElevenLabs agent (Agent → Tools). Each 'tools' entry is a server/webhook tool; point its URL at {PUBLIC_BASE}{webhook_base}/{name}. The use-case prompts call them by name at the right branch. 'system_tools' are ElevenLabs built-ins you simply toggle on. See docs/TOOLS.md.",
+
+  "system_tools": [
+    { "name": "end_call", "enable": true, "why": "Lets the agent hang up itself, but ONLY after it has spoken its closing turn (see each node's end-call rule)." },
+    { "name": "transfer_to_number", "enable": true, "why": "Warm/cold transfer to a human team when the caller needs one; pair with the transfer_to_human webhook so the handoff is also logged." },
+    { "name": "language_detection", "enable": true, "why": "Auto-detect and switch to a language the customer speaks — powers the {{mirror_languages}} mirroring." },
+    { "name": "voicemail_detection", "enable": true, "why": "Detect answering machines so the agent leaves the short voicemail message (no amounts) instead of the full flow." }
+  ],
+
+  "tools": [
+    {
+      "name": "record_call_outcome",
+      "description": "Log the final result of the call. Call this once, right before the closing goodbye, on EVERY call.",
+      "applies_to": ["all"],
+      "confirm_first": false,
+      "parameters": {
+        "disposition": { "type": "string", "description": "One of: reached_customer, promised_payment, already_paid, callback_requested, not_interested, wrong_person, no_answer_voicemail, do_not_call, dispute_raised, escalated_to_human, appointment_set, lead_qualified, renewed, resolved, refused." },
+        "summary": { "type": "string", "description": "One natural sentence summarising what happened and any agreed next step." },
+        "sentiment": { "type": "string", "description": "positive, neutral, or negative — how the customer sounded." }
+      },
+      "required": ["disposition", "summary"],
+      "say": "Alright, that's everything noted."
+    },
+    {
+      "name": "schedule_callback",
+      "description": "The customer is busy or asks to be called at another time. Capture when and why.",
+      "applies_to": ["all"],
+      "confirm_first": true,
+      "parameters": {
+        "callback_time": { "type": "string", "description": "When to call back, in the customer's own words (e.g. 'tomorrow after 6 pm', 'Monday morning')." },
+        "reason": { "type": "string", "description": "Short reason (e.g. 'was driving', 'wants to check with spouse')." }
+      },
+      "required": ["callback_time"],
+      "say": "Perfect, I've set a callback for {callback_time}."
+    },
+    {
+      "name": "mark_do_not_call",
+      "description": "The customer asks not to be contacted again / to opt out. Honour it immediately and record it. Never argue.",
+      "applies_to": ["all"],
+      "confirm_first": false,
+      "parameters": {
+        "reason": { "type": "string", "description": "Reason if given (optional)." },
+        "scope": { "type": "string", "description": "all, marketing_only, or this_number." }
+      },
+      "required": [],
+      "say": "Understood, I've recorded that and you won't get these calls again."
+    },
+    {
+      "name": "transfer_to_human",
+      "description": "The matter needs a human colleague or the customer insists. Log the handoff (and use the ElevenLabs transfer_to_number system tool to actually connect).",
+      "applies_to": ["all"],
+      "confirm_first": true,
+      "parameters": {
+        "department": { "type": "string", "description": "Where to route: support, collections, sales, billing, technical, retention." },
+        "reason": { "type": "string", "description": "Why the handoff is needed." }
+      },
+      "required": ["reason"],
+      "say": "Let me connect you to the right person now — one moment."
+    },
+    {
+      "name": "update_contact_info",
+      "description": "The customer gives a corrected phone, email, address, or best time to reach them.",
+      "applies_to": ["all"],
+      "confirm_first": true,
+      "parameters": {
+        "field": { "type": "string", "description": "phone, email, address, or best_time." },
+        "value": { "type": "string", "description": "The new value, read back and confirmed before saving." }
+      },
+      "required": ["field", "value"],
+      "say": "Thanks, I've updated your {field}."
+    },
+    {
+      "name": "send_followup",
+      "description": "Send the customer a message with a link or details they asked for (payment link, appointment details, product info, receipt).",
+      "applies_to": ["all"],
+      "confirm_first": true,
+      "parameters": {
+        "channel": { "type": "string", "description": "sms, whatsapp, or email." },
+        "content_type": { "type": "string", "description": "payment_link, appointment_details, product_info, receipt, or callback_confirmation." }
+      },
+      "required": ["channel", "content_type"],
+      "say": "Done — I'll send that to you on {channel} right away."
+    },
+    {
+      "name": "log_promise_to_pay",
+      "description": "The customer commits to paying by a date. Confirm the amount and date aloud FIRST, then log it.",
+      "applies_to": ["payment_reminder", "overdue_followup"],
+      "confirm_first": true,
+      "parameters": {
+        "amount": { "type": "string", "description": "Amount promised, in words as spoken (e.g. 'eighteen thousand five hundred rupees')." },
+        "promised_date": { "type": "string", "description": "When they'll pay, in their words (e.g. 'by the 20th', 'this Friday')." },
+        "method": { "type": "string", "description": "How they'll pay if mentioned: portal, auto_pay, bank, upi, card, in_person." }
+      },
+      "required": ["promised_date"],
+      "say": "Thank you — I've noted your payment of {amount} by {promised_date}."
+    },
+    {
+      "name": "flag_dispute",
+      "description": "The customer disputes a charge/bill/amount, or says they already paid. Capture it calmly for the team; never argue the point.",
+      "applies_to": ["payment_reminder", "overdue_followup", "renewal_retention"],
+      "confirm_first": false,
+      "parameters": {
+        "about": { "type": "string", "description": "What is being disputed (e.g. 'a late fee', 'says already paid on the 3rd')." },
+        "details": { "type": "string", "description": "Any reference, date, or detail the customer gives." }
+      },
+      "required": ["about"],
+      "say": "I've logged that for the team to look into — thank you for flagging it."
+    },
+    {
+      "name": "capture_survey_response",
+      "description": "Record the customer's feedback score and comments during a CSAT/NPS survey.",
+      "applies_to": ["feedback_survey"],
+      "confirm_first": false,
+      "parameters": {
+        "score": { "type": "string", "description": "The rating they gave." },
+        "scale": { "type": "string", "description": "The scale used (e.g. '1 to 5', '1 to 10')." },
+        "sentiment": { "type": "string", "description": "positive, neutral, or negative." },
+        "verbatim": { "type": "string", "description": "Their comment in their own words, if any." },
+        "would_recommend": { "type": "string", "description": "yes, no, or unsure — if asked." }
+      },
+      "required": ["score"],
+      "say": "Thank you, I've recorded your feedback."
+    },
+    {
+      "name": "book_appointment",
+      "description": "Book or confirm an appointment, visit, delivery slot, or meeting.",
+      "applies_to": ["appointment_reminder", "lead_qualification", "sales_offer"],
+      "confirm_first": true,
+      "parameters": {
+        "date": { "type": "string", "description": "Agreed date, read back and confirmed." },
+        "time": { "type": "string", "description": "Agreed time or window." },
+        "type": { "type": "string", "description": "What the appointment is for." },
+        "location": { "type": "string", "description": "Where, if relevant (branch, home, online)." }
+      },
+      "required": ["date"],
+      "say": "You're booked for {date} at {time} — I've confirmed it."
+    },
+    {
+      "name": "reschedule_appointment",
+      "description": "Move an existing appointment to a new date/time.",
+      "applies_to": ["appointment_reminder"],
+      "confirm_first": true,
+      "parameters": {
+        "new_date": { "type": "string", "description": "New agreed date." },
+        "new_time": { "type": "string", "description": "New agreed time or window." }
+      },
+      "required": ["new_date"],
+      "say": "All done — I've moved it to {new_date} at {new_time}."
+    },
+    {
+      "name": "cancel_appointment",
+      "description": "Cancel an appointment at the customer's request.",
+      "applies_to": ["appointment_reminder"],
+      "confirm_first": true,
+      "parameters": {
+        "reason": { "type": "string", "description": "Reason if given (optional)." }
+      },
+      "required": [],
+      "say": "That's cancelled for you — no problem at all."
+    },
+    {
+      "name": "capture_lead",
+      "description": "Record qualification details for a new lead and whether they are a fit.",
+      "applies_to": ["lead_qualification", "sales_offer"],
+      "confirm_first": false,
+      "parameters": {
+        "qualified": { "type": "string", "description": "yes, no, or maybe." },
+        "interest": { "type": "string", "description": "What product/service they are interested in." },
+        "budget": { "type": "string", "description": "Budget or price range if shared." },
+        "timeline": { "type": "string", "description": "When they intend to decide/buy." },
+        "notes": { "type": "string", "description": "Anything else useful for the sales team." }
+      },
+      "required": ["qualified"],
+      "say": "Great, I've captured your details for our team."
+    },
+    {
+      "name": "log_renewal_decision",
+      "description": "Record whether the customer will renew, is considering, or is leaving — plus any retention offer outcome.",
+      "applies_to": ["renewal_retention"],
+      "confirm_first": false,
+      "parameters": {
+        "decision": { "type": "string", "description": "renewed, considering, or declined." },
+        "reason": { "type": "string", "description": "Why — especially if declining (price, competitor, not needed)." },
+        "offer_accepted": { "type": "string", "description": "yes, no, or none_offered — if a retention offer was made." }
+      },
+      "required": ["decision"],
+      "say": "Thank you, I've noted that on your account."
+    }
+  ]
+}

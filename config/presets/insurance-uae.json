@@ -1,0 +1,66 @@
+{
+  "_preset": "Insurance — UAE (AED, Arabic mirroring, Central Bank/IA conduct, Mr./Ms. surname)",
+  "platform": { "product_name": "OmniReach", "tagline": "AI Voice Outreach" },
+  "company": {
+    "name": "Falcon Shield Insurance",
+    "short_name": "Falcon Shield",
+    "industry": "Insurance",
+    "country": "United Arab Emirates",
+    "market": "Motor, health, home, and life insurance customers across the UAE",
+    "about": "Falcon Shield Insurance is a trusted UAE insurer offering motor, health, home, and life cover, protecting families and businesses for over 20 years.",
+    "website": "www.falconshield.example",
+    "trust_markers": ["Licensed by the Central Bank of the UAE", "Protecting customers for 20+ years"]
+  },
+  "locale": {
+    "currency_code": "AED",
+    "currency_symbol": "AED",
+    "currency_spoken": "dirhams",
+    "money_scale": "western",
+    "primary_language": "English",
+    "mirror_languages": ["Arabic"],
+    "timezone": "Asia/Dubai",
+    "phone_format_hint": "+971 5X XXX XXXX"
+  },
+  "agent": {
+    "name": "Sara",
+    "role": "Customer Care Executive",
+    "gender_voice": "female",
+    "tone": "warm, polished, and respectful",
+    "honorific_style": "mr_ms_surname",
+    "persona_notes": "Courteous and precise; comfortable with a multinational customer base; never pushy."
+  },
+  "contact": {
+    "support_number": "800 32526",
+    "support_number_spoken": "eight hundred, three two five two six",
+    "whatsapp_number": "",
+    "email": "care@falconshield.example",
+    "hours": "Sunday to Thursday, 9 in the morning to 6 in the evening",
+    "portal": "www.falconshield.example"
+  },
+  "compliance": {
+    "framework": "UAE Central Bank / Insurance Authority conduct rules and TDRA marketing consent",
+    "calling_hours": "9:00 AM to 8:00 PM local time",
+    "recording_disclosure": true,
+    "dnd_respect": true,
+    "notes": [
+      "Never disclose policy details to anyone other than the policyholder",
+      "Never ask for full card numbers, PINs, or OTPs",
+      "Honour any request to stop marketing calls immediately"
+    ]
+  },
+  "offerings": [
+    { "name": "Motor Insurance", "benefit": "comprehensive cover with fast claims and roadside assistance", "category": "general" },
+    { "name": "Health Insurance", "benefit": "wide hospital network with cashless treatment", "category": "health" },
+    { "name": "Home Insurance", "benefit": "protection for your home and belongings", "category": "general" },
+    { "name": "Life Insurance", "benefit": "financial security for your family's future", "category": "life" }
+  ],
+  "use_cases": {
+    "payment_reminder":     { "enabled": true },
+    "overdue_followup":     { "enabled": true, "consequences": ["policy lapse", "loss of no-claim discount"] },
+    "sales_offer":          { "enabled": true },
+    "appointment_reminder": { "enabled": true, "appointment_noun": "survey or inspection appointment" },
+    "feedback_survey":      { "enabled": true, "scale": "1 to 10" },
+    "lead_qualification":   { "enabled": true },
+    "renewal_retention":    { "enabled": true, "renewal_noun": "policy" }
+  }
+}

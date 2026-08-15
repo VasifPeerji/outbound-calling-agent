@@ -1,0 +1,3941 @@
+{
+  "Afghanistan": {
+    "region": "South Asia",
+    "currency_code": "AFN",
+    "currency_symbol": "؋",
+    "currency_spoken": "afghanis",
+    "money_scale": "western",
+    "timezone": "Asia/Kabul",
+    "phone_format": "+93 XX XXX XXXX",
+    "primary_language": "Persian",
+    "language_code": "fa",
+    "mirror_languages": [
+      "Pashto",
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Afghanistan's data-protection law and local telemarketing rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Albania": {
+    "region": "Europe",
+    "currency_code": "ALL",
+    "currency_symbol": "L",
+    "currency_spoken": "leke",
+    "money_scale": "western",
+    "timezone": "Europe/Tirane",
+    "phone_format": "+355 XX XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Albania's data-protection law and local telemarketing rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Algeria": {
+    "region": "Africa",
+    "currency_code": "DZD",
+    "currency_symbol": "د.ج",
+    "currency_spoken": "dinars",
+    "money_scale": "western",
+    "timezone": "Africa/Algiers",
+    "phone_format": "+213 XXX XXX XXX",
+    "primary_language": "Arabic",
+    "language_code": "ar",
+    "mirror_languages": [
+      "French"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Algeria's data-protection law and local telemarketing rules",
+    "accents": [
+      "arabic",
+      "modern standard",
+      "standard"
+    ]
+  },
+  "Andorra": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Andorra",
+    "phone_format": "+376 XXX XXX",
+    "primary_language": "Catalan",
+    "language_code": "ca",
+    "mirror_languages": [
+      "Spanish",
+      "French",
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "peninsular",
+      "standard"
+    ]
+  },
+  "Angola": {
+    "region": "Africa",
+    "currency_code": "AOA",
+    "currency_symbol": "Kz",
+    "currency_spoken": "kwanza",
+    "money_scale": "western",
+    "timezone": "Africa/Luanda",
+    "phone_format": "+244 XXX XXX XXX",
+    "primary_language": "Portuguese",
+    "language_code": "pt",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Angola's Personal Data Protection Law",
+    "accents": [
+      "portuguese",
+      "standard"
+    ]
+  },
+  "Antigua and Barbuda": {
+    "region": "Caribbean",
+    "currency_code": "XCD",
+    "currency_symbol": "EC$",
+    "currency_spoken": "East Caribbean dollars",
+    "money_scale": "western",
+    "timezone": "America/Antigua",
+    "phone_format": "+1 268 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Antigua and Barbuda's Data Protection Act",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Argentina": {
+    "region": "South America",
+    "currency_code": "ARS",
+    "currency_symbol": "$",
+    "currency_spoken": "pesos",
+    "money_scale": "western",
+    "timezone": "America/Argentina/Buenos_Aires",
+    "phone_format": "+54 XX XXXX XXXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Argentina Personal Data Protection Act and consumer rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Armenia": {
+    "region": "Central Asia & Caucasus",
+    "currency_code": "AMD",
+    "currency_symbol": "֏",
+    "currency_spoken": "dram",
+    "money_scale": "western",
+    "timezone": "Asia/Yerevan",
+    "phone_format": "+374 XX XXX XXX",
+    "primary_language": "Armenian",
+    "language_code": "hy",
+    "mirror_languages": [
+      "Russian",
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Armenia's data-protection law and local telemarketing rules",
+    "accents": [
+      "russian",
+      "standard"
+    ]
+  },
+  "Aruba": {
+    "region": "Caribbean",
+    "currency_code": "AWG",
+    "currency_symbol": "ƒ",
+    "currency_spoken": "florins",
+    "money_scale": "western",
+    "timezone": "America/Aruba",
+    "phone_format": "+297 XXX XXXX",
+    "primary_language": "Dutch",
+    "language_code": "nl",
+    "mirror_languages": [
+      "English",
+      "Spanish"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Aruba's data-protection law and local telemarketing rules",
+    "accents": [
+      "dutch",
+      "standard"
+    ]
+  },
+  "Australia": {
+    "region": "Oceania",
+    "currency_code": "AUD",
+    "currency_symbol": "$",
+    "currency_spoken": "Australian dollars",
+    "money_scale": "western",
+    "timezone": "Australia/Sydney",
+    "phone_format": "+61 X XXXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Australian Privacy Act and the Do Not Call Register",
+    "accents": [
+      "australian",
+      "standard"
+    ]
+  },
+  "Austria": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Vienna",
+    "phone_format": "+43 XXX XXXXXXX",
+    "primary_language": "German",
+    "language_code": "de",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "german",
+      "standard"
+    ]
+  },
+  "Azerbaijan": {
+    "region": "Central Asia & Caucasus",
+    "currency_code": "AZN",
+    "currency_symbol": "₼",
+    "currency_spoken": "manat",
+    "money_scale": "western",
+    "timezone": "Asia/Baku",
+    "phone_format": "+994 XX XXX XX XX",
+    "primary_language": "Azerbaijani",
+    "language_code": "az",
+    "mirror_languages": [
+      "Russian",
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Azerbaijan's data-protection law and local telemarketing rules",
+    "accents": [
+      "istanbul",
+      "standard"
+    ]
+  },
+  "Bahamas": {
+    "region": "Caribbean",
+    "currency_code": "BSD",
+    "currency_symbol": "B$",
+    "currency_spoken": "Bahamian dollars",
+    "money_scale": "western",
+    "timezone": "America/Nassau",
+    "phone_format": "+1 242 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "The Bahamas' Data Protection Act",
+    "accents": [
+      "american",
+      "british",
+      "standard"
+    ]
+  },
+  "Bahrain": {
+    "region": "Middle East",
+    "currency_code": "BHD",
+    "currency_symbol": "BHD",
+    "currency_spoken": "dinars",
+    "money_scale": "western",
+    "timezone": "Asia/Bahrain",
+    "phone_format": "+973 XXXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Arabic"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Bahrain's Personal Data Protection Law (PDPL) and TRA rules",
+    "accents": [
+      "gulf",
+      "arabic",
+      "standard"
+    ]
+  },
+  "Bangladesh": {
+    "region": "South Asia",
+    "currency_code": "BDT",
+    "currency_symbol": "৳",
+    "currency_spoken": "taka",
+    "money_scale": "indian",
+    "timezone": "Asia/Dhaka",
+    "phone_format": "+880 1XXX XXXXXX",
+    "primary_language": "Bengali",
+    "language_code": "bn",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Bangladesh BTRC rules and data-protection norms",
+    "accents": [
+      "indian",
+      "standard"
+    ]
+  },
+  "Barbados": {
+    "region": "Caribbean",
+    "currency_code": "BBD",
+    "currency_symbol": "Bds$",
+    "currency_spoken": "Barbados dollars",
+    "money_scale": "western",
+    "timezone": "America/Barbados",
+    "phone_format": "+1 246 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Barbados' Data Protection Act 2019",
+    "accents": [
+      "british",
+      "standard"
+    ]
+  },
+  "Belarus": {
+    "region": "Europe",
+    "currency_code": "BYN",
+    "currency_symbol": "Br",
+    "currency_spoken": "roubles",
+    "money_scale": "western",
+    "timezone": "Europe/Minsk",
+    "phone_format": "+375 XX XXX XX XX",
+    "primary_language": "Russian",
+    "language_code": "ru",
+    "mirror_languages": [
+      "Belarusian",
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Belarus's data-protection law and local telemarketing rules",
+    "accents": [
+      "russian",
+      "standard"
+    ]
+  },
+  "Belgium": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Brussels",
+    "phone_format": "+32 XXX XX XX XX",
+    "primary_language": "Dutch",
+    "language_code": "nl",
+    "mirror_languages": [
+      "French",
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "EU GDPR, the Belgian DPA and the Bel-Robinson opt-out list",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Belize": {
+    "region": "Central America",
+    "currency_code": "BZD",
+    "currency_symbol": "BZ$",
+    "currency_spoken": "Belize dollars",
+    "money_scale": "western",
+    "timezone": "America/Belize",
+    "phone_format": "+501 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Spanish"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Belize's Data Protection Act 2021",
+    "accents": [
+      "american",
+      "british",
+      "standard"
+    ]
+  },
+  "Benin": {
+    "region": "Africa",
+    "currency_code": "XOF",
+    "currency_symbol": "CFA",
+    "currency_spoken": "CFA francs",
+    "money_scale": "western",
+    "timezone": "Africa/Porto-Novo",
+    "phone_format": "+229 XX XX XX XX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Benin's data-protection law and local telemarketing rules",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Bermuda": {
+    "region": "Caribbean",
+    "currency_code": "BMD",
+    "currency_symbol": "BD$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "Atlantic/Bermuda",
+    "phone_format": "+1 441 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Bermuda's Personal Information Protection Act",
+    "accents": [
+      "british",
+      "american",
+      "standard"
+    ]
+  },
+  "Bhutan": {
+    "region": "South Asia",
+    "currency_code": "BTN",
+    "currency_symbol": "Nu.",
+    "currency_spoken": "ngultrum",
+    "money_scale": "western",
+    "timezone": "Asia/Thimphu",
+    "phone_format": "+975 XX XXX XXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Bhutan's data-protection law and local telemarketing rules",
+    "accents": [
+      "indian",
+      "standard"
+    ]
+  },
+  "Bolivia": {
+    "region": "South America",
+    "currency_code": "BOB",
+    "currency_symbol": "Bs.",
+    "currency_spoken": "bolivianos",
+    "money_scale": "western",
+    "timezone": "America/La_Paz",
+    "phone_format": "+591 X XXX XXXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Bolivia's data-protection law and local telemarketing rules",
+    "accents": [
+      "latin american",
+      "standard"
+    ]
+  },
+  "Bosnia and Herzegovina": {
+    "region": "Europe",
+    "currency_code": "BAM",
+    "currency_symbol": "KM",
+    "currency_spoken": "marks",
+    "money_scale": "western",
+    "timezone": "Europe/Sarajevo",
+    "phone_format": "+387 XX XXX XXX",
+    "primary_language": "Bosnian",
+    "language_code": "bs",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Bosnia and Herzegovina's data-protection law and local telemarketing rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Botswana": {
+    "region": "Africa",
+    "currency_code": "BWP",
+    "currency_symbol": "P",
+    "currency_spoken": "pula",
+    "money_scale": "western",
+    "timezone": "Africa/Gaborone",
+    "phone_format": "+267 XX XXX XXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Botswana's Data Protection Act",
+    "accents": [
+      "african",
+      "british",
+      "standard"
+    ]
+  },
+  "Brazil": {
+    "region": "South America",
+    "currency_code": "BRL",
+    "currency_symbol": "R$",
+    "currency_spoken": "reais",
+    "money_scale": "western",
+    "timezone": "America/Sao_Paulo",
+    "phone_format": "+55 XX XXXXX XXXX",
+    "primary_language": "Portuguese",
+    "language_code": "pt",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Brazil LGPD and the Consumer Protection Code (CDC)",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Brunei": {
+    "region": "Southeast Asia",
+    "currency_code": "BND",
+    "currency_symbol": "B$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "Asia/Brunei",
+    "phone_format": "+673 XXX XXXX",
+    "primary_language": "Malay",
+    "language_code": "ms",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Brunei's Personal Data Protection Order",
+    "accents": [
+      "malay",
+      "standard"
+    ]
+  },
+  "Bulgaria": {
+    "region": "Europe",
+    "currency_code": "BGN",
+    "currency_symbol": "лв",
+    "currency_spoken": "leva",
+    "money_scale": "western",
+    "timezone": "Europe/Sofia",
+    "phone_format": "+359 XX XXX XXXX",
+    "primary_language": "Bulgarian",
+    "language_code": "bg",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Burkina Faso": {
+    "region": "Africa",
+    "currency_code": "XOF",
+    "currency_symbol": "CFA",
+    "currency_spoken": "CFA francs",
+    "money_scale": "western",
+    "timezone": "Africa/Ouagadougou",
+    "phone_format": "+226 XX XX XX XX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Burkina Faso's data-protection law and local telemarketing rules",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Burundi": {
+    "region": "Africa",
+    "currency_code": "BIF",
+    "currency_symbol": "FBu",
+    "currency_spoken": "francs",
+    "money_scale": "western",
+    "timezone": "Africa/Bujumbura",
+    "phone_format": "+257 XX XX XXXX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Burundi's data-protection law and local telemarketing rules",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Cambodia": {
+    "region": "Southeast Asia",
+    "currency_code": "KHR",
+    "currency_symbol": "៛",
+    "currency_spoken": "riel",
+    "money_scale": "western",
+    "timezone": "Asia/Phnom_Penh",
+    "phone_format": "+855 XX XXX XXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Cambodia's data-protection law and local telemarketing rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Cameroon": {
+    "region": "Africa",
+    "currency_code": "XAF",
+    "currency_symbol": "FCFA",
+    "currency_spoken": "CFA francs",
+    "money_scale": "western",
+    "timezone": "Africa/Douala",
+    "phone_format": "+237 X XX XX XX XX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Cameroon's data-protection law and local telemarketing rules",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Canada": {
+    "region": "North America",
+    "currency_code": "CAD",
+    "currency_symbol": "C$",
+    "currency_spoken": "Canadian dollars",
+    "money_scale": "western",
+    "timezone": "America/Toronto",
+    "phone_format": "+1 XXX XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "French"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Canada's PIPEDA, CASL and the National Do Not Call List",
+    "accents": [
+      "american",
+      "standard"
+    ]
+  },
+  "Cape Verde": {
+    "region": "Africa",
+    "currency_code": "CVE",
+    "currency_symbol": "$",
+    "currency_spoken": "escudos",
+    "money_scale": "western",
+    "timezone": "Atlantic/Cape_Verde",
+    "phone_format": "+238 XXX XXXX",
+    "primary_language": "Portuguese",
+    "language_code": "pt",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Cape Verde's data-protection law and local telemarketing rules",
+    "accents": [
+      "portuguese",
+      "standard"
+    ]
+  },
+  "Cayman Islands": {
+    "region": "Caribbean",
+    "currency_code": "KYD",
+    "currency_symbol": "CI$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "America/Cayman",
+    "phone_format": "+1 345 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the Cayman Islands' Data Protection Act",
+    "accents": [
+      "british",
+      "american",
+      "standard"
+    ]
+  },
+  "Central African Republic": {
+    "region": "Africa",
+    "currency_code": "XAF",
+    "currency_symbol": "FCFA",
+    "currency_spoken": "CFA francs",
+    "money_scale": "western",
+    "timezone": "Africa/Bangui",
+    "phone_format": "+236 XX XX XX XX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the Central African Republic's data-protection law",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Chad": {
+    "region": "Africa",
+    "currency_code": "XAF",
+    "currency_symbol": "FCFA",
+    "currency_spoken": "CFA francs",
+    "money_scale": "western",
+    "timezone": "Africa/Ndjamena",
+    "phone_format": "+235 XX XX XX XX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [
+      "Arabic"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Chad's data-protection law",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Chile": {
+    "region": "South America",
+    "currency_code": "CLP",
+    "currency_symbol": "CLP$",
+    "currency_spoken": "pesos",
+    "money_scale": "western",
+    "timezone": "America/Santiago",
+    "phone_format": "+56 X XXXX XXXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Chile's Law 19.628 on personal data protection",
+    "accents": [
+      "standard"
+    ]
+  },
+  "China": {
+    "region": "East Asia",
+    "currency_code": "CNY",
+    "currency_symbol": "¥",
+    "currency_spoken": "yuan",
+    "money_scale": "western",
+    "timezone": "Asia/Shanghai",
+    "phone_format": "+86 XXX XXXX XXXX",
+    "primary_language": "Chinese (Mandarin)",
+    "language_code": "zh",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "China's Personal Information Protection Law (PIPL)",
+    "accents": [
+      "beijing mandarin",
+      "standard"
+    ]
+  },
+  "Colombia": {
+    "region": "South America",
+    "currency_code": "COP",
+    "currency_symbol": "COL$",
+    "currency_spoken": "pesos",
+    "money_scale": "western",
+    "timezone": "America/Bogota",
+    "phone_format": "+57 XXX XXX XXXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Colombia's Law 1581 and the SIC do-not-call registry",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Comoros": {
+    "region": "Africa",
+    "currency_code": "KMF",
+    "currency_symbol": "CF",
+    "currency_spoken": "francs",
+    "money_scale": "western",
+    "timezone": "Indian/Comoro",
+    "phone_format": "+269 XXX XXXX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the Comoros' data-protection law",
+    "accents": [
+      "parisian",
+      "arabic",
+      "standard"
+    ]
+  },
+  "Costa Rica": {
+    "region": "Central America",
+    "currency_code": "CRC",
+    "currency_symbol": "₡",
+    "currency_spoken": "colones",
+    "money_scale": "western",
+    "timezone": "America/Costa_Rica",
+    "phone_format": "+506 XXXX XXXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Costa Rica's Law 8968 on data protection",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Croatia": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Zagreb",
+    "phone_format": "+385 XX XXX XXXX",
+    "primary_language": "Croatian",
+    "language_code": "hr",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Cuba": {
+    "region": "Caribbean",
+    "currency_code": "CUP",
+    "currency_symbol": "$",
+    "currency_spoken": "pesos",
+    "money_scale": "western",
+    "timezone": "America/Havana",
+    "phone_format": "+53 X XXX XXXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Cuba's data-protection law and local telemarketing rules",
+    "accents": [
+      "latin american",
+      "standard"
+    ]
+  },
+  "Curaçao": {
+    "region": "Caribbean",
+    "currency_code": "ANG",
+    "currency_symbol": "ƒ",
+    "currency_spoken": "guilders",
+    "money_scale": "western",
+    "timezone": "America/Curacao",
+    "phone_format": "+599 X XXX XXXX",
+    "primary_language": "Dutch",
+    "language_code": "nl",
+    "mirror_languages": [
+      "English",
+      "Spanish"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Curaçao's data-protection law and local telemarketing rules",
+    "accents": [
+      "dutch",
+      "standard"
+    ]
+  },
+  "Cyprus": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Asia/Nicosia",
+    "phone_format": "+357 XX XXXXXX",
+    "primary_language": "Greek",
+    "language_code": "el",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Czechia": {
+    "region": "Europe",
+    "currency_code": "CZK",
+    "currency_symbol": "Kč",
+    "currency_spoken": "koruna",
+    "money_scale": "western",
+    "timezone": "Europe/Prague",
+    "phone_format": "+420 XXX XXX XXX",
+    "primary_language": "Czech",
+    "language_code": "cs",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Côte d'Ivoire": {
+    "region": "Africa",
+    "currency_code": "XOF",
+    "currency_symbol": "CFA",
+    "currency_spoken": "CFA francs",
+    "money_scale": "western",
+    "timezone": "Africa/Abidjan",
+    "phone_format": "+225 XX XX XX XXXX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Côte d'Ivoire's data-protection law and local telemarketing rules",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Democratic Republic of the Congo": {
+    "region": "Africa",
+    "currency_code": "CDF",
+    "currency_symbol": "FC",
+    "currency_spoken": "francs",
+    "money_scale": "western",
+    "timezone": "Africa/Kinshasa",
+    "phone_format": "+243 XXX XXX XXX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the DRC's data-protection law and local telemarketing rules",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Denmark": {
+    "region": "Europe",
+    "currency_code": "DKK",
+    "currency_symbol": "kr",
+    "currency_spoken": "kroner",
+    "money_scale": "western",
+    "timezone": "Europe/Copenhagen",
+    "phone_format": "+45 XX XX XX XX",
+    "primary_language": "Danish",
+    "language_code": "da",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "EU GDPR and the Danish Robinson-list marketing rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Djibouti": {
+    "region": "Africa",
+    "currency_code": "DJF",
+    "currency_symbol": "Fdj",
+    "currency_spoken": "francs",
+    "money_scale": "western",
+    "timezone": "Africa/Djibouti",
+    "phone_format": "+253 XX XX XX XX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Djibouti's data-protection law and local telemarketing rules",
+    "accents": [
+      "parisian",
+      "arabic",
+      "standard"
+    ]
+  },
+  "Dominica": {
+    "region": "Caribbean",
+    "currency_code": "XCD",
+    "currency_symbol": "EC$",
+    "currency_spoken": "East Caribbean dollars",
+    "money_scale": "western",
+    "timezone": "America/Dominica",
+    "phone_format": "+1 767 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Dominica's Data Protection Act",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Dominican Republic": {
+    "region": "Caribbean",
+    "currency_code": "DOP",
+    "currency_symbol": "RD$",
+    "currency_spoken": "pesos",
+    "money_scale": "western",
+    "timezone": "America/Santo_Domingo",
+    "phone_format": "+1 809 XXX XXXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Dominican Republic's Law 172-13 on personal data",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Ecuador": {
+    "region": "South America",
+    "currency_code": "USD",
+    "currency_symbol": "$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "America/Guayaquil",
+    "phone_format": "+593 XX XXX XXXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Ecuador's Organic Law on Personal Data Protection",
+    "accents": [
+      "latin american",
+      "standard"
+    ]
+  },
+  "Egypt": {
+    "region": "Middle East",
+    "currency_code": "EGP",
+    "currency_symbol": "E£",
+    "currency_spoken": "Egyptian pounds",
+    "money_scale": "western",
+    "timezone": "Africa/Cairo",
+    "phone_format": "+20 1X XXXX XXXX",
+    "primary_language": "Arabic",
+    "language_code": "ar",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Egypt's Personal Data Protection Law (Law 151 of 2020) and NTRA telecom rules",
+    "accents": [
+      "egyptian",
+      "arabic",
+      "standard"
+    ]
+  },
+  "El Salvador": {
+    "region": "Central America",
+    "currency_code": "USD",
+    "currency_symbol": "$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "America/El_Salvador",
+    "phone_format": "+503 XXXX XXXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "El Salvador's Personal Data Protection Law",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Equatorial Guinea": {
+    "region": "Africa",
+    "currency_code": "XAF",
+    "currency_symbol": "FCFA",
+    "currency_spoken": "CFA francs",
+    "money_scale": "western",
+    "timezone": "Africa/Malabo",
+    "phone_format": "+240 XXX XXX XXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Equatorial Guinea's data-protection law",
+    "accents": [
+      "peninsular",
+      "standard"
+    ]
+  },
+  "Eritrea": {
+    "region": "Africa",
+    "currency_code": "ERN",
+    "currency_symbol": "Nfk",
+    "currency_spoken": "nakfa",
+    "money_scale": "western",
+    "timezone": "Africa/Asmara",
+    "phone_format": "+291 X XXX XXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Eritrea's data-protection law",
+    "accents": [
+      "african",
+      "british",
+      "standard"
+    ]
+  },
+  "Estonia": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Tallinn",
+    "phone_format": "+372 XXXX XXXX",
+    "primary_language": "Estonian",
+    "language_code": "et",
+    "mirror_languages": [
+      "English",
+      "Russian"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Eswatini": {
+    "region": "Africa",
+    "currency_code": "SZL",
+    "currency_symbol": "E",
+    "currency_spoken": "emalangeni",
+    "money_scale": "western",
+    "timezone": "Africa/Mbabane",
+    "phone_format": "+268 XXXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Eswatini's data-protection law and local telemarketing rules",
+    "accents": [
+      "south african",
+      "african",
+      "standard"
+    ]
+  },
+  "Ethiopia": {
+    "region": "Africa",
+    "currency_code": "ETB",
+    "currency_symbol": "Br",
+    "currency_spoken": "birr",
+    "money_scale": "western",
+    "timezone": "Africa/Addis_Ababa",
+    "phone_format": "+251 XX XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Ethiopia's data-protection law and local telemarketing rules",
+    "accents": [
+      "african",
+      "british",
+      "standard"
+    ]
+  },
+  "Fiji": {
+    "region": "Oceania",
+    "currency_code": "FJD",
+    "currency_symbol": "FJ$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "Pacific/Fiji",
+    "phone_format": "+679 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Fiji's data-protection law and local telemarketing rules",
+    "accents": [
+      "australian",
+      "british",
+      "standard"
+    ]
+  },
+  "Finland": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Helsinki",
+    "phone_format": "+358 XX XXX XXXX",
+    "primary_language": "Finnish",
+    "language_code": "fi",
+    "mirror_languages": [
+      "Swedish",
+      "English"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "EU GDPR and Finnish Traficom marketing rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "France": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Paris",
+    "phone_format": "+33 X XX XX XX XX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "EU GDPR and the Bloctel opt-out list",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Gabon": {
+    "region": "Africa",
+    "currency_code": "XAF",
+    "currency_symbol": "FCFA",
+    "currency_spoken": "CFA francs",
+    "money_scale": "western",
+    "timezone": "Africa/Libreville",
+    "phone_format": "+241 X XX XX XX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Gabon's data-protection law and local telemarketing rules",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Gambia": {
+    "region": "Africa",
+    "currency_code": "GMD",
+    "currency_symbol": "D",
+    "currency_spoken": "dalasi",
+    "money_scale": "western",
+    "timezone": "Africa/Banjul",
+    "phone_format": "+220 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "the Gambia's data-protection law and local telemarketing rules",
+    "accents": [
+      "african",
+      "british",
+      "standard"
+    ]
+  },
+  "Georgia": {
+    "region": "Central Asia & Caucasus",
+    "currency_code": "GEL",
+    "currency_symbol": "₾",
+    "currency_spoken": "lari",
+    "money_scale": "western",
+    "timezone": "Asia/Tbilisi",
+    "phone_format": "+995 XXX XXX XXX",
+    "primary_language": "Georgian",
+    "language_code": "ka",
+    "mirror_languages": [
+      "English",
+      "Russian"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Georgia's Law on Personal Data Protection",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Germany": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Berlin",
+    "phone_format": "+49 XXX XXXXXXX",
+    "primary_language": "German",
+    "language_code": "de",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "EU GDPR and German UWG rules; prior consent for outreach",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Ghana": {
+    "region": "Africa",
+    "currency_code": "GHS",
+    "currency_symbol": "GH₵",
+    "currency_spoken": "cedis",
+    "money_scale": "western",
+    "timezone": "Africa/Accra",
+    "phone_format": "+233 XX XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Ghana Data Protection Act",
+    "accents": [
+      "african",
+      "british",
+      "standard"
+    ]
+  },
+  "Greece": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Athens",
+    "phone_format": "+30 XXX XXX XXXX",
+    "primary_language": "Greek",
+    "language_code": "el",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "EU GDPR and the Hellenic Data Protection Authority rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Greenland": {
+    "region": "North America",
+    "currency_code": "DKK",
+    "currency_symbol": "kr",
+    "currency_spoken": "kroner",
+    "money_scale": "western",
+    "timezone": "America/Nuuk",
+    "phone_format": "+299 XX XX XX",
+    "primary_language": "Danish",
+    "language_code": "da",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Danish and EU-aligned data-protection rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Grenada": {
+    "region": "Caribbean",
+    "currency_code": "XCD",
+    "currency_symbol": "EC$",
+    "currency_spoken": "East Caribbean dollars",
+    "money_scale": "western",
+    "timezone": "America/Grenada",
+    "phone_format": "+1 473 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Grenada's Data Protection Act",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Guatemala": {
+    "region": "Central America",
+    "currency_code": "GTQ",
+    "currency_symbol": "Q",
+    "currency_spoken": "quetzales",
+    "money_scale": "western",
+    "timezone": "America/Guatemala",
+    "phone_format": "+502 XXXX XXXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Guatemala's consumer-protection and privacy rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Guinea": {
+    "region": "Africa",
+    "currency_code": "GNF",
+    "currency_symbol": "FG",
+    "currency_spoken": "francs",
+    "money_scale": "western",
+    "timezone": "Africa/Conakry",
+    "phone_format": "+224 XXX XXX XXX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Guinea's data-protection law and local telemarketing rules",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Guinea-Bissau": {
+    "region": "Africa",
+    "currency_code": "XOF",
+    "currency_symbol": "CFA",
+    "currency_spoken": "CFA francs",
+    "money_scale": "western",
+    "timezone": "Africa/Bissau",
+    "phone_format": "+245 XXX XXXX",
+    "primary_language": "Portuguese",
+    "language_code": "pt",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Guinea-Bissau's data-protection law",
+    "accents": [
+      "portuguese",
+      "standard"
+    ]
+  },
+  "Guyana": {
+    "region": "South America",
+    "currency_code": "GYD",
+    "currency_symbol": "G$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "America/Guyana",
+    "phone_format": "+592 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Guyana's data-protection law and local telemarketing rules",
+    "accents": [
+      "british",
+      "american",
+      "standard"
+    ]
+  },
+  "Haiti": {
+    "region": "Caribbean",
+    "currency_code": "HTG",
+    "currency_symbol": "G",
+    "currency_spoken": "gourdes",
+    "money_scale": "western",
+    "timezone": "America/Port-au-Prince",
+    "phone_format": "+509 XXXX XXXX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Haiti's data-protection law and local telemarketing rules",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Honduras": {
+    "region": "Central America",
+    "currency_code": "HNL",
+    "currency_symbol": "L",
+    "currency_spoken": "lempiras",
+    "money_scale": "western",
+    "timezone": "America/Tegucigalpa",
+    "phone_format": "+504 XXXX XXXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Honduras' consumer-protection and privacy rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Hong Kong": {
+    "region": "East Asia",
+    "currency_code": "HKD",
+    "currency_symbol": "HK$",
+    "currency_spoken": "Hong Kong dollars",
+    "money_scale": "western",
+    "timezone": "Asia/Hong_Kong",
+    "phone_format": "+852 XXXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Chinese (Mandarin)"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Hong Kong's PDPO and the Do-Not-Call Register",
+    "accents": [
+      "standard",
+      "british"
+    ]
+  },
+  "Hungary": {
+    "region": "Europe",
+    "currency_code": "HUF",
+    "currency_symbol": "Ft",
+    "currency_spoken": "forint",
+    "money_scale": "western",
+    "timezone": "Europe/Budapest",
+    "phone_format": "+36 XX XXX XXXX",
+    "primary_language": "Hungarian",
+    "language_code": "hu",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Iceland": {
+    "region": "Europe",
+    "currency_code": "ISK",
+    "currency_symbol": "kr",
+    "currency_spoken": "kronur",
+    "money_scale": "western",
+    "timezone": "Atlantic/Reykjavik",
+    "phone_format": "+354 XXX XXXX",
+    "primary_language": "Icelandic",
+    "language_code": "is",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "the Icelandic Data Protection Act implementing the GDPR",
+    "accents": [
+      "standard"
+    ]
+  },
+  "India": {
+    "region": "South Asia",
+    "currency_code": "INR",
+    "currency_symbol": "₹",
+    "currency_spoken": "rupees",
+    "money_scale": "indian",
+    "timezone": "Asia/Kolkata",
+    "phone_format": "+91 XXXXX XXXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Hindi",
+      "Marathi"
+    ],
+    "honorific_style": "first_name_ji",
+    "compliance_framework": "India TRAI telemarketing rules and the DPDP Act",
+    "accents": [
+      "indian",
+      "standard"
+    ]
+  },
+  "Indonesia": {
+    "region": "Southeast Asia",
+    "currency_code": "IDR",
+    "currency_symbol": "Rp",
+    "currency_spoken": "rupiah",
+    "money_scale": "western",
+    "timezone": "Asia/Jakarta",
+    "phone_format": "+62 XXX XXXX XXXX",
+    "primary_language": "Indonesian",
+    "language_code": "id",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Indonesia PDP Law and consumer-protection rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Iran": {
+    "region": "Middle East",
+    "currency_code": "USD",
+    "currency_symbol": "$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "Asia/Tehran",
+    "phone_format": "+98 XXX XXX XXXX",
+    "primary_language": "Persian",
+    "language_code": "fa",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Iran's data-protection law and local telemarketing rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Iraq": {
+    "region": "Middle East",
+    "currency_code": "IQD",
+    "currency_symbol": "ع.د",
+    "currency_spoken": "dinars",
+    "money_scale": "western",
+    "timezone": "Asia/Baghdad",
+    "phone_format": "+964 XXX XXX XXXX",
+    "primary_language": "Arabic",
+    "language_code": "ar",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Iraq's data-protection law and local telemarketing rules",
+    "accents": [
+      "arabic",
+      "modern standard",
+      "standard"
+    ]
+  },
+  "Ireland": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Dublin",
+    "phone_format": "+353 XX XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Irish"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "EU GDPR and Irish DPC rules",
+    "accents": [
+      "irish",
+      "british",
+      "standard"
+    ]
+  },
+  "Israel": {
+    "region": "Middle East",
+    "currency_code": "ILS",
+    "currency_symbol": "₪",
+    "currency_spoken": "shekels",
+    "money_scale": "western",
+    "timezone": "Asia/Jerusalem",
+    "phone_format": "+972 XX XXX XXXX",
+    "primary_language": "Hebrew",
+    "language_code": "he",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Israel's Protection of Privacy Law",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Italy": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Rome",
+    "phone_format": "+39 XXX XXX XXXX",
+    "primary_language": "Italian",
+    "language_code": "it",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "EU GDPR and the Italian RPO opt-out registry",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Jamaica": {
+    "region": "Caribbean",
+    "currency_code": "JMD",
+    "currency_symbol": "J$",
+    "currency_spoken": "Jamaican dollars",
+    "money_scale": "western",
+    "timezone": "America/Jamaica",
+    "phone_format": "+1 876 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Jamaica's Data Protection Act 2020",
+    "accents": [
+      "british",
+      "american",
+      "standard"
+    ]
+  },
+  "Japan": {
+    "region": "East Asia",
+    "currency_code": "JPY",
+    "currency_symbol": "¥",
+    "currency_spoken": "yen",
+    "money_scale": "western",
+    "timezone": "Asia/Tokyo",
+    "phone_format": "+81 XX XXXX XXXX",
+    "primary_language": "Japanese",
+    "language_code": "ja",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Japan APPI and Act on Specified Commercial Transactions",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Jordan": {
+    "region": "Middle East",
+    "currency_code": "JOD",
+    "currency_symbol": "JOD",
+    "currency_spoken": "dinars",
+    "money_scale": "western",
+    "timezone": "Asia/Amman",
+    "phone_format": "+962 X XXXX XXXX",
+    "primary_language": "Arabic",
+    "language_code": "ar",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Jordan's Personal Data Protection Law and TRC rules",
+    "accents": [
+      "jordanian",
+      "levantine",
+      "arabic",
+      "standard"
+    ]
+  },
+  "Kazakhstan": {
+    "region": "Central Asia & Caucasus",
+    "currency_code": "KZT",
+    "currency_symbol": "₸",
+    "currency_spoken": "tenge",
+    "money_scale": "western",
+    "timezone": "Asia/Almaty",
+    "phone_format": "+7 XXX XXX XX XX",
+    "primary_language": "Kazakh",
+    "language_code": "kk",
+    "mirror_languages": [
+      "Russian",
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Kazakhstan's Law on Personal Data and its Protection",
+    "accents": [
+      "russian",
+      "standard"
+    ]
+  },
+  "Kenya": {
+    "region": "Africa",
+    "currency_code": "KES",
+    "currency_symbol": "KSh",
+    "currency_spoken": "shillings",
+    "money_scale": "western",
+    "timezone": "Africa/Nairobi",
+    "phone_format": "+254 XXX XXXXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Swahili"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Kenya Data Protection Act and consumer rules",
+    "accents": [
+      "african",
+      "british",
+      "standard"
+    ]
+  },
+  "Kiribati": {
+    "region": "Oceania",
+    "currency_code": "AUD",
+    "currency_symbol": "A$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "Pacific/Tarawa",
+    "phone_format": "+686 XXXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Kiribati's data-protection rules",
+    "accents": [
+      "australian",
+      "british",
+      "standard"
+    ]
+  },
+  "Kosovo": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Belgrade",
+    "phone_format": "+383 XX XXX XXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Kosovo's Law on Personal Data Protection",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Kuwait": {
+    "region": "Middle East",
+    "currency_code": "KWD",
+    "currency_symbol": "KWD",
+    "currency_spoken": "dinars",
+    "money_scale": "western",
+    "timezone": "Asia/Kuwait",
+    "phone_format": "+965 XXXX XXXX",
+    "primary_language": "Arabic",
+    "language_code": "ar",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Kuwait's CITRA data-privacy regulation",
+    "accents": [
+      "kuwaiti",
+      "gulf",
+      "arabic",
+      "standard"
+    ]
+  },
+  "Kyrgyzstan": {
+    "region": "Central Asia & Caucasus",
+    "currency_code": "KGS",
+    "currency_symbol": "с",
+    "currency_spoken": "som",
+    "money_scale": "western",
+    "timezone": "Asia/Bishkek",
+    "phone_format": "+996 XXX XXX XXX",
+    "primary_language": "Kyrgyz",
+    "language_code": "ky",
+    "mirror_languages": [
+      "Russian"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Kyrgyzstan's data-protection law and local telemarketing rules",
+    "accents": [
+      "russian",
+      "standard"
+    ]
+  },
+  "Laos": {
+    "region": "Southeast Asia",
+    "currency_code": "LAK",
+    "currency_symbol": "₭",
+    "currency_spoken": "kip",
+    "money_scale": "western",
+    "timezone": "Asia/Vientiane",
+    "phone_format": "+856 XX XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Laos's data-protection law and local telemarketing rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Latvia": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Riga",
+    "phone_format": "+371 XXXX XXXX",
+    "primary_language": "Latvian",
+    "language_code": "lv",
+    "mirror_languages": [
+      "English",
+      "Russian"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Lebanon": {
+    "region": "Middle East",
+    "currency_code": "LBP",
+    "currency_symbol": "L£",
+    "currency_spoken": "Lebanese pounds",
+    "money_scale": "western",
+    "timezone": "Asia/Beirut",
+    "phone_format": "+961 XX XXX XXX",
+    "primary_language": "Arabic",
+    "language_code": "ar",
+    "mirror_languages": [
+      "French",
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Lebanon's E-Transactions and Personal Data Law (Law 81/2018)",
+    "accents": [
+      "levantine",
+      "arabic",
+      "standard"
+    ]
+  },
+  "Lesotho": {
+    "region": "Africa",
+    "currency_code": "LSL",
+    "currency_symbol": "L",
+    "currency_spoken": "maloti",
+    "money_scale": "western",
+    "timezone": "Africa/Maseru",
+    "phone_format": "+266 XXXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Lesotho's data-protection law and local telemarketing rules",
+    "accents": [
+      "south african",
+      "african",
+      "standard"
+    ]
+  },
+  "Liberia": {
+    "region": "Africa",
+    "currency_code": "LRD",
+    "currency_symbol": "L$",
+    "currency_spoken": "Liberian dollars",
+    "money_scale": "western",
+    "timezone": "Africa/Monrovia",
+    "phone_format": "+231 XX XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Liberia's consumer-protection and LTA telecom rules",
+    "accents": [
+      "african",
+      "american",
+      "standard"
+    ]
+  },
+  "Libya": {
+    "region": "Africa",
+    "currency_code": "LYD",
+    "currency_symbol": "ل.د",
+    "currency_spoken": "dinars",
+    "money_scale": "western",
+    "timezone": "Africa/Tripoli",
+    "phone_format": "+218 XX XXX XXXX",
+    "primary_language": "Arabic",
+    "language_code": "ar",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Libya's data-protection law and local telemarketing rules",
+    "accents": [
+      "arabic",
+      "modern standard",
+      "standard"
+    ]
+  },
+  "Liechtenstein": {
+    "region": "Europe",
+    "currency_code": "CHF",
+    "currency_symbol": "CHF",
+    "currency_spoken": "francs",
+    "money_scale": "western",
+    "timezone": "Europe/Vaduz",
+    "phone_format": "+423 XXX XXXX",
+    "primary_language": "German",
+    "language_code": "de",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR as applied through the EEA Agreement",
+    "accents": [
+      "german",
+      "standard"
+    ]
+  },
+  "Lithuania": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Vilnius",
+    "phone_format": "+370 XXX XXXXX",
+    "primary_language": "Lithuanian",
+    "language_code": "lt",
+    "mirror_languages": [
+      "English",
+      "Russian"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Luxembourg": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Luxembourg",
+    "phone_format": "+352 XXX XXX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [
+      "German",
+      "Luxembourgish",
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Macau": {
+    "region": "East Asia",
+    "currency_code": "MOP",
+    "currency_symbol": "MOP$",
+    "currency_spoken": "patacas",
+    "money_scale": "western",
+    "timezone": "Asia/Macau",
+    "phone_format": "+853 XXXX XXXX",
+    "primary_language": "Chinese (Mandarin)",
+    "language_code": "zh",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Macau's Personal Data Protection Act",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Madagascar": {
+    "region": "Africa",
+    "currency_code": "MGA",
+    "currency_symbol": "Ar",
+    "currency_spoken": "ariary",
+    "money_scale": "western",
+    "timezone": "Indian/Antananarivo",
+    "phone_format": "+261 XX XX XXX XX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Madagascar's data-protection law (Law 2014-038) and ARTEC telecom rules",
+    "accents": [
+      "standard",
+      "parisian"
+    ]
+  },
+  "Malawi": {
+    "region": "Africa",
+    "currency_code": "MWK",
+    "currency_symbol": "MK",
+    "currency_spoken": "kwacha",
+    "money_scale": "western",
+    "timezone": "Africa/Blantyre",
+    "phone_format": "+265 XXX XXX XXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Malawi's data-protection law and local telemarketing rules",
+    "accents": [
+      "african",
+      "british",
+      "standard"
+    ]
+  },
+  "Malaysia": {
+    "region": "Southeast Asia",
+    "currency_code": "MYR",
+    "currency_symbol": "RM",
+    "currency_spoken": "ringgit",
+    "money_scale": "western",
+    "timezone": "Asia/Kuala_Lumpur",
+    "phone_format": "+60 XX XXXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Malay"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Malaysia PDPA and MCMC rules",
+    "accents": [
+      "malay",
+      "standard"
+    ]
+  },
+  "Maldives": {
+    "region": "South Asia",
+    "currency_code": "MVR",
+    "currency_symbol": "Rf",
+    "currency_spoken": "rufiyaa",
+    "money_scale": "western",
+    "timezone": "Indian/Maldives",
+    "phone_format": "+960 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Maldives' CAM communications rules and privacy guidance",
+    "accents": [
+      "standard",
+      "indian"
+    ]
+  },
+  "Mali": {
+    "region": "Africa",
+    "currency_code": "XOF",
+    "currency_symbol": "CFA",
+    "currency_spoken": "CFA francs",
+    "money_scale": "western",
+    "timezone": "Africa/Bamako",
+    "phone_format": "+223 XX XX XX XX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Mali's data-protection law and local telemarketing rules",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Malta": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Malta",
+    "phone_format": "+356 XXXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "british",
+      "standard"
+    ]
+  },
+  "Marshall Islands": {
+    "region": "Oceania",
+    "currency_code": "USD",
+    "currency_symbol": "$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "Pacific/Majuro",
+    "phone_format": "+692 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "the Marshall Islands' data-protection rules",
+    "accents": [
+      "american",
+      "standard"
+    ]
+  },
+  "Mauritania": {
+    "region": "Africa",
+    "currency_code": "MRU",
+    "currency_symbol": "UM",
+    "currency_spoken": "ouguiya",
+    "money_scale": "western",
+    "timezone": "Africa/Nouakchott",
+    "phone_format": "+222 XX XX XX XX",
+    "primary_language": "Arabic",
+    "language_code": "ar",
+    "mirror_languages": [
+      "French"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Mauritania's data-protection law",
+    "accents": [
+      "arabic",
+      "modern standard",
+      "standard"
+    ]
+  },
+  "Mauritius": {
+    "region": "Africa",
+    "currency_code": "MUR",
+    "currency_symbol": "Rs",
+    "currency_spoken": "rupees",
+    "money_scale": "western",
+    "timezone": "Indian/Mauritius",
+    "phone_format": "+230 XXXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "French"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Mauritius Data Protection Act 2017 and ICTA telecom rules",
+    "accents": [
+      "british",
+      "standard"
+    ]
+  },
+  "Mexico": {
+    "region": "North America",
+    "currency_code": "MXN",
+    "currency_symbol": "MX$",
+    "currency_spoken": "pesos",
+    "money_scale": "western",
+    "timezone": "America/Mexico_City",
+    "phone_format": "+52 XX XXXX XXXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Mexico's LFPDPPP and the REPEP do-not-call register",
+    "accents": [
+      "american",
+      "standard"
+    ]
+  },
+  "Micronesia": {
+    "region": "Oceania",
+    "currency_code": "USD",
+    "currency_symbol": "$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "Pacific/Chuuk",
+    "phone_format": "+691 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Micronesia's data-protection rules",
+    "accents": [
+      "american",
+      "standard"
+    ]
+  },
+  "Moldova": {
+    "region": "Europe",
+    "currency_code": "MDL",
+    "currency_symbol": "L",
+    "currency_spoken": "lei",
+    "money_scale": "western",
+    "timezone": "Europe/Chisinau",
+    "phone_format": "+373 XXXX XXXX",
+    "primary_language": "Romanian",
+    "language_code": "ro",
+    "mirror_languages": [
+      "Russian"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Moldova's data-protection law and local telemarketing rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Monaco": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Monaco",
+    "phone_format": "+377 XX XX XX XX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Mongolia": {
+    "region": "Central Asia & Caucasus",
+    "currency_code": "MNT",
+    "currency_symbol": "₮",
+    "currency_spoken": "tugrik",
+    "money_scale": "western",
+    "timezone": "Asia/Ulaanbaatar",
+    "phone_format": "+976 XXXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Mongolia's data-protection law and local telemarketing rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Montenegro": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Podgorica",
+    "phone_format": "+382 XX XXX XXX",
+    "primary_language": "Serbian",
+    "language_code": "sr",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Montenegro's data-protection law and local telemarketing rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Morocco": {
+    "region": "Africa",
+    "currency_code": "MAD",
+    "currency_symbol": "د.م.",
+    "currency_spoken": "dirhams",
+    "money_scale": "western",
+    "timezone": "Africa/Casablanca",
+    "phone_format": "+212 XXX XXX XXX",
+    "primary_language": "Arabic",
+    "language_code": "ar",
+    "mirror_languages": [
+      "French",
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Law 09-08 on the protection of personal data",
+    "accents": [
+      "moroccan",
+      "arabic",
+      "standard"
+    ]
+  },
+  "Mozambique": {
+    "region": "Africa",
+    "currency_code": "MZN",
+    "currency_symbol": "MT",
+    "currency_spoken": "meticais",
+    "money_scale": "western",
+    "timezone": "Africa/Maputo",
+    "phone_format": "+258 XX XXX XXXX",
+    "primary_language": "Portuguese",
+    "language_code": "pt",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Mozambique's data-protection law and local telemarketing rules",
+    "accents": [
+      "portuguese",
+      "standard"
+    ]
+  },
+  "Myanmar": {
+    "region": "Southeast Asia",
+    "currency_code": "MMK",
+    "currency_symbol": "K",
+    "currency_spoken": "kyat",
+    "money_scale": "western",
+    "timezone": "Asia/Yangon",
+    "phone_format": "+95 X XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Myanmar's data-protection law and local telemarketing rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Namibia": {
+    "region": "Africa",
+    "currency_code": "NAD",
+    "currency_symbol": "N$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "Africa/Windhoek",
+    "phone_format": "+264 XX XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Namibia's data-protection law and local telemarketing rules",
+    "accents": [
+      "south african",
+      "african",
+      "standard"
+    ]
+  },
+  "Nauru": {
+    "region": "Oceania",
+    "currency_code": "AUD",
+    "currency_symbol": "A$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "Pacific/Nauru",
+    "phone_format": "+674 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Nauru's data-protection rules",
+    "accents": [
+      "australian",
+      "british",
+      "standard"
+    ]
+  },
+  "Nepal": {
+    "region": "South Asia",
+    "currency_code": "NPR",
+    "currency_symbol": "₨",
+    "currency_spoken": "rupees",
+    "money_scale": "indian",
+    "timezone": "Asia/Kathmandu",
+    "phone_format": "+977 XXX XXX XXXX",
+    "primary_language": "Nepali",
+    "language_code": "ne",
+    "mirror_languages": [
+      "English",
+      "Hindi"
+    ],
+    "honorific_style": "first_name_ji",
+    "compliance_framework": "Nepal's Individual Privacy Act",
+    "accents": [
+      "indian",
+      "standard"
+    ]
+  },
+  "Netherlands": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Amsterdam",
+    "phone_format": "+31 X XXXXXXXX",
+    "primary_language": "Dutch",
+    "language_code": "nl",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "EU GDPR and the Dutch Bel-me-niet opt-out register",
+    "accents": [
+      "standard"
+    ]
+  },
+  "New Zealand": {
+    "region": "Oceania",
+    "currency_code": "NZD",
+    "currency_symbol": "$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "Pacific/Auckland",
+    "phone_format": "+64 X XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "New Zealand Privacy Act and Unsolicited Electronic Messages Act",
+    "accents": [
+      "australian",
+      "standard"
+    ]
+  },
+  "Nicaragua": {
+    "region": "Central America",
+    "currency_code": "NIO",
+    "currency_symbol": "C$",
+    "currency_spoken": "cordobas",
+    "money_scale": "western",
+    "timezone": "America/Managua",
+    "phone_format": "+505 XXXX XXXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Nicaragua's Law 787 on personal data protection",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Niger": {
+    "region": "Africa",
+    "currency_code": "XOF",
+    "currency_symbol": "CFA",
+    "currency_spoken": "CFA francs",
+    "money_scale": "western",
+    "timezone": "Africa/Niamey",
+    "phone_format": "+227 XX XX XX XX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Niger's data-protection law and local telemarketing rules",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Nigeria": {
+    "region": "Africa",
+    "currency_code": "NGN",
+    "currency_symbol": "₦",
+    "currency_spoken": "naira",
+    "money_scale": "western",
+    "timezone": "Africa/Lagos",
+    "phone_format": "+234 XXX XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Hausa"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Nigeria NDPR and NCC telemarketing rules",
+    "accents": [
+      "nigerian",
+      "african",
+      "standard"
+    ]
+  },
+  "North Korea": {
+    "region": "East Asia",
+    "currency_code": "KPW",
+    "currency_symbol": "₩",
+    "currency_spoken": "won",
+    "money_scale": "western",
+    "timezone": "Asia/Pyongyang",
+    "phone_format": "+850 XXX XXX XXXX",
+    "primary_language": "Korean",
+    "language_code": "ko",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "local regulations",
+    "accents": [
+      "seoul",
+      "standard"
+    ]
+  },
+  "North Macedonia": {
+    "region": "Europe",
+    "currency_code": "MKD",
+    "currency_symbol": "ден",
+    "currency_spoken": "denars",
+    "money_scale": "western",
+    "timezone": "Europe/Skopje",
+    "phone_format": "+389 XX XXX XXX",
+    "primary_language": "Macedonian",
+    "language_code": "mk",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "North Macedonia's data-protection law and local telemarketing rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Norway": {
+    "region": "Europe",
+    "currency_code": "NOK",
+    "currency_symbol": "kr",
+    "currency_spoken": "kroner",
+    "money_scale": "western",
+    "timezone": "Europe/Oslo",
+    "phone_format": "+47 XXX XX XXX",
+    "primary_language": "Norwegian",
+    "language_code": "no",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "EEA GDPR and the Norwegian Marketing Control Act",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Oman": {
+    "region": "Middle East",
+    "currency_code": "OMR",
+    "currency_symbol": "OMR",
+    "currency_spoken": "rials",
+    "money_scale": "western",
+    "timezone": "Asia/Muscat",
+    "phone_format": "+968 XXXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Arabic"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Oman's TRA telemarketing rules and Personal Data Protection Law",
+    "accents": [
+      "omani",
+      "gulf",
+      "arabic",
+      "standard"
+    ]
+  },
+  "Pakistan": {
+    "region": "South Asia",
+    "currency_code": "PKR",
+    "currency_symbol": "Rs",
+    "currency_spoken": "rupees",
+    "money_scale": "indian",
+    "timezone": "Asia/Karachi",
+    "phone_format": "+92 XXX XXXXXXX",
+    "primary_language": "Urdu",
+    "language_code": "ur",
+    "mirror_languages": [
+      "English",
+      "Pashto"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Pakistan PECA and PTA telemarketing rules",
+    "accents": [
+      "indian",
+      "standard"
+    ]
+  },
+  "Palau": {
+    "region": "Oceania",
+    "currency_code": "USD",
+    "currency_symbol": "$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "Pacific/Palau",
+    "phone_format": "+680 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Palau's data-protection rules",
+    "accents": [
+      "american",
+      "standard"
+    ]
+  },
+  "Palestine": {
+    "region": "Middle East",
+    "currency_code": "ILS",
+    "currency_symbol": "₪",
+    "currency_spoken": "shekels",
+    "money_scale": "western",
+    "timezone": "Asia/Hebron",
+    "phone_format": "+970 XXX XXX XXX",
+    "primary_language": "Arabic",
+    "language_code": "ar",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Palestine's data-protection law and local telemarketing rules",
+    "accents": [
+      "levantine",
+      "arabic",
+      "standard"
+    ]
+  },
+  "Panama": {
+    "region": "Central America",
+    "currency_code": "PAB",
+    "currency_symbol": "B/.",
+    "currency_spoken": "balboas",
+    "money_scale": "western",
+    "timezone": "America/Panama",
+    "phone_format": "+507 XXXX XXXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Panama's Law 81 on personal data protection",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Papua New Guinea": {
+    "region": "Oceania",
+    "currency_code": "PGK",
+    "currency_symbol": "K",
+    "currency_spoken": "kina",
+    "money_scale": "western",
+    "timezone": "Pacific/Port_Moresby",
+    "phone_format": "+675 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Papua New Guinea's data-protection law and local telemarketing rules",
+    "accents": [
+      "australian",
+      "british",
+      "standard"
+    ]
+  },
+  "Paraguay": {
+    "region": "South America",
+    "currency_code": "PYG",
+    "currency_symbol": "₲",
+    "currency_spoken": "guaranies",
+    "money_scale": "western",
+    "timezone": "America/Asuncion",
+    "phone_format": "+595 XXX XXX XXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Paraguay's data-protection law and local telemarketing rules",
+    "accents": [
+      "latin american",
+      "standard"
+    ]
+  },
+  "Peru": {
+    "region": "South America",
+    "currency_code": "PEN",
+    "currency_symbol": "S/",
+    "currency_spoken": "soles",
+    "money_scale": "western",
+    "timezone": "America/Lima",
+    "phone_format": "+51 XXX XXX XXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Peru's Personal Data Protection Law",
+    "accents": [
+      "latin american",
+      "standard"
+    ]
+  },
+  "Philippines": {
+    "region": "Southeast Asia",
+    "currency_code": "PHP",
+    "currency_symbol": "₱",
+    "currency_spoken": "pesos",
+    "money_scale": "western",
+    "timezone": "Asia/Manila",
+    "phone_format": "+63 XXX XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Filipino"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Philippines Data Privacy Act and NTC rules",
+    "accents": [
+      "american",
+      "standard"
+    ]
+  },
+  "Poland": {
+    "region": "Europe",
+    "currency_code": "PLN",
+    "currency_symbol": "zł",
+    "currency_spoken": "zloty",
+    "money_scale": "western",
+    "timezone": "Europe/Warsaw",
+    "phone_format": "+48 XXX XXX XXX",
+    "primary_language": "Polish",
+    "language_code": "pl",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "EU GDPR and Polish UODO rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Portugal": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Lisbon",
+    "phone_format": "+351 XXX XXX XXX",
+    "primary_language": "Portuguese",
+    "language_code": "pt",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "EU GDPR and Portuguese CNPD rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Puerto Rico": {
+    "region": "North America",
+    "currency_code": "USD",
+    "currency_symbol": "$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "America/Puerto_Rico",
+    "phone_format": "+1 787 XXX XXXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "US TCPA and the National Do Not Call Registry",
+    "accents": [
+      "american",
+      "standard"
+    ]
+  },
+  "Qatar": {
+    "region": "Middle East",
+    "currency_code": "QAR",
+    "currency_symbol": "QAR",
+    "currency_spoken": "riyals",
+    "money_scale": "western",
+    "timezone": "Asia/Qatar",
+    "phone_format": "+974 XXXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Arabic"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Qatar CRA rules and data-protection law",
+    "accents": [
+      "gulf",
+      "arabic",
+      "standard"
+    ]
+  },
+  "Republic of the Congo": {
+    "region": "Africa",
+    "currency_code": "XAF",
+    "currency_symbol": "FCFA",
+    "currency_spoken": "CFA francs",
+    "money_scale": "western",
+    "timezone": "Africa/Brazzaville",
+    "phone_format": "+242 XX XXX XXXX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the Republic of the Congo's data-protection law",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Romania": {
+    "region": "Europe",
+    "currency_code": "RON",
+    "currency_symbol": "lei",
+    "currency_spoken": "lei",
+    "money_scale": "western",
+    "timezone": "Europe/Bucharest",
+    "phone_format": "+40 XXX XXX XXX",
+    "primary_language": "Romanian",
+    "language_code": "ro",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Russia": {
+    "region": "Europe",
+    "currency_code": "RUB",
+    "currency_symbol": "₽",
+    "currency_spoken": "roubles",
+    "money_scale": "western",
+    "timezone": "Europe/Moscow",
+    "phone_format": "+7 XXX XXX XX XX",
+    "primary_language": "Russian",
+    "language_code": "ru",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Federal Law 152-FZ on Personal Data and the Russian Advertising Law",
+    "accents": [
+      "russian",
+      "moscow",
+      "standard"
+    ]
+  },
+  "Rwanda": {
+    "region": "Africa",
+    "currency_code": "RWF",
+    "currency_symbol": "FRw",
+    "currency_spoken": "francs",
+    "money_scale": "western",
+    "timezone": "Africa/Kigali",
+    "phone_format": "+250 XXX XXX XXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "French"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Rwanda's Law on the Protection of Personal Data",
+    "accents": [
+      "african",
+      "british",
+      "standard"
+    ]
+  },
+  "Saint Kitts and Nevis": {
+    "region": "Caribbean",
+    "currency_code": "XCD",
+    "currency_symbol": "EC$",
+    "currency_spoken": "East Caribbean dollars",
+    "money_scale": "western",
+    "timezone": "America/St_Kitts",
+    "phone_format": "+1 869 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Saint Kitts and Nevis' Data Protection Act",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Saint Lucia": {
+    "region": "Caribbean",
+    "currency_code": "XCD",
+    "currency_symbol": "EC$",
+    "currency_spoken": "East Caribbean dollars",
+    "money_scale": "western",
+    "timezone": "America/St_Lucia",
+    "phone_format": "+1 758 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Saint Lucia's Data Protection Act",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Saint Vincent and the Grenadines": {
+    "region": "Caribbean",
+    "currency_code": "XCD",
+    "currency_symbol": "EC$",
+    "currency_spoken": "East Caribbean dollars",
+    "money_scale": "western",
+    "timezone": "America/St_Vincent",
+    "phone_format": "+1 784 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Saint Vincent and the Grenadines' Data Protection Act",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Samoa": {
+    "region": "Oceania",
+    "currency_code": "WST",
+    "currency_symbol": "T",
+    "currency_spoken": "tala",
+    "money_scale": "western",
+    "timezone": "Pacific/Apia",
+    "phone_format": "+685 XX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Samoa's data-protection law and local telemarketing rules",
+    "accents": [
+      "australian",
+      "british",
+      "standard"
+    ]
+  },
+  "San Marino": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/San_Marino",
+    "phone_format": "+378 XXXX XXXXXX",
+    "primary_language": "Italian",
+    "language_code": "it",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "italian",
+      "standard"
+    ]
+  },
+  "Saudi Arabia": {
+    "region": "Middle East",
+    "currency_code": "SAR",
+    "currency_symbol": "SAR",
+    "currency_spoken": "riyals",
+    "money_scale": "western",
+    "timezone": "Asia/Riyadh",
+    "phone_format": "+966 5X XXX XXXX",
+    "primary_language": "Arabic",
+    "language_code": "ar",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Saudi PDPL and CITC anti-spam rules",
+    "accents": [
+      "gulf",
+      "arabic",
+      "standard"
+    ]
+  },
+  "Senegal": {
+    "region": "Africa",
+    "currency_code": "XOF",
+    "currency_symbol": "CFA",
+    "currency_spoken": "CFA francs",
+    "money_scale": "western",
+    "timezone": "Africa/Dakar",
+    "phone_format": "+221 XX XXX XX XX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Senegal's Law on Personal Data",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Serbia": {
+    "region": "Europe",
+    "currency_code": "RSD",
+    "currency_symbol": "дин",
+    "currency_spoken": "dinars",
+    "money_scale": "western",
+    "timezone": "Europe/Belgrade",
+    "phone_format": "+381 XX XXX XXXX",
+    "primary_language": "Serbian",
+    "language_code": "sr",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Serbia's Law on Personal Data Protection",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Seychelles": {
+    "region": "Africa",
+    "currency_code": "SCR",
+    "currency_symbol": "₨",
+    "currency_spoken": "rupees",
+    "money_scale": "western",
+    "timezone": "Indian/Mahe",
+    "phone_format": "+248 X XXX XXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Seychelles's data-protection law and local telemarketing rules",
+    "accents": [
+      "african",
+      "british",
+      "standard"
+    ]
+  },
+  "Sierra Leone": {
+    "region": "Africa",
+    "currency_code": "SLL",
+    "currency_symbol": "Le",
+    "currency_spoken": "leones",
+    "money_scale": "western",
+    "timezone": "Africa/Freetown",
+    "phone_format": "+232 XX XXX XXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Sierra Leone's data-protection law and local telemarketing rules",
+    "accents": [
+      "african",
+      "british",
+      "standard"
+    ]
+  },
+  "Singapore": {
+    "region": "Southeast Asia",
+    "currency_code": "SGD",
+    "currency_symbol": "$",
+    "currency_spoken": "Singapore dollars",
+    "money_scale": "western",
+    "timezone": "Asia/Singapore",
+    "phone_format": "+65 XXXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Chinese (Mandarin)",
+      "Tamil"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Singapore PDPA and Do-Not-Call (DNC) rules",
+    "accents": [
+      "british",
+      "american",
+      "standard"
+    ]
+  },
+  "Slovakia": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Bratislava",
+    "phone_format": "+421 XXX XXX XXX",
+    "primary_language": "Slovak",
+    "language_code": "sk",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Slovenia": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Ljubljana",
+    "phone_format": "+386 XX XXX XXX",
+    "primary_language": "Slovenian",
+    "language_code": "sl",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "the EU GDPR and the ePrivacy Directive on unsolicited marketing calls",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Solomon Islands": {
+    "region": "Oceania",
+    "currency_code": "SBD",
+    "currency_symbol": "SI$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "Pacific/Guadalcanal",
+    "phone_format": "+677 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Solomon Islands's data-protection law and local telemarketing rules",
+    "accents": [
+      "australian",
+      "british",
+      "standard"
+    ]
+  },
+  "Somalia": {
+    "region": "Africa",
+    "currency_code": "SOS",
+    "currency_symbol": "Sh",
+    "currency_spoken": "shillings",
+    "money_scale": "western",
+    "timezone": "Africa/Mogadishu",
+    "phone_format": "+252 XX XXX XXXX",
+    "primary_language": "Somali",
+    "language_code": "so",
+    "mirror_languages": [
+      "English",
+      "Arabic"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Somalia's data-protection law and local telemarketing rules",
+    "accents": [
+      "african",
+      "arabic",
+      "standard"
+    ]
+  },
+  "South Africa": {
+    "region": "Africa",
+    "currency_code": "ZAR",
+    "currency_symbol": "R",
+    "currency_spoken": "rand",
+    "money_scale": "western",
+    "timezone": "Africa/Johannesburg",
+    "phone_format": "+27 XX XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Afrikaans"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "South Africa POPIA and consumer-protection rules",
+    "accents": [
+      "south african",
+      "african",
+      "british",
+      "standard"
+    ]
+  },
+  "South Korea": {
+    "region": "East Asia",
+    "currency_code": "KRW",
+    "currency_symbol": "₩",
+    "currency_spoken": "won",
+    "money_scale": "western",
+    "timezone": "Asia/Seoul",
+    "phone_format": "+82 XX XXXX XXXX",
+    "primary_language": "Korean",
+    "language_code": "ko",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Korea's PIPA and the Network Act",
+    "accents": [
+      "seoul",
+      "standard"
+    ]
+  },
+  "South Sudan": {
+    "region": "Africa",
+    "currency_code": "SSP",
+    "currency_symbol": "£",
+    "currency_spoken": "pounds",
+    "money_scale": "western",
+    "timezone": "Africa/Juba",
+    "phone_format": "+211 XX XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "South Sudan's data-protection law and local telemarketing rules",
+    "accents": [
+      "african",
+      "british",
+      "standard"
+    ]
+  },
+  "Spain": {
+    "region": "Europe",
+    "currency_code": "EUR",
+    "currency_symbol": "€",
+    "currency_spoken": "euros",
+    "money_scale": "western",
+    "timezone": "Europe/Madrid",
+    "phone_format": "+34 XXX XXX XXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [
+      "Catalan",
+      "Galician",
+      "English"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "EU GDPR and Spanish LOPDGDD",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Sri Lanka": {
+    "region": "South Asia",
+    "currency_code": "LKR",
+    "currency_symbol": "Rs",
+    "currency_spoken": "rupees",
+    "money_scale": "indian",
+    "timezone": "Asia/Colombo",
+    "phone_format": "+94 XX XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Tamil"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Sri Lanka Personal Data Protection Act",
+    "accents": [
+      "indian",
+      "standard"
+    ]
+  },
+  "Sudan": {
+    "region": "Africa",
+    "currency_code": "SDG",
+    "currency_symbol": "ج.س",
+    "currency_spoken": "pounds",
+    "money_scale": "western",
+    "timezone": "Africa/Khartoum",
+    "phone_format": "+249 XX XXX XXXX",
+    "primary_language": "Arabic",
+    "language_code": "ar",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Sudan's data-protection law and local telemarketing rules",
+    "accents": [
+      "arabic",
+      "modern standard",
+      "standard"
+    ]
+  },
+  "Suriname": {
+    "region": "South America",
+    "currency_code": "SRD",
+    "currency_symbol": "$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "America/Paramaribo",
+    "phone_format": "+597 XXX XXXX",
+    "primary_language": "Dutch",
+    "language_code": "nl",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Suriname's data-protection law and local telemarketing rules",
+    "accents": [
+      "dutch",
+      "standard"
+    ]
+  },
+  "Sweden": {
+    "region": "Europe",
+    "currency_code": "SEK",
+    "currency_symbol": "kr",
+    "currency_spoken": "kronor",
+    "money_scale": "western",
+    "timezone": "Europe/Stockholm",
+    "phone_format": "+46 XX XXX XX XX",
+    "primary_language": "Swedish",
+    "language_code": "sv",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "EU GDPR and the Swedish NIX-Telefon opt-out",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Switzerland": {
+    "region": "Europe",
+    "currency_code": "CHF",
+    "currency_symbol": "CHF",
+    "currency_spoken": "francs",
+    "money_scale": "western",
+    "timezone": "Europe/Zurich",
+    "phone_format": "+41 XX XXX XX XX",
+    "primary_language": "German",
+    "language_code": "de",
+    "mirror_languages": [
+      "French",
+      "Italian",
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Switzerland's revised FADP and the star-entry cold-calling opt-out",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Syria": {
+    "region": "Middle East",
+    "currency_code": "SYP",
+    "currency_symbol": "£",
+    "currency_spoken": "pounds",
+    "money_scale": "western",
+    "timezone": "Asia/Damascus",
+    "phone_format": "+963 XXX XXX XXX",
+    "primary_language": "Arabic",
+    "language_code": "ar",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Syria's data-protection law and local telemarketing rules",
+    "accents": [
+      "levantine",
+      "arabic",
+      "standard"
+    ]
+  },
+  "São Tomé and Príncipe": {
+    "region": "Africa",
+    "currency_code": "STN",
+    "currency_symbol": "Db",
+    "currency_spoken": "dobras",
+    "money_scale": "western",
+    "timezone": "Africa/Sao_Tome",
+    "phone_format": "+239 XXX XXXX",
+    "primary_language": "Portuguese",
+    "language_code": "pt",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "São Tomé and Príncipe's data-protection law",
+    "accents": [
+      "portuguese",
+      "standard"
+    ]
+  },
+  "Taiwan": {
+    "region": "East Asia",
+    "currency_code": "TWD",
+    "currency_symbol": "NT$",
+    "currency_spoken": "Taiwan dollars",
+    "money_scale": "western",
+    "timezone": "Asia/Taipei",
+    "phone_format": "+886 XXX XXX XXX",
+    "primary_language": "Chinese (Mandarin)",
+    "language_code": "zh",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Taiwan's Personal Data Protection Act",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Tajikistan": {
+    "region": "Central Asia & Caucasus",
+    "currency_code": "TJS",
+    "currency_symbol": "SM",
+    "currency_spoken": "somoni",
+    "money_scale": "western",
+    "timezone": "Asia/Dushanbe",
+    "phone_format": "+992 XX XXX XXXX",
+    "primary_language": "Russian",
+    "language_code": "ru",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Tajikistan's data-protection law and local telemarketing rules",
+    "accents": [
+      "russian",
+      "standard"
+    ]
+  },
+  "Tanzania": {
+    "region": "Africa",
+    "currency_code": "TZS",
+    "currency_symbol": "TSh",
+    "currency_spoken": "shillings",
+    "money_scale": "western",
+    "timezone": "Africa/Dar_es_Salaam",
+    "phone_format": "+255 XXX XXX XXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Swahili"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Tanzania's Personal Data Protection Act 2022 and TCRA rules",
+    "accents": [
+      "african",
+      "british",
+      "standard"
+    ]
+  },
+  "Thailand": {
+    "region": "Southeast Asia",
+    "currency_code": "THB",
+    "currency_symbol": "฿",
+    "currency_spoken": "baht",
+    "money_scale": "western",
+    "timezone": "Asia/Bangkok",
+    "phone_format": "+66 X XXXX XXXX",
+    "primary_language": "Thai",
+    "language_code": "th",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Thailand PDPA",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Timor-Leste": {
+    "region": "Southeast Asia",
+    "currency_code": "USD",
+    "currency_symbol": "$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "Asia/Dili",
+    "phone_format": "+670 XXXX XXXX",
+    "primary_language": "Portuguese",
+    "language_code": "pt",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Timor-Leste's data-protection law and local telemarketing rules",
+    "accents": [
+      "portuguese",
+      "standard"
+    ]
+  },
+  "Togo": {
+    "region": "Africa",
+    "currency_code": "XOF",
+    "currency_symbol": "CFA",
+    "currency_spoken": "CFA francs",
+    "money_scale": "western",
+    "timezone": "Africa/Lome",
+    "phone_format": "+228 XX XX XX XX",
+    "primary_language": "French",
+    "language_code": "fr",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Togo's data-protection law and local telemarketing rules",
+    "accents": [
+      "parisian",
+      "standard"
+    ]
+  },
+  "Tonga": {
+    "region": "Oceania",
+    "currency_code": "TOP",
+    "currency_symbol": "T$",
+    "currency_spoken": "paanga",
+    "money_scale": "western",
+    "timezone": "Pacific/Tongatapu",
+    "phone_format": "+676 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Tonga's data-protection law and local telemarketing rules",
+    "accents": [
+      "australian",
+      "british",
+      "standard"
+    ]
+  },
+  "Trinidad and Tobago": {
+    "region": "Caribbean",
+    "currency_code": "TTD",
+    "currency_symbol": "TT$",
+    "currency_spoken": "Trinidad dollars",
+    "money_scale": "western",
+    "timezone": "America/Port_of_Spain",
+    "phone_format": "+1 868 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Trinidad and Tobago's Data Protection Act",
+    "accents": [
+      "british",
+      "american",
+      "standard"
+    ]
+  },
+  "Tunisia": {
+    "region": "Africa",
+    "currency_code": "TND",
+    "currency_symbol": "د.ت",
+    "currency_spoken": "dinars",
+    "money_scale": "western",
+    "timezone": "Africa/Tunis",
+    "phone_format": "+216 XX XXX XXX",
+    "primary_language": "Arabic",
+    "language_code": "ar",
+    "mirror_languages": [
+      "French"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Tunisia's data-protection law and local telemarketing rules",
+    "accents": [
+      "arabic",
+      "modern standard",
+      "standard"
+    ]
+  },
+  "Turkey": {
+    "region": "Middle East",
+    "currency_code": "TRY",
+    "currency_symbol": "₺",
+    "currency_spoken": "lira",
+    "money_scale": "western",
+    "timezone": "Europe/Istanbul",
+    "phone_format": "+90 XXX XXX XXXX",
+    "primary_language": "Turkish",
+    "language_code": "tr",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Turkey's KVKK data-protection law and BTK telemarketing rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Turkmenistan": {
+    "region": "Central Asia & Caucasus",
+    "currency_code": "TMT",
+    "currency_symbol": "m",
+    "currency_spoken": "manat",
+    "money_scale": "western",
+    "timezone": "Asia/Ashgabat",
+    "phone_format": "+993 XX XXXXXX",
+    "primary_language": "Russian",
+    "language_code": "ru",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Turkmenistan's data-protection law and local telemarketing rules",
+    "accents": [
+      "russian",
+      "standard"
+    ]
+  },
+  "Tuvalu": {
+    "region": "Oceania",
+    "currency_code": "AUD",
+    "currency_symbol": "A$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "Pacific/Funafuti",
+    "phone_format": "+688 XXXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Tuvalu's data-protection rules",
+    "accents": [
+      "australian",
+      "british",
+      "standard"
+    ]
+  },
+  "Uganda": {
+    "region": "Africa",
+    "currency_code": "UGX",
+    "currency_symbol": "USh",
+    "currency_spoken": "shillings",
+    "money_scale": "western",
+    "timezone": "Africa/Kampala",
+    "phone_format": "+256 XXX XXXXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Uganda's Data Protection and Privacy Act",
+    "accents": [
+      "african",
+      "british",
+      "standard"
+    ]
+  },
+  "Ukraine": {
+    "region": "Europe",
+    "currency_code": "UAH",
+    "currency_symbol": "₴",
+    "currency_spoken": "hryvnia",
+    "money_scale": "western",
+    "timezone": "Europe/Kyiv",
+    "phone_format": "+380 XX XXX XXXX",
+    "primary_language": "Ukrainian",
+    "language_code": "uk",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Ukraine's Law on Personal Data Protection",
+    "accents": [
+      "standard"
+    ]
+  },
+  "United Arab Emirates": {
+    "region": "Middle East",
+    "currency_code": "AED",
+    "currency_symbol": "AED",
+    "currency_spoken": "dirhams",
+    "money_scale": "western",
+    "timezone": "Asia/Dubai",
+    "phone_format": "+971 5X XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Arabic"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "UAE data-protection law and TDRA marketing-consent rules",
+    "accents": [
+      "gulf",
+      "arabic",
+      "emirati",
+      "standard"
+    ]
+  },
+  "United Kingdom": {
+    "region": "Europe",
+    "currency_code": "GBP",
+    "currency_symbol": "£",
+    "currency_spoken": "pounds",
+    "money_scale": "western",
+    "timezone": "Europe/London",
+    "phone_format": "+44 XXXX XXXXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Welsh"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "UK GDPR / ICO rules; honour the Telephone Preference Service",
+    "accents": [
+      "british",
+      "standard"
+    ]
+  },
+  "United States": {
+    "region": "North America",
+    "currency_code": "USD",
+    "currency_symbol": "$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "America/New_York",
+    "phone_format": "+1 (XXX) XXX-XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [
+      "Spanish"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "US TCPA and FTC Telemarketing Sales Rule; honor the National Do-Not-Call registry",
+    "accents": [
+      "american",
+      "standard"
+    ]
+  },
+  "Uruguay": {
+    "region": "South America",
+    "currency_code": "UYU",
+    "currency_symbol": "$U",
+    "currency_spoken": "pesos",
+    "money_scale": "western",
+    "timezone": "America/Montevideo",
+    "phone_format": "+598 XX XXX XXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Uruguay's Personal Data Protection Law",
+    "accents": [
+      "latin american",
+      "standard"
+    ]
+  },
+  "Uzbekistan": {
+    "region": "Central Asia & Caucasus",
+    "currency_code": "UZS",
+    "currency_symbol": "soʻm",
+    "currency_spoken": "sum",
+    "money_scale": "western",
+    "timezone": "Asia/Tashkent",
+    "phone_format": "+998 XX XXX XX XX",
+    "primary_language": "Russian",
+    "language_code": "ru",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Uzbekistan's data-protection law and local telemarketing rules",
+    "accents": [
+      "russian",
+      "standard"
+    ]
+  },
+  "Vanuatu": {
+    "region": "Oceania",
+    "currency_code": "VUV",
+    "currency_symbol": "VT",
+    "currency_spoken": "vatu",
+    "money_scale": "western",
+    "timezone": "Pacific/Efate",
+    "phone_format": "+678 XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Vanuatu's data-protection law and local telemarketing rules",
+    "accents": [
+      "australian",
+      "british",
+      "standard"
+    ]
+  },
+  "Venezuela": {
+    "region": "South America",
+    "currency_code": "VES",
+    "currency_symbol": "Bs.",
+    "currency_spoken": "bolivars",
+    "money_scale": "western",
+    "timezone": "America/Caracas",
+    "phone_format": "+58 XXX XXX XXXX",
+    "primary_language": "Spanish",
+    "language_code": "es",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Venezuela's data-protection law and local telemarketing rules",
+    "accents": [
+      "latin american",
+      "standard"
+    ]
+  },
+  "Vietnam": {
+    "region": "Southeast Asia",
+    "currency_code": "VND",
+    "currency_symbol": "₫",
+    "currency_spoken": "dong",
+    "money_scale": "western",
+    "timezone": "Asia/Ho_Chi_Minh",
+    "phone_format": "+84 XXX XXX XXXX",
+    "primary_language": "Vietnamese",
+    "language_code": "vi",
+    "mirror_languages": [
+      "English"
+    ],
+    "honorific_style": "first_name",
+    "compliance_framework": "Vietnam data-protection decree and consumer rules",
+    "accents": [
+      "standard"
+    ]
+  },
+  "Yemen": {
+    "region": "Middle East",
+    "currency_code": "YER",
+    "currency_symbol": "﷼",
+    "currency_spoken": "rials",
+    "money_scale": "western",
+    "timezone": "Asia/Aden",
+    "phone_format": "+967 XXX XXX XXX",
+    "primary_language": "Arabic",
+    "language_code": "ar",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Yemen's data-protection law and local telemarketing rules",
+    "accents": [
+      "arabic",
+      "modern standard",
+      "standard"
+    ]
+  },
+  "Zambia": {
+    "region": "Africa",
+    "currency_code": "ZMW",
+    "currency_symbol": "ZK",
+    "currency_spoken": "kwacha",
+    "money_scale": "western",
+    "timezone": "Africa/Lusaka",
+    "phone_format": "+260 XXX XXXXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "first_name",
+    "compliance_framework": "Zambia's Data Protection Act",
+    "accents": [
+      "african",
+      "british",
+      "standard"
+    ]
+  },
+  "Zimbabwe": {
+    "region": "Africa",
+    "currency_code": "USD",
+    "currency_symbol": "$",
+    "currency_spoken": "dollars",
+    "money_scale": "western",
+    "timezone": "Africa/Harare",
+    "phone_format": "+263 XX XXX XXXX",
+    "primary_language": "English",
+    "language_code": "en",
+    "mirror_languages": [],
+    "honorific_style": "mr_ms_surname",
+    "compliance_framework": "Zimbabwe's Data Protection Act and POTRAZ rules",
+    "accents": [
+      "african",
+      "british",
+      "standard"
+    ]
+  }
+}

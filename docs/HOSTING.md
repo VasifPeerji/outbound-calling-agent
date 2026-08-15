@@ -1,0 +1,153 @@
+# Hosting OmniReach
+
+Everything the infrastructure team needs, and everything the application owner needs to fill in
+afterwards. It is one Node process that serves both the API and the web console, so there is no
+separate front end to deploy.
+
+---
+
+## For the infrastructure team
+
+**What it is:** a Node.js application (Node 18 or newer). One process. No build step, no bundler.
+
+**What it needs**
+
+| | |
+|---|---|
+| Runtime | Node.js 18+ |
+| Install | `npm install` inside `web/backend` |
+| Start | `npm start` inside `web/backend` (runs `node server.js`) |
+| Listens on | `process.env.PORT`, falling back to 3002. Set `PORT` if the platform expects a specific one. |
+| Root directory | `web/backend` |
+| Health check | `GET /api/health` |
+| Database | External managed Postgres, already provisioned. Nothing to install. |
+| Storage | None. The filesystem is not used for anything that must survive a restart. |
+| Outbound access | `api.elevenlabs.io`, `login.microsoftonline.com`, `graph.microsoft.com`, and the Postgres host |
+| Inbound | HTTPS only |
+
+**Important:** clone the whole repository, then set the root directory to `web/backend`. The
+application reads `config/` and `prompts/` from two levels up, so those folders must be present on
+disk even though the process starts inside `web/backend`.
+
+**What we need back from you:** the final HTTPS URL. Nothing else, and it does not have to exist
+before the code is deployed. See "About PUBLIC_BASE" below for why.
+
+**If the platform sits behind a load balancer or reverse proxy** (Render, Railway, Azure App
+Service, nginx, any managed platform): set `TRUST_PROXY=true`. Explained below.
+
+---
+
+## Environment variables
+
+Set these in the hosting platform's own environment settings, **not** in a `.env` file on the
+server. `.env` is gitignored and never leaves a developer machine.
+
+### Required
+
+```
+DATABASE_URL      postgresql://…?sslmode=require     the managed Postgres connection string
+AUTH_SECRET       (48+ random bytes, hex)            signs login sessions
+ELEVENLABS_API_KEY
+ELEVENLABS_AGENT_ID
+ELEVENLABS_AGENT_PHONE_NUMBER_ID
+MAIL_PROVIDER     graph
+GRAPH_TENANT_ID
+GRAPH_CLIENT_ID
+GRAPH_CLIENT_SECRET
+GRAPH_MAIL_FROM   notification@streebo.com
+```
+
+### Required once hosted
+
+```
+PUBLIC_BASE       https://your-hosted-url            no trailing slash
+TRUST_PROXY       true                               if there is a proxy in front (there usually is)
+PLATFORM_ORG      streebo.com                        which organisation owns the platform
+```
+
+`AUTH_SECRET` matters more than it looks. If it is blank, a random one is generated on each boot,
+which signs everybody out on every redeploy and makes two instances reject each other's logins.
+Generate one with:
+
+```
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+```
+
+---
+
+## About PUBLIC_BASE
+
+**What it is:** the address at which this server can be reached from the public internet.
+
+**Why it exists:** during a call the agent takes real actions — recording the outcome, booking a
+callback, marking a do-not-call request. Those are performed by ElevenLabs' cloud calling *back
+into* this server over the internet. It cannot reach a laptop, and it cannot reach a private
+address. `PUBLIC_BASE` is how it is told where to find us.
+
+**Set it before or after hosting?** After. It has to be the real URL, and until the platform has
+deployed something there is no real URL to use. Nothing breaks in the meantime:
+
+- Calls work completely without it. Dialling, conversation, voice, language, recordings,
+  transcripts and analytics are all unaffected.
+- Only the fourteen action tools are inactive, and while they are, the agent is explicitly
+  instructed not to claim it has recorded or booked anything.
+
+**What happens when you set it:** on the next restart the server registers all fourteen tools with
+ElevenLabs and attaches them, using this URL. No button to press. It is idempotent, so later
+restarts are a no-op, and after a redeploy it re-points every tool by itself.
+
+**Order of work:** deploy → get the URL → set `PUBLIC_BASE` → restart. That is the whole sequence.
+
+> If a second instance ever shares the same ElevenLabs workspace (a staging copy, say), set
+> `AUTO_SYNC_TOOLS=false` on that one. Otherwise the two keep overwriting each other's tool URLs.
+
+---
+
+## About TRUST_PROXY
+
+**What it is:** a switch telling the application that something sits in front of it.
+
+**Why it matters:** managed platforms do not hand traffic to your process directly. A load balancer
+receives the request and forwards it on, so from the application's point of view **every request in
+the world arrives from that one load balancer**. Without correcting for it, two things break:
+
+1. **Rate limits collapse.** The sign-in limits are per IP address. If every request looks like it
+   came from the same place, the whole internet is counted as one client and a handful of people
+   signing in locks everybody out.
+2. **Access requests become useless.** When somebody outside the approved domains tries to sign in,
+   the admin dashboard records where they came from. Without this, every single entry shows the data
+   centre's location instead of the person's.
+
+The load balancer adds a header saying who the request really came from. `TRUST_PROXY=true` tells
+the application to read it.
+
+**Why it is not simply on by default:** with nothing in front, anyone could send that header
+themselves and claim any address they liked, sidestepping the rate limits. So it is on only where
+there is a real proxy to trust — and it trusts exactly one hop, not the whole chain.
+
+**Rule of thumb:** hosted on a managed platform → `true`. Running on a laptop → leave it `false`.
+
+---
+
+## After the first deploy
+
+1. **Sign in.** Existing accounts work unchanged; the database comes with them.
+2. **Check the boot log.** It states which organisation owns the platform and who the super
+   administrators are. If either looks wrong, fix it before letting partners in.
+3. **Add the approved email domains** under Admin → Sign-up & access. Until a domain is listed,
+   people from it are refused and land in the access-request queue instead.
+4. **Turn on the daily allowance** under Admin → Guardrails when you want it enforced.
+5. **Confirm mail works** by signing in with a code, or run `npm run mail:test -- you@streebo.com`.
+
+## Verifying it is healthy
+
+```
+GET /api/health          no authentication, suitable for the platform's health check
+GET /api/preflight       signed in as a platform admin: credentials, public URL, tool status
+```
+
+## Twilio note
+
+International calling is off by default on a new Twilio account. If calls to a particular country
+fail while others succeed, enable geographic permissions for that country in the Twilio console.
+This has caught us before, on a Botswana number.

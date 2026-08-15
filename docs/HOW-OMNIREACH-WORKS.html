@@ -1,0 +1,909 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>OmniReach — How It Works (technical walkthrough)</title>
+<style>
+  :root{
+    --bg:#F6F7FB; --surface:#fff; --surface-2:#F8F9FC; --line:#E5E7EF; --line-2:#EDEFF5;
+    --ink:#191B2A; --ink-2:#4A5061; --ink-3:#8890A3;
+    --brand:#4F46E5; --brand-2:#3730A3; --brand-bg:#EEF1FE;
+    --green:#12996B; --green-bg:#E7F6F0; --amber:#B8730B; --amber-bg:#FDF3E3;
+    --red:#D93E52; --red-bg:#FDECEE; --mono:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font:16px/1.68 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);}
+  .wrap{display:grid;grid-template-columns:264px 1fr;gap:0;max-width:1400px;margin:0 auto;align-items:start}
+  nav{position:sticky;top:0;height:100vh;overflow-y:auto;padding:26px 18px;border-right:1px solid var(--line);background:var(--surface)}
+  nav h2{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin:20px 0 8px}
+  nav h2:first-child{margin-top:0}
+  nav a{display:block;padding:5px 9px;border-radius:6px;font-size:13.5px;color:var(--ink-2);text-decoration:none;line-height:1.4}
+  nav a:hover{background:var(--brand-bg);color:var(--brand-2)}
+  main{padding:36px 44px 90px;min-width:0}
+  header.hero{background:linear-gradient(135deg,#4F46E5,#3730A3);color:#fff;border-radius:16px;padding:32px 34px;margin-bottom:34px}
+  header.hero h1{font-size:29px;letter-spacing:-.02em;margin-bottom:8px}
+  header.hero p{font-size:15.5px;opacity:.93;max-width:70ch}
+  h2.sec{font-size:23px;letter-spacing:-.015em;margin:46px 0 14px;padding-top:14px;border-top:2px solid var(--ink);}
+  h3{font-size:17px;margin:26px 0 9px;color:var(--ink)}
+  h4{font-size:14.5px;margin:18px 0 6px;color:var(--ink-2)}
+  p{margin-bottom:12px;max-width:78ch}
+  ul,ol{margin:0 0 13px 22px;max-width:76ch} li{margin-bottom:6px}
+  code{font-family:var(--mono);font-size:.87em;background:var(--surface-2);border:1px solid var(--line-2);border-radius:4px;padding:1px 5px}
+  pre{background:#1C2030;color:#E4E7F2;border-radius:10px;padding:16px 18px;overflow-x:auto;margin:12px 0 16px;font-family:var(--mono);font-size:12.9px;line-height:1.62}
+  pre code{background:none;border:none;padding:0;color:inherit;font-size:inherit}
+  pre .c{color:#7B8397} pre .k{color:#C09CF5} pre .s{color:#8BD5A0} pre .n{color:#F0B77E}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:16px 0}
+  .note{border-left:3px solid var(--brand);background:var(--brand-bg);border-radius:0 8px 8px 0;padding:13px 16px;margin:14px 0;font-size:14.5px}
+  .warn{border-left:3px solid var(--amber);background:var(--amber-bg);border-radius:0 8px 8px 0;padding:13px 16px;margin:14px 0;font-size:14.5px}
+  .good{border-left:3px solid var(--green);background:var(--green-bg);border-radius:0 8px 8px 0;padding:13px 16px;margin:14px 0;font-size:14.5px}
+  .bad{border-left:3px solid var(--red);background:var(--red-bg);border-radius:0 8px 8px 0;padding:13px 16px;margin:14px 0;font-size:14.5px}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th{background:var(--surface-2);text-align:left;padding:10px 13px;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--line)}
+  td{padding:10px 13px;border-bottom:1px solid var(--line-2);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px;margin:18px 0}
+  .box{flex:1;min-width:150px;background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px}
+  .box b{display:block;font-size:13.5px;margin-bottom:4px}
+  .box span{font-size:12.5px;color:var(--ink-3);line-height:1.5}
+  .box.hi{border-color:var(--brand);background:var(--brand-bg)}
+  .arrow{align-self:center;color:var(--ink-3);font-size:19px;flex:0 0 auto}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:11px;margin:18px 0}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px}
+  .stat b{display:block;font-size:23px;color:var(--brand);letter-spacing:-.02em}
+  .stat span{font-size:12px;color:var(--ink-3);line-height:1.4;display:block;margin-top:2px}
+  .qa{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:16px 19px;margin:13px 0}
+  .qa .q{font-weight:650;font-size:15.5px;margin-bottom:7px;color:var(--brand-2)}
+  .qa p:last-child{margin-bottom:0}
+  .pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2);vertical-align:middle}
+  @media(max-width:960px){.wrap{grid-template-columns:1fr}nav{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line)}main{padding:24px 20px 60px}}
+  @media print{nav{display:none}.wrap{grid-template-columns:1fr}pre{background:#f4f4f8;color:#222;border:1px solid #ddd}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <h2>Foundations</h2>
+  <a href="#what">1. What it is</a>
+  <a href="#stack">2. The stack</a>
+  <a href="#arch">3. Architecture</a>
+  <a href="#onedecision">4. The key decision</a>
+  <h2>ElevenLabs integration</h2>
+  <a href="#from">5. Data coming FROM ElevenLabs</a>
+  <a href="#to">6. Posting TO ElevenLabs</a>
+  <a href="#override">7. How overrides work</a>
+  <a href="#tools">8. The agent calling us back</a>
+  <h2>The intelligence</h2>
+  <a href="#prompts">9. Prompt engine</a>
+  <a href="#catalog">10. Catalogues</a>
+  <a href="#voicematch">11. Voice matching</a>
+  <h2>Platform</h2>
+  <a href="#tenancy">12. Multi-user &amp; concurrency</a>
+  <a href="#auth">13. Authentication</a>
+  <a href="#persist">14. Persistence</a>
+  <a href="#flywheel">15. Data in and out</a>
+  <a href="#sim">16. Simulation mode</a>
+  <a href="#analytics">17. Analytics</a>
+  <a href="#sched">18. Scheduler</a>
+  <a href="#security">19. Security</a>
+  <a href="#ops">20. Running it</a>
+  <a href="#oem">21. OEM / tech stack</a>
+  <h2>For the room</h2>
+  <a href="#numbers">Numbers to quote</a>
+  <a href="#qa">Anticipated questions</a>
+  <a href="#limits">Honest limitations</a>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>OmniReach: how it actually works</h1>
+  <p>A white-label outbound voice-agent platform. One ElevenLabs agent is re-skinned per call into any
+  company, any industry, any of 204 markets and 74 languages, without creating a new agent each time.
+  This document explains every layer, with the real code.</p>
+</header>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="what">1. What it is, in one breath</h2>
+<p>OmniReach places <b>outbound phone calls</b> that are handled by an AI voice agent. You upload or
+connect a list of customers, choose what the call is about (a payment reminder, an appointment
+confirmation, a renewal), and the system dials each person, holds a real conversation, takes actions
+during that conversation (books a callback, logs a promise to pay, flags a dispute), and writes the
+outcome back into your system of record.</p>
+
+<p>The part that makes it a <i>product</i> rather than a script: the same deployment serves any company.
+Choose an industry and a country, and the console composes a complete agent (brand name, agent name,
+currency, honorific style, compliance framework, language, voice, conversation playbook) and runs it.
+Change two dropdowns and it is a different company in a different market.</p>
+
+<div class="note"><b>The one-sentence version for a prospect:</b> "It is a multi-tenant outbound calling
+platform where the AI agent is assembled per call from a company profile, so one deployment can run
+demos or campaigns for any client, in any market, without touching code."</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="stack">2. The stack, and why each piece is there</h2>
+
+<h3>Language and runtime</h3>
+<p><b>JavaScript on Node.js</b>, CommonJS modules, throughout. One language across backend and frontend,
+so there is no context switching and no serialisation layer between two ecosystems.</p>
+
+<h3>Backend libraries</h3>
+<table>
+<tr><th>Library</th><th>What it does here</th><th>Why this one</th></tr>
+<tr><td><code>express</code></td><td>HTTP server, routing, and serving the frontend as a static file</td><td>The smallest thing that does the job. No opinionated framework to fight.</td></tr>
+<tr><td><code>node-fetch</code> (v2)</td><td>Every outbound HTTPS call to ElevenLabs</td><td>v2 deliberately, because it is CommonJS. v3 is ESM-only and would force a module rewrite.</td></tr>
+<tr><td><code>helmet</code></td><td>Security response headers</td><td>One line, removes a class of trivial findings in a security review.</td></tr>
+<tr><td><code>cors</code></td><td>Cross-origin policy</td><td>Needed while the console could be served separately. Now same-origin, kept for flexibility.</td></tr>
+<tr><td><code>express-rate-limit</code></td><td>Caps call-placing endpoints at 60/min</td><td>A stuck loop should not dial 10,000 people.</td></tr>
+<tr><td><code>multer</code></td><td>CSV upload handling (memory storage, 5 MB cap)</td><td>Files never touch disk, so there is nothing to clean up or leak.</td></tr>
+<tr><td><code>csv-parse</code></td><td>Parsing customer lists</td><td>Handles quoting and embedded commas properly, which hand-rolled splitting does not.</td></tr>
+<tr><td><code>uuid</code></td><td>Ids for calls, schedules, bookmarks</td><td>Collision-free without a database sequence.</td></tr>
+<tr><td><code>dotenv</code></td><td>Loads credentials from <code>.env</code></td><td>Keeps secrets out of the code and out of git.</td></tr>
+<tr><td><code>pg</code></td><td>Postgres driver</td><td>Only used when <code>DATABASE_URL</code> is set. Otherwise the app runs on JSON files.</td></tr>
+<tr><td><code>pg-mem</code> <span class="pill">dev</span></td><td>In-process Postgres for tests</td><td>The database layer is tested without needing a database.</td></tr>
+</table>
+
+<p><b>Notably absent:</b> no ORM, no auth library, no JWT library, no chart library, no frontend framework.
+Each of those was a deliberate decision, covered below.</p>
+
+<h3>Frontend</h3>
+<p><b>A single HTML file. Vanilla JavaScript. No framework, no build step, no bundler.</b></p>
+<ul>
+<li><b>Why:</b> the whole console is one file that the Node server hands out. Nothing to compile, nothing
+to deploy separately, no build that can break on someone else's machine. Handing the project to the US
+sales team meant zipping a folder, not explaining a toolchain.</li>
+<li><b>The trade-off, stated honestly:</b> at roughly 3,000 lines it is at the top end of what one file
+should hold. A larger product would want a component framework. For a single-purpose console it is the
+right call, and it removed an entire category of operational problems.</li>
+</ul>
+
+<h3>Charts and audio</h3>
+<p>Analytics bars are pure CSS with inline widths. Audio playback uses the browser's built-in
+<code>&lt;audio&gt;</code> and <code>new Audio()</code>. <b>No chart library, no audio library.</b> That
+keeps the page dependency-free and avoids Content Security Policy problems in restricted environments.</p>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="arch">3. Architecture in one picture</h2>
+
+<div class="flow">
+  <div class="box"><b>Browser</b><span>One HTML file. Holds no credentials. Talks only to our own API.</span></div>
+  <div class="arrow">&rarr;</div>
+  <div class="box hi"><b>Node / Express backend</b><span>The only thing holding the ElevenLabs key. Composes prompts, enforces auth and isolation, proxies everything.</span></div>
+  <div class="arrow">&rarr;</div>
+  <div class="box"><b>ElevenLabs</b><span>Conversational AI agent + voices. Handles speech, the LLM turn loop, and the telephony bridge.</span></div>
+  <div class="arrow">&rarr;</div>
+  <div class="box"><b>Twilio &rarr; phone</b><span>The actual PSTN leg, attached to the agent inside ElevenLabs.</span></div>
+</div>
+<div class="flow">
+  <div class="box"><b>Customer speaks</b><span>Mid-call the agent decides to take an action.</span></div>
+  <div class="arrow">&rarr;</div>
+  <div class="box"><b>ElevenLabs calls our webhook</b><span>POST to our public URL with the tool parameters.</span></div>
+  <div class="arrow">&rarr;</div>
+  <div class="box hi"><b>Backend records it</b><span>Attaches the outcome to the call, optionally pushes it to the CRM immediately.</span></div>
+</div>
+
+<p><b>Three things to notice, because they are the questions people ask:</b></p>
+<ol>
+<li><b>The browser never speaks to ElevenLabs.</b> Not once. Every byte goes through our backend.</li>
+<li><b>The same Node process serves the console and the API.</b> <code>express.static</code> serves the
+HTML, so there is one command, one port, one origin, and no CORS in production.</li>
+<li><b>Traffic goes both ways.</b> We call ElevenLabs to start calls and read results; ElevenLabs calls
+us during a conversation when the agent wants to do something.</li>
+</ol>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="onedecision">4. The single most important design decision</h2>
+
+<p>The obvious way to build this is: a client wants a demo, so create an ElevenLabs agent for them.
+Ten clients, ten agents.</p>
+
+<p><b>We do not do that.</b> There is <b>one</b> ElevenLabs agent, and every call re-skins it on the fly.</p>
+
+<div class="card">
+<h4>How one agent becomes any company</h4>
+<p>ElevenLabs lets a call carry a <code>conversation_config_override</code>: a block that replaces parts of
+the agent's configuration <i>for that conversation only</i>. We send, per call:</p>
+<ul>
+<li>the entire <b>system prompt</b> (assembled fresh from the company profile and the use case)</li>
+<li>the <b>LLM</b> to think with</li>
+<li>the <b>language</b></li>
+<li>the <b>first message</b> the agent speaks</li>
+<li>the <b>voice id</b>, and optionally stability, speed and similarity</li>
+</ul>
+<p>Plus <code>dynamic_variables</code>: the flattened company profile and this customer's data, which fill
+the <code>{{placeholders}}</code> inside the prompt.</p>
+</div>
+
+<h4>Why this is the right call, and how to defend it</h4>
+<ul>
+<li><b>No agent sprawl.</b> Fifty prospects do not become fifty agents to keep in sync. Change the prompt
+once and every future call uses it.</li>
+<li><b>No account limits.</b> Agents are a metered resource. Calls are not.</li>
+<li><b>It is ElevenLabs' own recommended multi-tenant pattern</b>, not a workaround.</li>
+<li><b>Isolation is per conversation.</b> Two calls happening at the same instant with completely
+different prompts, voices and languages do not interfere, because the override travels with the
+conversation, not with the agent. This is the direct answer to "what if two people demo at once".</li>
+</ul>
+
+<div class="warn"><b>The gotcha that cost real time, worth telling as a story:</b> overrides must be enabled
+on the agent's Security tab <i>and published</i>. Toggling them in a draft branch does nothing. Our first
+live call failed with <code>Override for field 'stability' is not allowed by config</code>, then failed
+again on a different field, then again, because ElevenLabs rejects the <i>first</i> disallowed field and
+stops. Peeling an onion. The fix was not just to publish, but to stop guessing entirely, which is section 7.</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="from">5. How ElevenLabs data reaches the front end</h2>
+
+<p>The rule is absolute: <b>the browser calls our API, our API calls ElevenLabs.</b> Three reasons, and
+you should give all three because each answers a different questioner:</p>
+<ol>
+<li><b>Security.</b> The API key would be readable by anyone pressing F12. It lives only in
+<code>web/backend/.env</code> on the server. There are zero occurrences of <code>sk_</code> anywhere in
+the frontend file.</li>
+<li><b>CORS.</b> ElevenLabs' API does not permit direct browser calls anyway.</li>
+<li><b>Normalisation.</b> Workspace voices and library voices come back in two different shapes. The
+backend flattens both into one, so the UI renders a single kind of row.</li>
+</ol>
+
+<h3>The proxy endpoints</h3>
+<table>
+<tr><th>Browser asks our API</th><th>Backend asks ElevenLabs</th><th>What comes back</th></tr>
+<tr><td><code>GET /api/voices</code></td><td><code>GET /v1/voices</code></td><td>131 workspace voices, usable immediately</td></tr>
+<tr><td><code>GET /api/voices/library</code></td><td><code>GET /v1/shared-voices</code></td><td>One page of the 15,603-voice public library</td></tr>
+<tr><td><code>POST /api/voices/library/add</code></td><td><code>POST /v1/voices/add/{owner}/{voice}</code></td><td>Copies a library voice into the workspace</td></tr>
+<tr><td><code>GET /api/call/:id</code></td><td><code>GET /v1/convai/conversations/{id}</code></td><td>Status, duration, transcript, summary</td></tr>
+<tr><td><code>GET /api/call/:id/audio</code></td><td><code>GET /v1/convai/conversations/{id}/audio</code></td><td>The recording, streamed through us</td></tr>
+<tr><td><code>GET /api/elevenlabs/agent-engine</code></td><td><code>GET /v1/convai/agents/{id}</code></td><td>Which TTS model the agent is really on</td></tr>
+</table>
+
+<h4>The library is too big to send to the browser</h4>
+<p>15,603 voices cannot sit in a dropdown. Search, filtering and paging all happen on ElevenLabs' side.
+The browser holds thirty rows at a time and asks for more.</p>
+<pre><code><span class="c">// voice-providers.js — the browser's filters become ElevenLabs' query string</span>
+<span class="k">const</span> qs = <span class="k">new</span> URLSearchParams();
+qs.set(<span class="s">'page_size'</span>, String(Math.min(Math.max(pageSize, <span class="n">1</span>), <span class="n">100</span>)));  <span class="c">// API hard-caps at 100</span>
+qs.set(<span class="s">'page'</span>, String(page));
+<span class="k">if</span> (f.search) qs.set(<span class="s">'search'</span>, f.search);
+<span class="k">if</span> (f.useCase) qs.set(<span class="s">'use_cases'</span>, f.useCase);   <span class="c">// note the plural, their API is inconsistent</span>
+<span class="k">await</span> fetch(<span class="s">`https://api.elevenlabs.io/v1/shared-voices?${qs}`</span>, { headers: { <span class="s">'xi-api-key'</span>: e.apiKey } });</code></pre>
+
+<h4>Two details worth knowing, because they look like bugs</h4>
+<div class="card">
+<p><b>Recordings and the <code>&lt;audio&gt;</code> tag.</b> An <code>&lt;audio src="..."&gt;</code> element
+cannot send an <code>Authorization</code> header. So for recordings only, the session token travels as a
+query parameter and the auth gate accepts it there: <code>/api/call/abc/audio?token=...</code>. The
+ownership check still runs, so one partner cannot fetch another's recording.</p>
+<p><b>Voice previews are the one direct-to-browser exception.</b> ElevenLabs' <code>preview_url</code> is a
+plain public MP3 on Google Cloud Storage with <code>access-control-allow-origin: *</code>. No key is
+needed, so the browser plays it directly. Proxying it would burn our bandwidth for no benefit.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="to">6. How we post a call TO ElevenLabs</h2>
+
+<p>One endpoint does the work: <code>POST /v1/convai/twilio/outbound-call</code>. Here is the exact body we
+build.</p>
+
+<pre><code>{
+  <span class="s">"agent_id"</span>: <span class="s">"agent_5501..."</span>,                    <span class="c">// always the same agent</span>
+  <span class="s">"agent_phone_number_id"</span>: <span class="s">"phnum_7901..."</span>,       <span class="c">// the Twilio number attached in ElevenLabs</span>
+  <span class="s">"to_number"</span>: <span class="s">"+919812340155"</span>,
+  <span class="s">"call_recording_enabled"</span>: <span class="k">true</span>,
+  <span class="s">"conversation_initiation_client_data"</span>: {
+
+    <span class="s">"dynamic_variables"</span>: {                        <span class="c">// fills {{placeholders}} in the prompt</span>
+      <span class="s">"company_name"</span>: <span class="s">"Meridian Trust Bank"</span>,
+      <span class="s">"agent_name"</span>: <span class="s">"Riya"</span>,
+      <span class="s">"customer_name"</span>: <span class="s">"Rohan Garg"</span>,
+      <span class="s">"amount_due"</span>: <span class="s">"2,400"</span>,
+      <span class="s">"currency_spoken"</span>: <span class="s">"rupees"</span>,
+      <span class="s">"honorific_style"</span>: <span class="s">"first_name_ji"</span>,
+      <span class="s">"compliance_framework"</span>: <span class="s">"India TRAI rules and the DPDP Act"</span>,
+      <span class="s">"time"</span>: <span class="s">"afternoon"</span>
+    },
+
+    <span class="s">"conversation_config_override"</span>: {             <span class="c">// re-skins the agent for THIS call only</span>
+      <span class="s">"agent"</span>: {
+        <span class="s">"prompt"</span>: { <span class="s">"prompt"</span>: <span class="s">"...43,000 characters..."</span>, <span class="s">"llm"</span>: <span class="s">"gemini-2.5-flash"</span> },
+        <span class="s">"language"</span>: <span class="s">"en"</span>,
+        <span class="s">"first_message"</span>: <span class="s">"Good afternoon! Am I speaking with {{customer_name}}?"</span>
+      },
+      <span class="s">"tts"</span>: { <span class="s">"voice_id"</span>: <span class="s">"psJZjEqIBjuLc8qnOBn7"</span> }
+    }
+  }
+}</code></pre>
+
+<p>ElevenLabs answers with a <code>conversation_id</code>. We store it against our own call record, and
+that id is the thread we pull on for everything afterwards: status, transcript, recording, and matching
+up the tool webhooks the agent fires mid-conversation.</p>
+
+<div class="note"><b>Say this clearly if asked "so where does the AI actually run?"</b> The LLM and the
+speech both run inside ElevenLabs. We do not stream audio, we do not run a model, we do not hold the
+call. We compose the instructions, hand them over, and then observe and record. That is why the system is
+cheap to run and why a laptop can host it.</div>
+
+<h3>Where the pieces come from</h3>
+<ul>
+<li><b>dynamic_variables</b> = the company profile flattened to a flat key/value map, merged with this
+customer's row from the CSV or CRM. Everything is stringified, because ElevenLabs expects strings.</li>
+<li><b>prompt</b> = assembled by <code>assemblePrompt()</code>, section 9.</li>
+<li><b>first_message</b> = built from the localised opener catalogue, in the customer's language.</li>
+<li><b>voice_id</b> = whatever the profile carries, chosen by hand or auto-matched to the market.</li>
+</ul>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="override">7. How overrides are made safe</h2>
+
+<p>An override is only accepted if the agent has that specific field enabled. Send a field that is not
+allowed and the whole call is rejected. Early on this made setup fragile, because the person configuring
+the agent had to tick exactly the right boxes and publish.</p>
+
+<p><b>The fix: stop guessing. Ask the agent what it permits, then send only that.</b></p>
+
+<pre><code><span class="c">// voice-providers.js — read what the agent allows, cache for 2 minutes</span>
+<span class="k">async function</span> fetchAllowedOverrides(e) {
+  <span class="k">const</span> c = _allowedCache[e.agentId];
+  <span class="k">if</span> (c &amp;&amp; (Date.now() - c.ts) &lt; <span class="n">120000</span>) <span class="k">return</span> c.data;
+  <span class="k">const</span> r = <span class="k">await</span> fetch(<span class="s">`.../v1/convai/agents/${e.agentId}`</span>, { headers: { <span class="s">'xi-api-key'</span>: e.apiKey } });
+  <span class="k">const</span> d = <span class="k">await</span> r.json();
+  <span class="k">const</span> data = ((d.platform_settings || {}).overrides || {}).conversation_config_override || <span class="k">null</span>;
+  _allowedCache[e.agentId] = { data, ts: Date.now() };
+  <span class="k">return</span> data;
+}
+
+<span class="c">// then every field is gated before it is added to the payload</span>
+<span class="k">const</span> ok = (path, dflt) =&gt; allowed ? digBool(allowed, path) : dflt;
+<span class="k">if</span> (prompt   &amp;&amp; ok(<span class="s">'agent.prompt.prompt'</span>, <span class="k">true</span>))  ap.prompt = prompt;
+<span class="k">if</span> (voice.voice_id &amp;&amp; ok(<span class="s">'tts.voice_id'</span>, <span class="k">true</span>)) tts.voice_id = voice.voice_id;
+<span class="k">if</span> (isNum(voice.stability) &amp;&amp; ok(<span class="s">'tts.stability'</span>, <span class="k">false</span>)) tts.stability = voice.stability;</code></pre>
+
+<div class="good"><b>The outcome, and it is a good line to use:</b> "Override not allowed" errors are now
+impossible on any agent. If the agent permits voice tuning, we send it. If it does not, we quietly drop
+those fields and the call still goes through with the prompt, voice and language. The system adapts to
+the account rather than demanding the account be configured a particular way.</div>
+
+<h4>The one thing that cannot be overridden</h4>
+<p>The <b>TTS engine</b> (Flash v2.5, Multilingual v2, v3) is set on the agent and has no per-call
+override. This matters because engines differ in language coverage: Flash speaks 32 languages, v3 speaks
+74. Selecting Slovenian on a Flash agent would produce a call in the wrong language, silently. So the
+console reads the agent's real engine and says so:</p>
+<ul>
+<li>green tick when the agent's engine covers the chosen language</li>
+<li>a red block naming the actual engine when it does not, with instructions</li>
+<li>the language dropdown itself marks entries as <code>&middot; v3 only</code></li>
+</ul>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="tools">8. The agent calling back into us: actions</h2>
+
+<p>A conversation that only talks is a demo. A conversation that <i>does</i> something is a product.</p>
+
+<p>We register <b>14 webhook tools</b> on the ElevenLabs agent, each pointing at
+<code>{PUBLIC_BASE}/api/agent-tool/{name}</code>. Mid-conversation the agent decides to call one, and
+ElevenLabs makes an HTTP POST to our server.</p>
+
+<table>
+<tr><th>Tool</th><th>Fires when</th></tr>
+<tr><td><code>record_call_outcome</code></td><td>Mandatory wrap-up on every call. This is what makes analytics work.</td></tr>
+<tr><td><code>schedule_callback</code></td><td>"Can you call me on Thursday?"</td></tr>
+<tr><td><code>log_promise_to_pay</code></td><td>"I will pay by the 15th."</td></tr>
+<tr><td><code>book_appointment</code> / <code>reschedule</code> / <code>cancel</code></td><td>Appointment flows</td></tr>
+<tr><td><code>mark_do_not_call</code></td><td>Compliance. Suppresses them from future campaigns.</td></tr>
+<tr><td><code>transfer_to_human</code>, <code>flag_dispute</code>, <code>capture_lead</code>, and 5 more</td><td>Escalation and capture</td></tr>
+</table>
+
+<p>Plus <b>4 ElevenLabs built-in system tools</b> that live on the agent rather than in the prompt:
+<code>end_call</code>, <code>language_detection</code>, <code>voicemail_detection</code>,
+<code>skip_turn</code>.</p>
+
+<div class="warn"><b>A real bug worth telling:</b> calls were never ending on their own. The prompt said to
+end the call, but <code>end_call</code> was switched <b>off</b> on the agent, so it physically could not
+hang up. Every call ran to the ten-minute cap. Diagnosed by reading the agent config over the API, not by
+staring at the prompt. Lesson: when behaviour contradicts the instructions, check whether the capability
+exists at all.</div>
+
+<h4>How a webhook finds its call</h4>
+<p>ElevenLabs sends the conversation id in a header. We look up our call record by it, append the outcome
+to a timeline, and if that user has write-back enabled, push it to their CRM immediately.</p>
+<pre><code><span class="k">const</span> convId = req.get(<span class="s">'elevenlabs-conversation-id'</span>) || params.system__conversation_id || <span class="s">''</span>;
+<span class="k">const</span> entry  = findCallEntry(convId);
+<span class="c">// the webhook has no user session, so write-back keys off the CALL's owner</span>
+<span class="k">const</span> cfg = getWriteback(entry.userId);</code></pre>
+<p>That last line matters: the webhook arrives from ElevenLabs with no logged-in user, so it must
+determine whose data this is from the call record itself. Getting that wrong would push one partner's
+outcomes into another partner's CRM.</p>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="prompts">9. The prompt engine</h2>
+
+<p>The prompt is not a template with holes. It is <b>assembled per call</b> from layers.</p>
+
+<pre><code><span class="k">function</span> assemblePrompt(useCase, profile) {
+  <span class="k">const</span> arch = resolveArchetype(useCase, profile);        <span class="c">// which of the 9 shapes is this?</span>
+  <span class="k">const</span> parts = [
+    readPrompt(<span class="s">'global_prompt.txt'</span>),                     <span class="c">// 1. how to behave on ANY call</span>
+    readPrompt(USE_CASE_FILES[arch]),                     <span class="c">// 2. the shape of THIS kind of call</span>
+  ];
+  <span class="k">if</span> (uc.playbook) parts.push(<span class="s">'## THIS SPECIFIC CALL ...'</span> + uc.playbook);  <span class="c">// 3. this client's specifics</span>
+  <span class="k">if</span> (t) parts.push(<span class="s">'## WHEN TO END THIS CALL'</span> + t);      <span class="c">// 4. the end-call rule</span>
+  <span class="k">return</span> parts.join(sep);
+}</code></pre>
+
+<h4>The 9 archetypes</h4>
+<p>This is the idea that makes 666 use cases manageable. A call's <b>shape</b> is separate from its
+<b>subject</b>. Chasing an overdue invoice in banking and chasing one in logistics are the same
+conversation with different nouns. So there are nine conversation shapes:</p>
+<p><code>payment_reminder</code>, <code>overdue_followup</code>, <code>sales_offer</code>,
+<code>appointment_reminder</code>, <code>feedback_survey</code>, <code>lead_qualification</code>,
+<code>renewal_retention</code>, <code>service_notification</code>, <code>document_collection</code>.</p>
+<p>Each has a node file and an end-call transition file: 19 prompt files, about 1,600 lines of authored
+conversational instruction.</p>
+
+<h4>Two layers appended at call time</h4>
+<ul>
+<li><b>Audio tags</b> (when enabled). Emotive cues like <code>[warmly]</code>, <code>[chuckles]</code>,
+<code>[serious]</code>. Critically, there is a <b>palette per archetype</b>: an arrears call is forbidden
+from ever using <code>[laughs]</code> or <code>[smiling]</code>, because sounding cheerful while chasing a
+debt is the worst sound the agent could make. A sales call permits light warmth.</li>
+<li><b>Demo realism</b> (on by default, meant to be off in production). A real receptionist knows which
+doctor is in on Thursday. An agent that says "I have no information about that" reads as broken. So it
+invents small everyday operational details, region-appropriate, and holds them consistently if
+challenged. With a hard carve-out: never invent anything financially binding, medical, legal, or already
+supplied in the call data.</li>
+</ul>
+
+<p>The assembled prompt is roughly <b>43,000 characters, about 11,000 tokens</b>, per call. That is a
+deliberate trade: it costs more per call and adds first-token latency, and it buys an agent that holds up
+when a prospect actively tries to break it.</p>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="catalog">10. The catalogues</h2>
+
+<p>Everything market-specific is data, not code. Adding a country is one JSON entry and no code change.</p>
+
+<div class="stats">
+  <div class="stat"><b>204</b><span>countries, each with currency, timezone, phone format, honorific style, compliance framework, accents</span></div>
+  <div class="stat"><b>74</b><span>languages, tagged with which TTS engines can speak them</span></div>
+  <div class="stat"><b>69</b><span>localised opening lines</span></div>
+  <div class="stat"><b>31</b><span>industries</span></div>
+  <div class="stat"><b>666</b><span>industry-specific use cases</span></div>
+</div>
+
+<pre><code><span class="c">// one country entry, and this is the whole contract</span>
+<span class="s">"India"</span>: {
+  <span class="s">"region"</span>: <span class="s">"South Asia"</span>,   <span class="s">"currency_code"</span>: <span class="s">"INR"</span>,  <span class="s">"currency_spoken"</span>: <span class="s">"rupees"</span>,
+  <span class="s">"money_scale"</span>: <span class="s">"indian"</span>,     <span class="c">// lakh/crore rather than million</span>
+  <span class="s">"timezone"</span>: <span class="s">"Asia/Kolkata"</span>, <span class="s">"phone_format"</span>: <span class="s">"+91 XXXXX XXXXX"</span>,
+  <span class="s">"language_code"</span>: <span class="s">"en"</span>,      <span class="s">"mirror_languages"</span>: [<span class="s">"Hindi"</span>, <span class="s">"Marathi"</span>],
+  <span class="s">"honorific_style"</span>: <span class="s">"first_name_ji"</span>,
+  <span class="s">"compliance_framework"</span>: <span class="s">"India TRAI telemarketing rules and the DPDP Act"</span>,
+  <span class="s">"accents"</span>: [<span class="s">"indian"</span>, <span class="s">"standard"</span>]
+}</code></pre>
+
+<p>Those values flow straight into <code>dynamic_variables</code>, so the prompt can say "address the
+customer using {{honorific_style}}" and "you must comply with {{compliance_framework}}" and be correct in
+every market without a single conditional in code.</p>
+
+<div class="note"><b>Worth mentioning as engineering judgement:</b> the language list is validated against
+what ElevenLabs actually supports, and when the API key permits it the app re-reads
+<code>/v1/models</code> twice a day and logs any language ElevenLabs has added that we do not carry. The
+catalogue cannot quietly fall behind.</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="voicematch">11. Choosing a voice automatically</h2>
+
+<p>Pick a country, and the console picks a voice. The scoring is deliberately ordered, because the failure
+modes are not equal.</p>
+
+<table>
+<tr><th>Signal</th><th>Score</th><th>Reasoning</th></tr>
+<tr><td>Voice speaks the target language</td><td><b>+120</b></td><td>Dominant. Wrong language is obvious within one sentence.</td></tr>
+<tr><td>Verified for it as a second language</td><td>+70</td><td>Good, unproven</td></tr>
+<tr><td>Unlabelled</td><td>+25</td><td>Usable, unknown</td></tr>
+<tr><td>Speaks a different language</td><td><b>&minus;100</b></td><td>Disqualifying in practice</td></tr>
+<tr><td>...but is English</td><td>&minus;55</td><td>An English accent reading German is far easier on the ear than a Hindi one</td></tr>
+<tr><td>Accent the market asked for</td><td>+80</td><td>Refines within the language</td></tr>
+<tr><td>A named accent it did not ask for</td><td>&minus;60</td><td>Wrong continent is the mistake a prospect notices</td></tr>
+<tr><td>Conversational rather than narration</td><td>+40</td><td>Tie-breaker</td></tr>
+</table>
+
+<div class="bad"><b>A bug worth telling, because it shows the value of measuring:</b> one Hindi voice was
+being auto-selected for <b>38 of 79 markets</b>, including Japan, Germany and Brazil. Two causes
+compounded: most non-English markets were configured with the accent "standard", meaning "no particular
+accent needed", but that voice's accent label was literally <code>standard</code>, so it scored a perfect
+accent match. And the language guard compared language <i>names</i> against data that held only language
+<i>codes</i>, so it never fired once. Rewriting the scorer to put language first took Hindi voices from
+38 foreign markets to <b>zero</b>, across all 204.</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="tenancy">12. Two people using it at once</h2>
+
+<p>This is the question you flagged, and it has two halves that are worth separating because people
+conflate them.</p>
+
+<h3>Half one: the ElevenLabs side is safe by construction</h3>
+<p>Because the configuration travels <i>with the conversation</i> rather than living on the agent, two
+simultaneous calls cannot interfere. Partner A's call carries A's prompt, A's voice, A's language. Partner
+B's carries B's. The shared agent holds no per-call state. <b>Nothing needed fixing here.</b></p>
+
+<h3>Half two: our own server had genuinely shared state, and that did need fixing</h3>
+<p>The original build had a single global <code>activeProfile</code>. Two people building different
+companies would overwrite each other. That is a real bug and it was fixed by making every piece of
+mutable state per-user.</p>
+
+<pre><code><span class="c">// server.js — the concurrency fix, stated plainly in the code</span>
+<span class="k">let</span> callHistory = [];              <span class="c">// every entry stamped with userId</span>
+<span class="k">let</span> userCampaigns = {};            <span class="c">// { userId: campaign } — partners' campaigns never collide</span>
+<span class="k">let</span> activeProfile = <span class="k">null</span>;          <span class="c">// the DEFAULT only: a seed for new users</span>
+<span class="k">let</span> userProfiles = {};             <span class="c">// { userId: profile } — this is the concurrency fix</span>
+<span class="k">let</span> userWritebackConfigs = {};      <span class="c">// { userId: {...} } — each partner keeps their own</span>
+
+<span class="c">// and every request resolves through the user, never the global</span>
+<span class="k">function</span> getProfile(req) { <span class="k">return</span> userProfiles[req.user.id] || activeProfile; }
+<span class="k">function</span> visibleCalls(req) {
+  <span class="k">return</span> req.user.role === <span class="s">'admin'</span> ? callHistory : callHistory.filter(c =&gt; c.userId === req.user.id);
+}</code></pre>
+
+<h4>What is isolated per user</h4>
+<ul>
+<li>the active company profile (the whole agent configuration)</li>
+<li>call history, transcripts and recordings</li>
+<li>analytics</li>
+<li>write-back / CRM destination</li>
+<li>bulk campaign progress</li>
+<li>saved bookmarks and schedules</li>
+</ul>
+<p>Settings and credentials are <b>admin-only</b> outright: partners cannot see or change the ElevenLabs
+configuration, and the nav items are hidden for them.</p>
+
+<div class="card">
+<h4>Three concurrency bugs that were found by testing, not by reading</h4>
+<ol>
+<li><b>The campaign closure.</b> A bulk campaign's async loop read the <i>global</i> campaign variable, so
+one partner stopping their campaign stopped everyone's. Fixed by capturing a local reference:
+<code>const camp = ...</code> inside the closure.</li>
+<li><b>The Sync button.</b> <code>POST /api/history/sync</code> read and <i>returned</i> the global call
+history, so any partner pressing Refresh received every other tenant's calls. This was the one place the
+isolation work had missed, and it was found while fixing something else.</li>
+<li><b>The batch replace that missed one.</b> A find-and-replace across the file updated every
+<code>stampUser</code> call except the simulate handler, because that line had a different suffix. Caught
+by a test that placed a call as a partner and checked the admin could see it.</li>
+</ol>
+</div>
+
+<p><b>How it was verified:</b> a second server instance on a different port with its own data directory,
+two accounts signed in simultaneously, each configuring a different company and running a campaign. Then
+assertions: A sees only A's calls, B cannot reach A's recording (403), A's stop does not stop B, the two
+campaigns keep distinct counts, and the admin sees both. Twenty-eight of these checks in the signup and
+isolation suite alone.</p>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="auth">13. Authentication, built from scratch</h2>
+
+<p>No Passport, no Auth0, no <code>jsonwebtoken</code>. Node's built-in <code>crypto</code> module does
+both jobs in 83 lines.</p>
+
+<pre><code><span class="c">// passwords: scrypt, which is deliberately slow and memory-hard</span>
+<span class="k">const</span> salt = crypto.randomBytes(<span class="n">16</span>).toString(<span class="s">'hex'</span>);
+<span class="k">const</span> hash = crypto.scryptSync(pw, salt, <span class="n">64</span>).toString(<span class="s">'hex'</span>);
+<span class="k">return</span> <span class="s">`scrypt$${salt}$${hash}`</span>;                    <span class="c">// algorithm stored with the hash, so it can be migrated</span>
+
+<span class="c">// tokens: payload + HMAC-SHA256 signature, the same shape as a JWT without the library</span>
+<span class="k">const</span> p   = Buffer.from(JSON.stringify(body)).toString(<span class="s">'base64url'</span>);
+<span class="k">const</span> sig = crypto.createHmac(<span class="s">'sha256'</span>, secret()).update(p).digest(<span class="s">'base64url'</span>);
+<span class="k">return</span> <span class="s">`${p}.${sig}`</span>;
+
+<span class="c">// verification compares in constant time, so the signature cannot be guessed byte by byte</span>
+crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected));</code></pre>
+
+<p><b>Why hand-rolled:</b> the requirement was a single self-contained deployment with no external identity
+provider and no database dependency. A dependency here would have added a service to run, or a library
+whose CVEs we would have to track, for a login screen. Both scrypt and HMAC-SHA256 are standard
+primitives used correctly, including the constant-time comparison that hand-rolled auth usually gets
+wrong.</p>
+
+<h4>Account creation</h4>
+<p>Three routes, chosen because a partner-facing platform cannot require an admin for every signup:</p>
+<ul>
+<li>admin creates the account directly</li>
+<li>self-signup from a <b>pre-whitelisted company domain</b>, auto-approved with a conservative daily cap</li>
+<li>self-signup from anywhere else, which lands in an approval queue</li>
+</ul>
+<p>Every account created by any route carries <code>mustChangePassword</code>, and the console forces the
+change before anything else is usable.</p>
+<div class="warn"><b>Be ready to say this, because a sharp questioner will ask:</b> an email domain is not
+proof of identity. There is no mailbox verification, so domain auto-approval gets the reduced quota
+rather than full trust. Real email verification is the clean fix and it is a known gap, not an oversight.</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="persist">14. Persistence: two backends, one interface</h2>
+
+<p><code>store.js</code> exposes one set of functions. Behind them:</p>
+<ul>
+<li><b>Postgres</b> when <code>DATABASE_URL</code> is set (managed: Neon, Supabase, Railway, RDS)</li>
+<li><b>JSON files</b> when it is not, so the thing runs on a laptop with zero setup</li>
+</ul>
+
+<p>The application shape did not change: everything loads into memory once at boot, and every mutation
+calls <code>saveHistory()</code> or similar. That meant swapping storage engines touched no call sites.</p>
+
+<div class="card">
+<h4>Writes are debounced and serialised</h4>
+<p>A 200-call bulk campaign would otherwise issue 200 database writes. Writes are debounced by 300 ms and
+serialised per table, so the same campaign produces roughly <b>one</b> write. Inserts are chunked against
+a 60,000-parameter budget, and a SIGTERM handler flushes pending writes so a deploy does not lose the
+last few seconds.</p>
+</div>
+
+<p>Seven tables: <code>users</code>, <code>calls</code>, <code>user_profiles</code>,
+<code>user_writeback</code>, <code>settings</code>, <code>schedules</code>, <code>bookmarks</code>. Volatile
+shapes live in <code>JSONB</code>; fields that are filtered on (user id, timestamp, simulated) are
+promoted to real columns with indexes.</p>
+
+<div class="warn"><b>The reason Postgres matters, and it is not performance:</b> container filesystems are
+ephemeral. On Render, Railway or Fly, a redeploy wipes <code>data/</code>. Without a database, every
+account and every call record disappears on the next deploy. That is the argument, not throughput.</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="flywheel">15. Getting data in, and pushing outcomes back out</h2>
+
+<h3>In: sources</h3>
+<p>CSV upload, a URL returning CSV or JSON, a published Google Sheet, or a REST endpoint with headers and
+a JSON path. Salesforce, HubSpot, Zoho and Postgres connectors are interface-ready stubs that fail with a
+helpful message rather than pretending.</p>
+
+<h3>The smart queue</h3>
+<p>Rows are not dialled in file order. Each row is analysed and:</p>
+<ul>
+<li><b>routed</b> to the most appropriate enabled use case based on the columns present (an
+<code>amount_overdue</code> column implies collections, <code>appointment_date</code> implies a reminder)</li>
+<li><b>ordered</b> by urgency: overdue before payment reminder before appointment before renewal</li>
+<li><b>skipped</b> with a stated reason: missing phone number, previously marked do-not-call, or a
+duplicate number already in the batch</li>
+</ul>
+
+<h3>Out: write-back</h3>
+<p>Outcomes push to an in-app preview, a webhook, or an enriched CSV download, with a configurable
+field mapping of 14 outcome fields. And it can fire <b>automatically</b> the moment
+<code>record_call_outcome</code> arrives, which makes a very good demo: enable it, run a call, and the row
+appears in the CRM view while the call is still ending.</p>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="sim">16. Simulation mode</h2>
+
+<p>A toggle in the header. With it on, calls are fully simulated: a realistic transcript is generated for
+the chosen use case using the <i>active profile's own</i> values, a plausible outcome is picked from
+weighted branches (including voicemail and wrong-person), and <b>the same action tools fire</b>.</p>
+
+<p>So history, transcripts, outcome chips, analytics and CRM write-back all populate exactly as they would
+on a real call, with <b>no credentials, no phone number and no cost</b>. Every simulated call is flagged
+so it can never be mistaken for a real one, and simulated calls are excluded from quota counting.</p>
+
+<div class="good"><b>Why this is worth highlighting:</b> it means the platform can be demonstrated end to
+end on a laptop with no Twilio number and no spend, and it means the sales team can rehearse without
+dialling a real person. It also made the whole system testable without placing calls.</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="analytics">17. Analytics, and a bug worth admitting</h2>
+
+<p>Analytics originally reported a <b>0% connect rate on 26 real calls</b>, one of which was a 74-second
+answered conversation.</p>
+
+<p>The cause: connect rate keyed entirely off <code>disposition</code>, which only exists if the agent
+called <code>record_call_outcome</code>. Real calls frequently do not have it. So genuinely connected
+calls were being counted as failures.</p>
+
+<pre><code><span class="k">function</span> classifyCall(c) {
+  <span class="k">if</span> (c.status === <span class="s">'failed'</span> || cs === <span class="s">'error'</span>)        <span class="k">return</span> <span class="s">'failed'</span>;
+  <span class="k">if</span> (disp === <span class="s">'no_answer_voicemail'</span> || disp === <span class="s">'wrong_person'</span>) <span class="k">return</span> <span class="s">'noReach'</span>;
+  <span class="k">if</span> (disp)                                          <span class="k">return</span> <span class="s">'connected'</span>;
+  <span class="k">if</span> (c.callSuccessful === <span class="k">true</span>)                   <span class="k">return</span> <span class="s">'connected'</span>;
+  <span class="k">if</span> (cs === <span class="s">'ended'</span>) <span class="k">return</span> dur &gt;= <span class="n">10000</span> ? <span class="s">'connected'</span> : <span class="s">'noReach'</span>;
+  <span class="k">return</span> <span class="s">'pending'</span>;   <span class="c">// placed, outcome not synced yet</span>
+}
+<span class="c">// pending is EXCLUDED from the denominator, so un-synced calls do not drag the rate down</span>
+connectRate = resolved ? Math.round(connected / resolved * <span class="n">100</span>) : <span class="n">0</span>;</code></pre>
+
+<p>The fourth bucket, <code>pending</code>, is the important idea: a call that has been placed but whose
+outcome has not come back yet is <i>not</i> a failure, and counting it as one is how you get a 0%.</p>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="sched">18. Scheduler</h2>
+
+<p>Schedules run agents on a recurrence: once, daily, weekly, monthly. The timing engine is separate and
+pure, which makes it testable without a clock.</p>
+<ul>
+<li>Timezones use <code>Intl.DateTimeFormat</code> rather than manual offset arithmetic, so daylight
+saving is handled by the platform, not by us.</li>
+<li>Each firing writes a <b>slot key</b>, so a restart or a slow tick cannot fire the same slot twice.</li>
+<li>A calling-window guard prevents dialling outside permitted hours.</li>
+<li>The tick runs every 30 seconds: fine enough for minute-accurate slots, cheap enough to ignore.</li>
+</ul>
+<div class="warn"><b>Deployment consequence worth knowing:</b> every running instance ticks its own
+scheduler against whatever store it is pointed at. If five laptops shared one database, one daily schedule
+would fire five times. That is exactly why the handover package ships with <code>DATABASE_URL</code>
+blanked, so each local install keeps its own data.</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="security">19. Security</h2>
+<table>
+<tr><th>Concern</th><th>How it is handled</th></tr>
+<tr><td>API key exposure</td><td>Server-side only, in <code>.env</code>, gitignored. Zero occurrences of <code>sk_</code> in the frontend. Even the masked key preview is admin-only.</td></tr>
+<tr><td>Password storage</td><td>scrypt with a per-user random salt. Constant-time verification.</td></tr>
+<tr><td>Session tokens</td><td>HMAC-SHA256 signed, 30-day expiry, constant-time signature check.</td></tr>
+<tr><td>Default credentials</td><td>No hardcoded default. A strong password is generated at first boot, printed once, and must be changed at first sign-in.</td></tr>
+<tr><td>Tool webhooks</td><td>Optional shared secret header, checked before anything is recorded.</td></tr>
+<tr><td>Post-call webhook</td><td>HMAC signature verified over the <b>raw</b> body, which is why the JSON parser captures <code>rawBody</code> for that path only.</td></tr>
+<tr><td>Cross-tenant access</td><td>Ownership checked on every call detail and recording. 403 otherwise.</td></tr>
+<tr><td>Runaway usage</td><td>Rate limiting, per-user daily quotas, and a simulation-only lock. All present, all off by default, so nothing surprises anyone until it is switched on deliberately.</td></tr>
+<tr><td>Startup audit</td><td>The server prints a checklist on boot: unset <code>AUTH_SECRET</code>, unset <code>DATABASE_URL</code>, accounts still on their initial password.</td></tr>
+</table>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="ops">20. Running and handing it over</h2>
+<p>One command, one port: <code>node server.js</code> serves the console and the API together on 3002.</p>
+<p>For the US sales team there are three numbered batch files: <code>1-SETUP.bat</code> (checks Node,
+installs, prepares settings), <code>2-START.bat</code> (starts it, waits for the port, opens the browser),
+<code>3-STOP.bat</code> (stops by port, not by killing every Node process). Plus
+<code>PACKAGE-FOR-TEAM.bat</code>, which builds the handover zip, excludes the data directory and the
+stray key file, and <b>refuses to build if it finds a credential where one should not be</b>.</p>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="oem">21. The OEM / tech-stack selector</h2>
+
+<p>The Agent Builder has a <b>Runs on</b> dropdown: Provider-native, IBM watsonx Orchestrate, Microsoft
+Copilot / Azure AI, AWS Bedrock, Google Cloud Vertex AI, Salesforce Agentforce, Oracle OCI Generative AI.
+Selecting one changes the model catalogue, the orchestration layer named, the data residency statement,
+the deployment targets, and a brand-coloured pill in the header that stays visible on every page.</p>
+
+<div class="note"><b>What it is for:</b> showing a prospect their own stack, so the platform reads as
+something that belongs in their estate rather than something bolted on beside it. An IBM stakeholder
+seeing <span class="pill" style="color:#0F62FE;border-color:#0F62FE">watsonx</span> in the header, with
+Granite in the model list, is being shown the deployment they would actually buy.</div>
+
+<h4>What is real and what is illustrative, so you are never caught out</h4>
+<table>
+<tr><th>Real</th><th>Illustrative</th></tr>
+<tr><td>The model catalogues (Granite on watsonx.ai, Nova on Bedrock, Phi on Azure, Command R+ on OCI)</td><td>The console is not currently routing inference through that stack</td></tr>
+<tr><td>The orchestration layer named for each</td><td>The voice layer is ElevenLabs in every case</td></tr>
+<tr><td>The deployment modes, including on-premises and air-gapped where they genuinely exist</td><td>&nbsp;</td></tr>
+<tr><td>The data-residency position for each vendor</td><td>&nbsp;</td></tr>
+</table>
+
+<div class="good"><b>The line to use if asked point blank:</b> "The voice layer is ElevenLabs. The OEM
+selection shows how the agent layer maps onto your stack. In a real deployment the reasoning model would
+be Granite on watsonx.ai, orchestrated through Orchestrate, running on OpenShift in your own data centre."
+That is true, it is the actual deployment story, and it turns a challenge into a solution-architecture
+conversation.</div>
+
+<h3>Deployment is a range, not a cloud</h3>
+<p>This matters more than it looks. Several of these vendors have a serious on-premises story, and
+saying "IBM Cloud region" would give away a differentiator IBM sells hard. Each stack states its real
+range:</p>
+<table>
+<tr><th>Stack</th><th>Where it can actually run</th></tr>
+<tr><td><b>IBM watsonx</b></td><td>watsonx.ai as software on Red Hat OpenShift on your own hardware, Cloud Pak for Data, IBM Cloud, or AWS / Azure. <b>On-premises and air-gapped are both real.</b></td></tr>
+<tr><td><b>Oracle OCI</b></td><td>OCI Dedicated Region installs an <i>entire OCI region inside your data centre</i>. Compute Cloud@Customer, and Roving Edge for disconnected sites.</td></tr>
+<tr><td><b>Google Vertex</b></td><td>Google Distributed Cloud, connected or <b>fully air-gapped</b>, on your hardware. GKE Enterprise on-premises.</td></tr>
+<tr><td><b>AWS Bedrock</b></td><td>Outposts puts AWS racks in your data centre. GovCloud for sovereign. EKS / ECS Anywhere on your own hardware.</td></tr>
+<tr><td><b>Microsoft</b></td><td>Azure Local for on-premises, Arc-enabled services anywhere, sovereign and government clouds.</td></tr>
+<tr><td><b>Salesforce</b></td><td><b>Cloud-only, and we say so.</b> Hyperforce hosts the platform. The answer for a customer needing inference in their own estate is Bring Your Own Model, with the Einstein Trust Layer applying zero-retention either way.</td></tr>
+<tr><td><b>Provider-native</b></td><td>It is a Node application. Your servers, a container platform, a VM, or any cloud.</td></tr>
+</table>
+
+<div class="warn"><b>Do not claim on-premises for Salesforce.</b> It is the one stack here without an
+on-premises platform, and a knowledgeable buyer will know. Saying it plainly and offering
+Bring-Your-Own-Model instead is the stronger answer, and it makes the other six claims more credible.</div>
+
+<h4>The safety property behind it</h4>
+<p>Every model option's underlying value is a model the voice provider genuinely supports. The label is
+the stack's equivalent; the value is what runs. So switching stack mid-demo can never break a live call,
+which was verified across all seven stacks and every model in each. The selection is stored as
+<code>profile.platform.oem</code> and is deliberately absent from the variable allow-list, so it can never
+reach the agent or be spoken on a call.</p>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="numbers">Numbers worth having ready</h2>
+<div class="stats">
+  <div class="stat"><b>~6,400</b><span>lines of code total</span></div>
+  <div class="stat"><b>1,750</b><span>lines in server.js</span></div>
+  <div class="stat"><b>3,073</b><span>lines in the single-file console</span></div>
+  <div class="stat"><b>10</b><span>production dependencies</span></div>
+  <div class="stat"><b>204</b><span>countries</span></div>
+  <div class="stat"><b>74</b><span>languages</span></div>
+  <div class="stat"><b>31</b><span>industries</span></div>
+  <div class="stat"><b>666</b><span>use cases</span></div>
+  <div class="stat"><b>9</b><span>conversation archetypes</span></div>
+  <div class="stat"><b>14 + 4</b><span>webhook tools + system tools</span></div>
+  <div class="stat"><b>15,603</b><span>selectable voices</span></div>
+  <div class="stat"><b>~43k</b><span>characters of prompt per call</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="qa">Anticipated questions, with answers</h2>
+
+<div class="qa"><div class="q">Why not build the voice agent yourselves instead of using ElevenLabs?</div>
+<p>Because the hard part of a voice agent is not the orchestration, it is sub-second speech and
+interruption handling on a real phone line. ElevenLabs solves that. Our value is everything around it: the
+per-call agent composition, the market catalogues, the conversation design, the actions, the isolation and
+the write-back. And the provider layer is an adapter, so Retell is already a supported fallback and a
+third provider would be one file.</p></div>
+
+<div class="qa"><div class="q">What happens if two demos run at the same moment?</div>
+<p>Nothing. The configuration travels with the conversation, not with the agent, so ElevenLabs keeps the
+two calls entirely separate. On our side every piece of mutable state is keyed by user id, so two people
+building different companies never see each other's work. We tested this explicitly with two accounts
+running campaigns simultaneously.</p></div>
+
+<div class="qa"><div class="q">Is the API key safe?</div>
+<p>It never leaves the server. The browser only ever talks to our own API. We verified there are zero
+occurrences of the key prefix anywhere in the frontend file, and the masked preview shown in Settings is
+admin-only.</p></div>
+
+<div class="qa"><div class="q">How do you support 666 use cases without 666 prompts?</div>
+<p>A call's shape is separate from its subject. There are nine conversation shapes, and a use case
+supplies a playbook layered on top of one of them. Chasing an overdue invoice is the same conversation in
+banking and in logistics, with different nouns.</p></div>
+
+<div class="qa"><div class="q">Why one HTML file with no framework?</div>
+<p>Because the deliverable is a folder someone can run. No build step means nothing to compile, nothing
+to deploy separately, and no toolchain to explain when handing it to a sales team. At this size it is the
+right trade. If the console grew substantially I would move to a component framework, and I would say so.</p></div>
+
+<div class="qa"><div class="q">Why write your own authentication?</div>
+<p>The requirement was a self-contained deployment with no external identity provider and no mandatory
+database. Adding a library for a login screen would have meant a service to run or CVEs to track. scrypt
+and HMAC-SHA256 are standard primitives, used correctly, including the constant-time comparison that
+hand-rolled auth usually gets wrong. If this went to enterprise scale I would move to SSO, and the
+abstraction is already there: the user store sits behind six functions.</p></div>
+
+<div class="qa"><div class="q">How do you know it works? What did you test?</div>
+<p>Every change was verified on an isolated second instance with its own data directory and credentials
+that physically could not place a call, with the production data snapshotted and hash-compared afterwards.
+The suites run in the hundreds of assertions: multi-tenant isolation, guardrails, signup and approval,
+the Postgres round-trip, the password flow, prompt structure, the voice matcher across all 204 markets,
+and the batch files run end to end from a clean unzip. Several real bugs were found this way, including
+the cross-tenant leak in the Sync button.</p></div>
+
+<div class="qa"><div class="q">What does a call cost?</div>
+<p>Three components: ElevenLabs conversational minutes, the LLM tokens, and Twilio telephony. Our prompt
+is deliberately large, around 11,000 tokens per call, which is a real cost worth being honest about. It
+buys an agent that does not fall apart when someone tries to break it. Simulation mode costs nothing at
+all, which is how demos and rehearsals should be run.</p></div>
+
+<div class="qa"><div class="q">Can it scale?</div>
+<p>The call path scales with ElevenLabs, since we do not hold the audio. Our server is stateless per
+request apart from in-memory caches, and moving to Postgres makes it horizontally scalable, with one
+caveat I would raise unprompted: the scheduler ticks per instance, so running multiple instances would
+need a leader election or a database lock before it is safe.</p></div>
+
+<div class="qa"><div class="q">What is the biggest risk?</div>
+<p>Provider dependency. If ElevenLabs changes its API or pricing, we are exposed. That is mitigated by the
+adapter pattern, and Retell is already wired as a fallback. Second is prompt drift: a large authored
+prompt needs review discipline, which is why the end-call rules and the audio-tag palettes are separate
+files with their own structural checks.</p></div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<h2 class="sec" id="limits">Honest limitations, and why saying them helps</h2>
+<p>Volunteering these makes the rest of the answers more credible, and every one of them has a next step.</p>
+<ul>
+<li><b>No email verification on signup.</b> Domain matching is a heuristic, which is why auto-approved
+accounts get a reduced quota. Next step: a verification email.</li>
+<li><b>The scheduler is single-instance.</b> Safe as deployed, needs a lock before scaling out.</li>
+<li><b>Prompt cost.</b> Roughly 11,000 tokens per call is deliberate but not free. It could be trimmed by
+loading the demo-realism and audio-tag layers only when they are actually enabled.</li>
+<li><b>Not yet deployed.</b> It runs on a laptop and is ready for a host: HTTPS, secrets in environment
+variables, <code>trust proxy</code>, and the Postgres migration, which is written and tested.</li>
+<li><b>Twilio geo-permissions.</b> International destinations must be enabled per country in the Twilio
+console. A Botswana call failed for exactly this reason, and it is a configuration step, not a code fix.</li>
+</ul>
+
+<div class="note" style="margin-top:30px"><b>If you remember four things, remember these:</b><br>
+1. One agent, re-skinned per call by <code>conversation_config_override</code>. That is the architecture.<br>
+2. The browser never touches ElevenLabs. The key lives only on the server.<br>
+3. Concurrency is safe on both sides: per conversation at ElevenLabs, per user id in our state.<br>
+4. Nine conversation shapes times 666 subjects is why it covers so much ground without 666 prompts.</div>
+
+</main>
+</div>
+</body>
+</html>

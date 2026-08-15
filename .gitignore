@@ -1,0 +1,30 @@
+# ── Secrets — never commit ──
+.env
+**/.env
+!.env.example
+# Local scratch folder holding a plain-text API key. Kept out of the repo entirely.
+SecretApiKey/
+*.pem
+*.key
+auth-secret
+
+# ── Node ──
+node_modules/
+**/node_modules/
+npm-debug.log*
+
+# ── Runtime data ──
+# Accounts, call history, sign-in codes and access requests. On a deployed instance these live in
+# Postgres; locally they are JSON files and belong to whoever ran it.
+web/backend/data/
+*.log
+
+# ── Handover artefacts ──
+OmniReach-*.zip
+
+# ── Editor / OS ──
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

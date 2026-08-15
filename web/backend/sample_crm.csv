@@ -1,0 +1,8 @@
+customer_name,to_number,use_case,product_name,amount_due,due_date,days_overdue,amount_overdue,outstanding_balance,offer_type,offer_detail,expiry_date,appointment_type,appointment_date,appointment_time,location,interaction_type,interaction_date,lead_source,interest,renewal_item,renewal_date,notes
+John Carter,+14155550142,,credit card bill,240,2026-07-21,,,1850,,,,,,,,,,,,,,Payment reminder (inferred from due date)
+Maria Garcia,+34655550188,,mobile plan,,,12,45,90,,,,,,,,,,,,,,Overdue follow-up (days_overdue set)
+Wei Chen,+6591230145,sales_offer,,,,,,,Fibre Broadband Upgrade,double the speed for the same price for six months,end of the month,,,,,,,,,,,Sales offer (explicit)
+Aisha Al-Rashid,+971501230177,,,,,,,,,,,home service visit,2026-07-20,between 2 and 4 in the afternoon,your registered address,,,,,,,Appointment reminder (appointment date set)
+David Okafor,+2348031230155,,,,,,,,,,,,,,,your recent support call,yesterday,,,,,Feedback survey (interaction set)
+Priya Nair,+919812340155,,,,,,,,,,,,,,,,,your enquiry on our website,a home loan,,,Lead qualification (lead source set)
+Sofia Rossi,+390612340188,,,,,,,,,,,,,,,,,,,annual membership,2026-07-25,Renewal (renewal date set)

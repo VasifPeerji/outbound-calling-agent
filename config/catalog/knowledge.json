@@ -1,0 +1,500 @@
+{
+  "_README": "Per-industry STARTING POINTS for what the agent can answer about. Loaded into the Agent Builder's 'Product & company facts' and 'Questions customers actually ask' whenever the industry changes, and overwritten the moment a human edits either field. Written in plain speakable English because every line is read aloud: numbers as words, no codes or abbreviations the agent would spell out badly. These are GENERIC to the industry and must be checked against the real client before a live call, which is why the builder shows a warning above them. The hard boundary in the global prompt still applies whatever is written here: the agent never improvises certifications, safety or structural suitability, medical, legal or tax positions, or anything financially binding.",
+
+  "Banking": {
+    "facts": [
+      "Personal loan decisions are usually given the same working day once we have your documents.",
+      "We need proof of identity, proof of address and the last three months of income records.",
+      "There is no charge for closing a savings account or for switching to a different account type.",
+      "Interest is calculated daily and paid monthly on savings balances.",
+      "Card blocks can be lifted immediately over the phone once we have verified who you are.",
+      "Branch and phone banking are open on weekdays; the app and net banking run all day, every day."
+    ],
+    "faqs": [
+      { "q": "How long does the loan take to be approved?", "a": "Once your documents are complete, a decision usually comes the same working day, and the money follows within two working days." },
+      { "q": "Will checking my eligibility affect my credit score?", "a": "An eligibility check on our side does not affect your score. Only a full application does." },
+      { "q": "Can I repay early?", "a": "Yes. I can have a specialist confirm any early settlement figure for your specific account." },
+      { "q": "What documents do you need?", "a": "Proof of identity, proof of address, and your last three months of income records." }
+    ]
+  },
+
+  "Insurance": {
+    "facts": [
+      "Cover starts from the date shown on your policy schedule, not the date you paid.",
+      "There is a grace period after the renewal date during which cover continues while payment is arranged.",
+      "Claims can be started over the phone, and you do not need the paperwork in front of you to begin.",
+      "A no-claims discount carries over if you renew without a break in cover.",
+      "Renewing before the expiry date avoids a fresh medical or inspection in most cases."
+    ],
+    "faqs": [
+      { "q": "What happens if I miss the renewal date?", "a": "There is a short grace period where cover continues. After that a fresh application may be needed, so it is worth sorting quickly." },
+      { "q": "Is this condition covered?", "a": "That depends on the wording of your specific policy, so I will have a specialist confirm it rather than guess." },
+      { "q": "How long do claims take?", "a": "Straightforward claims are usually settled within a few working days of the documents arriving." },
+      { "q": "Can I change the cover amount?", "a": "Yes, usually at renewal. A specialist can talk you through what changes and what it costs." }
+    ]
+  },
+
+  "Healthcare": {
+    "facts": [
+      "Appointments can be rescheduled up to twenty four hours ahead at no charge.",
+      "Please arrive fifteen minutes early if this is your first visit, so registration is done before your slot.",
+      "Reports for routine tests are usually ready within two working days and are sent by email and message.",
+      "Fasting is required for certain blood tests; we will tell you when booking if yours needs it.",
+      "You can ask for a copy of your records at any time."
+    ],
+    "faqs": [
+      { "q": "Do I need to fast before the test?", "a": "Some tests need it and some do not. I can check which applies to the one you are booked for." },
+      { "q": "When will my results be ready?", "a": "Routine results are usually ready within two working days, and we send them by email and message." },
+      { "q": "Can I reschedule?", "a": "Yes, up to twenty four hours before your appointment at no charge." },
+      { "q": "Is this treatment right for my symptoms?", "a": "That is a question for the clinician rather than for me. I will arrange for them to speak with you." }
+    ]
+  },
+
+  "Hospitality & Travel": {
+    "facts": [
+      "Check in is from two in the afternoon and check out is by eleven in the morning.",
+      "Free cancellation applies up to forty eight hours before arrival on flexible rates.",
+      "Breakfast is included on selected rates; your confirmation says which one you booked.",
+      "Early check in and late check out are subject to availability on the day.",
+      "Children stay free when sharing an existing bed with an adult."
+    ],
+    "faqs": [
+      { "q": "Can I cancel free of charge?", "a": "On a flexible rate, yes, up to forty eight hours before arrival. I can check which rate is on your booking." },
+      { "q": "Is breakfast included?", "a": "It depends on the rate you booked. I can confirm that against your reservation." },
+      { "q": "Can I check in early?", "a": "We do our best, though it depends on availability on the day. I can add the request to your booking." },
+      { "q": "Do you have parking?", "a": "I can confirm the parking arrangements for the property you are booked into." }
+    ]
+  },
+
+  "Financial Services": {
+    "facts": [
+      "Statements are issued monthly and are available in the portal as well as by email.",
+      "Changes to a standing instruction take effect from the next cycle, not the current one.",
+      "There is no fee for switching between plans; only the difference in charges applies.",
+      "Verification is required before any change to bank details, for your protection.",
+      "Advisers are available on weekdays, and appointments can be booked by phone."
+    ],
+    "faqs": [
+      { "q": "What are the charges?", "a": "I can talk you through the standard schedule, and an adviser can confirm what applies to your specific holdings." },
+      { "q": "Should I invest in this?", "a": "I cannot give you advice on that. I can arrange for a licensed adviser to speak with you." },
+      { "q": "How do I change my bank details?", "a": "We can start it now, and for your protection there is a verification step before it takes effect." },
+      { "q": "When is my statement issued?", "a": "Monthly. It is in the portal as well as sent to your registered email." }
+    ]
+  },
+
+  "Retail": {
+    "facts": [
+      "Returns are accepted within thirty days with proof of purchase, unused and in the original packaging.",
+      "Refunds go back to the original payment method and take three to five working days to appear.",
+      "Delivery is free over a set order value; standard delivery is two to four working days.",
+      "Items bought online can be returned in store, and items bought in store can be returned by post.",
+      "Stock shown online is updated through the day but can sell out before an order is placed."
+    ],
+    "faqs": [
+      { "q": "Can I return it?", "a": "Yes, within thirty days with proof of purchase, unused and in its original packaging." },
+      { "q": "How long does a refund take?", "a": "Three to five working days to reach the card or account you paid with." },
+      { "q": "Where is my order?", "a": "I can look that up and tell you exactly where it is and when it is due." },
+      { "q": "Do you price match?", "a": "We do consider it on like for like items. I can have a specialist look at what you have found." }
+    ]
+  },
+
+  "Manufacturing": {
+    "facts": [
+      "Standard lead time is quoted at order confirmation and is counted in working days.",
+      "Bulk pricing applies above set quantities and is confirmed on the quotation.",
+      "Technical drawings and specification sheets are available for every catalogue item.",
+      "Custom work is quoted separately and needs a signed drawing before production starts.",
+      "Goods are inspected before dispatch and any damage in transit should be reported within seven days."
+    ],
+    "faqs": [
+      { "q": "What is the lead time?", "a": "It is confirmed on your order, and I can check where your specific job is right now." },
+      { "q": "Can you make it to our drawing?", "a": "Yes, custom work is quoted separately and starts once the drawing is signed off." },
+      { "q": "Will it meet our required standard?", "a": "That is a specification question, so I will have an engineer confirm it rather than guess." },
+      { "q": "Do you offer bulk pricing?", "a": "Yes, above set quantities. I can have a quotation prepared for the volume you need." }
+    ]
+  },
+
+  "Education": {
+    "facts": [
+      "Applications are reviewed in the order received and a decision is usually given within a week.",
+      "Fees can be paid in instalments across the term, arranged at enrolment.",
+      "Classes run on weekdays with selected weekend batches for working students.",
+      "A place is held for seven days once an offer is made.",
+      "Transfers between batches are possible in the first two weeks of a course."
+    ],
+    "faqs": [
+      { "q": "When does the next batch start?", "a": "I can tell you the upcoming start dates and hold a place for you." },
+      { "q": "Can I pay in instalments?", "a": "Yes, that is arranged at enrolment and spread across the term." },
+      { "q": "What are the entry requirements?", "a": "I can go through the general requirements, and an adviser can confirm your specific situation." },
+      { "q": "Is there a weekend option?", "a": "Selected batches run at weekends for working students. I can check availability." }
+    ]
+  },
+
+  "Logistics": {
+    "facts": [
+      "Tracking updates appear within a few hours of a shipment being scanned.",
+      "Delivery is attempted twice, after which the parcel is held for collection.",
+      "Address changes are possible while a shipment is still at the origin depot.",
+      "Claims for damage should be raised within seven days of delivery, with photographs.",
+      "Weekend delivery is available on selected services."
+    ],
+    "faqs": [
+      { "q": "Where is my shipment?", "a": "I can look that up now and tell you where it is and when it is due." },
+      { "q": "Can I change the delivery address?", "a": "Yes, while it is still at the origin depot. I can check whether that is still possible." },
+      { "q": "What if nobody is home?", "a": "We attempt delivery twice, then hold it for collection at the nearest point." },
+      { "q": "It arrived damaged, what now?", "a": "Raise it within seven days with photographs and we will get a claim moving." }
+    ]
+  },
+
+  "Telecom": {
+    "facts": [
+      "Plan changes take effect from the next billing cycle unless an upgrade is requested immediately.",
+      "Number portability usually completes within a few working days once documents are verified.",
+      "Data allowances reset on the billing date, not on the first of the month.",
+      "Roaming must be activated before travelling and can be added over the phone.",
+      "Faults are logged with a reference number and updates are sent by message."
+    ],
+    "faqs": [
+      { "q": "Why is my bill higher this month?", "a": "I can go through the charges line by line with you and explain what changed." },
+      { "q": "When does my data reset?", "a": "On your billing date rather than the first of the month. I can tell you the exact date." },
+      { "q": "How long does porting take?", "a": "Usually a few working days once your documents are verified." },
+      { "q": "Can I add roaming?", "a": "Yes, and it needs to be active before you travel. I can arrange it now." }
+    ]
+  },
+
+  "Utilities": {
+    "facts": [
+      "Meter readings can be submitted by phone, app or portal, and a reading avoids an estimated bill.",
+      "Payment plans can be arranged for larger balances.",
+      "Planned outages are notified in advance by message to the registered number.",
+      "A final bill is issued within six weeks of moving out.",
+      "Emergency faults are attended around the clock."
+    ],
+    "faqs": [
+      { "q": "Why is my bill estimated?", "a": "Because we did not have a reading for that period. Give me one now and I will have it corrected." },
+      { "q": "Can I spread the payment?", "a": "Yes, a payment plan can be arranged. I can start that for you." },
+      { "q": "When will the power be back?", "a": "I can check the status of the outage in your area and the latest estimate." },
+      { "q": "I am moving house, what do I do?", "a": "Give me your move date and a closing reading, and I will arrange the final bill." }
+    ]
+  },
+
+  "Automobile": {
+    "facts": [
+      "Test drives can be booked at any branch and take about thirty minutes.",
+      "A service booking usually needs the vehicle for most of a working day.",
+      "Manufacturer warranty runs from the date of first registration.",
+      "Trade in valuations are given after a physical inspection, and an indicative range can be given by phone.",
+      "Courtesy vehicles are available on request and subject to availability."
+    ],
+    "faqs": [
+      { "q": "What is my car worth in part exchange?", "a": "I can give you an indicative range now, and a firm figure comes after a quick inspection." },
+      { "q": "Is it still under warranty?", "a": "I can check that against your registration number." },
+      { "q": "How long will the service take?", "a": "Usually most of a working day. A courtesy vehicle can be arranged if you need one." },
+      { "q": "Can I book a test drive?", "a": "Yes, at any branch, and it takes about thirty minutes." }
+    ]
+  },
+
+  "Aviation": {
+    "facts": [
+      "Online check in opens twenty four hours before departure and closes one hour before.",
+      "Cabin baggage allowance is one bag plus one personal item on most fares.",
+      "Name corrections are possible; a full name change is treated as a new booking.",
+      "Seat selection can be added at any time before check in closes.",
+      "Refund eligibility depends on the fare type shown on your ticket."
+    ],
+    "faqs": [
+      { "q": "Can I change my flight?", "a": "That depends on your fare type. I can check what your ticket allows and what it would cost." },
+      { "q": "How much baggage can I take?", "a": "One cabin bag plus a personal item on most fares. I can confirm what is on your booking." },
+      { "q": "When does check in open?", "a": "Twenty four hours before departure, and it closes one hour before." },
+      { "q": "My flight was cancelled, what are my options?", "a": "I can go through the alternatives available to you and get you rebooked." }
+    ]
+  },
+
+  "Government": {
+    "facts": [
+      "Applications are processed in the order received, and a reference number is issued at submission.",
+      "Supporting documents can be uploaded to the portal or brought to a service centre.",
+      "Processing times are published for each service and updated regularly.",
+      "There is no charge for checking the status of an application.",
+      "Service centres are open on weekdays; the portal is available at all times."
+    ],
+    "faqs": [
+      { "q": "What is the status of my application?", "a": "I can check that against your reference number and tell you which stage it is at." },
+      { "q": "What documents do I need?", "a": "I can list exactly what is required for the service you are applying for." },
+      { "q": "How long will it take?", "a": "Published processing times apply, and I can tell you the current one for this service." },
+      { "q": "Am I eligible?", "a": "I can go through the general criteria, and an officer can confirm your specific case." }
+    ]
+  },
+
+  "Oil & Gas": {
+    "facts": [
+      "Deliveries are scheduled against contracted volumes and confirmed the working day before.",
+      "Site access requires an induction and valid certification for every visiting operative.",
+      "Safety data sheets are available for every product supplied.",
+      "Emergency response is available around the clock through the dedicated line.",
+      "Invoices are issued against delivery notes signed at site."
+    ],
+    "faqs": [
+      { "q": "When is my next delivery?", "a": "I can confirm the scheduled date against your contract." },
+      { "q": "Can you increase our allocation?", "a": "That is a contract question. I will have your account manager come back to you." },
+      { "q": "Is this product safe for our application?", "a": "That is a technical and safety question, so it goes to a specialist rather than to me." },
+      { "q": "What do your operatives need for site access?", "a": "A completed induction and valid certification. I can send the requirements across." }
+    ]
+  },
+
+  "Call Centres": {
+    "facts": [
+      "Calls are answered in the order received and a reference number is given for every case.",
+      "Cases are updated by message and email as they progress.",
+      "Escalation to a supervisor can be requested at any point.",
+      "Support is available on weekdays, with extended hours on selected services.",
+      "Recordings are retained in line with the applicable regulations."
+    ],
+    "faqs": [
+      { "q": "Can I speak to a supervisor?", "a": "Of course. I can arrange that for you now." },
+      { "q": "What is happening with my case?", "a": "I can look that up against your reference and tell you exactly where it stands." },
+      { "q": "How long will this take?", "a": "I can tell you the expected turnaround for this type of case." },
+      { "q": "Why was I not called back?", "a": "Let me check what was logged and make sure someone comes back to you." }
+    ]
+  },
+
+  "Mining": {
+    "facts": [
+      "Site access requires a valid induction, and inductions are refreshed annually.",
+      "Shift rosters are published in advance and changes are notified by message.",
+      "All visitors and contractors must be signed in and out at the gatehouse.",
+      "Personal protective equipment requirements vary by area and are set out at induction.",
+      "Incidents must be reported immediately, however minor they appear."
+    ],
+    "faqs": [
+      { "q": "When is my next shift?", "a": "I can confirm that against the published roster." },
+      { "q": "Is my induction still valid?", "a": "I can check the expiry date and get you booked in for a refresh if it is due." },
+      { "q": "What protective equipment do I need?", "a": "It varies by area. The requirements for your site are covered at induction, and I can send them across." },
+      { "q": "Is it safe to work in that area?", "a": "That is a decision for the site supervisor, not for me. I will put you through." }
+    ]
+  },
+
+  "Non-Profit": {
+    "facts": [
+      "Every donation receives a receipt by email, usually within minutes.",
+      "Regular giving can be changed or paused at any time with no penalty.",
+      "Donations can be directed to a specific programme or left unrestricted.",
+      "Annual reports set out how funds were used and are published on the website.",
+      "Volunteering opportunities are available locally and remotely."
+    ],
+    "faqs": [
+      { "q": "Where does my money go?", "a": "I can tell you how funds are allocated, and the annual report sets it out in full." },
+      { "q": "Can I pause my monthly gift?", "a": "Yes, at any time and with no penalty. I can arrange it now." },
+      { "q": "Is my donation tax deductible?", "a": "That depends on where you are and your own circumstances, so I would not want to guess. I can send the details for you to check." },
+      { "q": "How can I volunteer?", "a": "There are local and remote opportunities. I can have someone send you what is available." }
+    ]
+  },
+
+  "Food & Beverage": {
+    "facts": [
+      "Orders can be changed up to the point they enter preparation.",
+      "Allergen information is available for every item on the menu.",
+      "Delivery is within a set radius of each location, and the app shows the estimated time.",
+      "Table bookings are held for fifteen minutes past the reserved time.",
+      "Large group bookings need to be arranged in advance."
+    ],
+    "faqs": [
+      { "q": "Does this contain nuts?", "a": "Allergen information is held for every item and I can check it, though for a severe allergy I will have the kitchen confirm directly." },
+      { "q": "Can I change my order?", "a": "Yes, up until it goes into preparation. Let me check where yours is." },
+      { "q": "How long is delivery?", "a": "The app shows a live estimate, and I can tell you what it says for your order." },
+      { "q": "Can I book for a large group?", "a": "Yes, that is arranged in advance. I can take the details now." }
+    ]
+  },
+
+  "Entertainment": {
+    "facts": [
+      "Tickets are delivered by email and can be shown on a phone at the door.",
+      "Doors open one hour before the advertised start time.",
+      "Exchanges are possible up to seventy two hours before the event, subject to availability.",
+      "If an event is cancelled, tickets are refunded automatically to the original payment method.",
+      "Accessible seating can be arranged when booking."
+    ],
+    "faqs": [
+      { "q": "Can I get a refund?", "a": "For a cancelled event, yes, automatically. Otherwise exchanges are possible up to seventy two hours before." },
+      { "q": "What time do doors open?", "a": "One hour before the advertised start time." },
+      { "q": "I have not received my tickets.", "a": "Let me check the booking and resend them to you now." },
+      { "q": "Can I transfer my ticket to someone else?", "a": "In most cases yes. I can check what applies to your booking." }
+    ]
+  },
+
+  "Construction & Real Estate": {
+    "facts": [
+      "Viewings can be arranged on weekdays and at weekends by appointment.",
+      "An offer is not binding until contracts are exchanged.",
+      "Handover dates are indicative until the completion certificate is issued.",
+      "Snagging items raised at handover are addressed within an agreed period.",
+      "Payment stages are set out in the agreement and invoiced against milestones."
+    ],
+    "faqs": [
+      { "q": "When will it be ready?", "a": "The current programme gives an indicative date, and it is confirmed once the completion certificate is issued." },
+      { "q": "Can I view it this weekend?", "a": "Yes, weekend viewings are by appointment. I can book one now." },
+      { "q": "Is the price negotiable?", "a": "I can pass an offer on for you. The decision sits with the vendor." },
+      { "q": "Is this structurally sound for what I want to do?", "a": "That needs a qualified surveyor rather than me. I will arrange for one to speak with you." }
+    ]
+  },
+
+  "Agriculture": {
+    "facts": [
+      "Seasonal products are supplied in line with the planting calendar for your region.",
+      "Bulk orders are quoted separately and delivered directly to the farm.",
+      "Product labels carry the full application guidance and must be followed.",
+      "Agronomy visits can be arranged during the growing season.",
+      "Delivery is scheduled around weather windows wherever possible."
+    ],
+    "faqs": [
+      { "q": "What rate should I apply?", "a": "The label sets the rate, and I would not want to advise beyond it. An agronomist can talk it through with your conditions." },
+      { "q": "When can you deliver?", "a": "I can check the schedule and work around your weather window." },
+      { "q": "Do you do bulk pricing?", "a": "Yes, bulk is quoted separately and delivered to the farm. I can have a quote prepared." },
+      { "q": "Is it suitable for my soil?", "a": "That depends on your soil test, so an agronomist should confirm it rather than me." }
+    ]
+  },
+
+  "Pharmacy": {
+    "facts": [
+      "Repeat prescriptions usually take two working days to prepare.",
+      "We will send a message when a prescription is ready for collection.",
+      "Delivery is available locally, and to the door for those who cannot travel.",
+      "A pharmacist is available for a private conversation during opening hours.",
+      "Prescriptions not collected within a set period are returned to stock."
+    ],
+    "faqs": [
+      { "q": "Is my prescription ready?", "a": "I can check that now and tell you when it will be." },
+      { "q": "Can I take this with my other medication?", "a": "That is a question for the pharmacist, and I will put you through rather than guess." },
+      { "q": "Do you deliver?", "a": "Yes, locally, and to the door if travelling is difficult." },
+      { "q": "How long does a repeat take?", "a": "Usually two working days, and we message you when it is ready." }
+    ]
+  },
+
+  "Legal Services": {
+    "facts": [
+      "An initial consultation can be arranged, and the fee basis is confirmed before any work begins.",
+      "Matters are given a reference and a named point of contact.",
+      "Fee estimates are given in writing before work is instructed.",
+      "Documents can be signed electronically where the matter allows.",
+      "Client information is treated as confidential and is not discussed with third parties."
+    ],
+    "faqs": [
+      { "q": "What are your fees?", "a": "The basis is confirmed in writing before any work starts. I can arrange an estimate for your matter." },
+      { "q": "Do I have a case?", "a": "That is for a qualified solicitor to assess. I can book you a consultation." },
+      { "q": "How long will it take?", "a": "It depends on the matter. Your point of contact can give you a realistic timeline." },
+      { "q": "Can I sign electronically?", "a": "In most matters, yes. I can confirm whether it applies to yours." }
+    ]
+  },
+
+  "Accounting & Tax": {
+    "facts": [
+      "Filing deadlines are published and reminders are sent well in advance.",
+      "Records can be submitted through the portal, by email, or dropped at the office.",
+      "Fees are quoted before work starts and depend on the scope agreed.",
+      "A named accountant is assigned to every client.",
+      "Queries raised by the authorities are handled on the client's behalf."
+    ],
+    "faqs": [
+      { "q": "When is my filing due?", "a": "I can confirm the deadline that applies to you and what we still need." },
+      { "q": "How much will it cost?", "a": "Fees are quoted before work starts. I can have a quote prepared for your scope." },
+      { "q": "Can I claim this as an expense?", "a": "That is a tax position and needs your accountant rather than me. I will have them come back to you." },
+      { "q": "What records do you need?", "a": "I can send a checklist for your situation, and records can come through the portal or by email." }
+    ]
+  },
+
+  "SaaS & Technology": {
+    "facts": [
+      "Plans can be upgraded at any time, and the change takes effect immediately.",
+      "Downgrades take effect at the end of the current billing period.",
+      "Data can be exported at any time in a standard format.",
+      "Support responds within one working day on standard plans and faster on priority plans.",
+      "Onboarding assistance is included with annual plans."
+    ],
+    "faqs": [
+      { "q": "Can I upgrade mid-month?", "a": "Yes, and it takes effect immediately with the difference prorated." },
+      { "q": "What happens to my data if I cancel?", "a": "You can export it at any time in a standard format before the account closes." },
+      { "q": "Do you integrate with our systems?", "a": "I can check the current integrations, and a specialist can confirm your specific setup." },
+      { "q": "How quickly does support respond?", "a": "Within one working day on standard plans, faster on priority." }
+    ]
+  },
+
+  "Fitness & Wellness": {
+    "facts": [
+      "Memberships can be frozen for a set period each year at no charge.",
+      "Classes can be booked in advance through the app and cancelled up to two hours before.",
+      "An induction is included with every new membership.",
+      "Personal training is booked separately and charged per session or in blocks.",
+      "Peak and off peak memberships differ in the hours they can be used."
+    ],
+    "faqs": [
+      { "q": "Can I freeze my membership?", "a": "Yes, for a set period each year at no charge. I can arrange it now." },
+      { "q": "How do I cancel a class?", "a": "Through the app, up to two hours before, and the slot goes back to the waiting list." },
+      { "q": "Is this exercise safe for my condition?", "a": "That is one for a qualified trainer or your doctor rather than me. I can book you an assessment." },
+      { "q": "What is included in the membership?", "a": "I can go through exactly what your tier includes and what is charged separately." }
+    ]
+  },
+
+  "Staffing & Recruitment": {
+    "facts": [
+      "Applications are acknowledged and reviewed against the role requirements.",
+      "Feedback is given after every interview stage.",
+      "Right to work documents are checked before any placement starts.",
+      "Timesheets are submitted weekly and pay runs weekly for temporary placements.",
+      "Candidate details are never shared with a client without permission."
+    ],
+    "faqs": [
+      { "q": "Have you heard back about my application?", "a": "I can check where it is and chase the client for you." },
+      { "q": "When do I get paid?", "a": "Weekly for temporary placements, against the timesheet you submit." },
+      { "q": "What is the salary?", "a": "I can tell you the advertised range and what the client has indicated." },
+      { "q": "Will my current employer be told?", "a": "No. Your details are never shared without your permission." }
+    ]
+  },
+
+  "Home Services": {
+    "facts": [
+      "Appointment windows are confirmed the day before by message.",
+      "Quotations are free and given before any work starts.",
+      "Workmanship is guaranteed for an agreed period after completion.",
+      "Emergency call outs are available outside normal hours at a different rate.",
+      "Engineers carry identification and will show it on arrival."
+    ],
+    "faqs": [
+      { "q": "When will the engineer arrive?", "a": "Your window is confirmed the day before by message, and I can check it now." },
+      { "q": "How much will it cost?", "a": "The quotation is free and comes before any work starts, so there are no surprises." },
+      { "q": "Is the work guaranteed?", "a": "Yes, workmanship is guaranteed for an agreed period after completion." },
+      { "q": "Can you come out today?", "a": "I can check availability, and there is an emergency service outside normal hours." }
+    ]
+  },
+
+  "IT Services & Enterprise Technology": {
+    "facts": [
+      "Support tickets are acknowledged against the agreed service levels.",
+      "Severity is agreed with the client and drives the response time.",
+      "Change requests go through an approval step before anything is deployed.",
+      "Maintenance windows are notified in advance and scheduled outside business hours where possible.",
+      "A named account manager is assigned to every engagement."
+    ],
+    "faqs": [
+      { "q": "What is the status of my ticket?", "a": "I can look that up against the reference and tell you where it stands." },
+      { "q": "What are your response times?", "a": "They follow the severity agreed in your service levels. I can confirm what applies to yours." },
+      { "q": "When is the next maintenance window?", "a": "I can confirm the schedule, and they are notified in advance." },
+      { "q": "Can you build this for us?", "a": "I can capture the requirement and have a solutions specialist come back to you with an approach." }
+    ]
+  },
+
+  "Veterinary & Pet Care": {
+    "facts": [
+      "Appointments can be rescheduled up to twenty four hours ahead at no charge.",
+      "Vaccination reminders are sent by message when they fall due.",
+      "Emergency cover is available outside normal hours.",
+      "Fasting is needed before certain procedures and we will tell you when booking.",
+      "Estimates are given before any treatment begins."
+    ],
+    "faqs": [
+      { "q": "When is the next vaccination due?", "a": "I can check the record and book it in for you." },
+      { "q": "Should I be worried about these symptoms?", "a": "That needs the vet rather than me. I can get you an appointment today if it is urgent." },
+      { "q": "How much will the treatment cost?", "a": "An estimate is given before treatment starts, so nothing comes as a surprise." },
+      { "q": "Do you see emergencies out of hours?", "a": "Yes, there is emergency cover outside normal hours." }
+    ]
+  }
+}

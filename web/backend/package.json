@@ -1,0 +1,31 @@
+{
+  "name": "omnireach-voice-backend",
+  "version": "1.0.0",
+  "description": "OmniReach — generic, profile-driven outbound voice-agent backend (Retell proxy + Company Profile + intelligence engine)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "migrate": "node migrate-to-postgres.js",
+    "migrate:dry": "node migrate-to-postgres.js --dry-run",
+    "set-password": "node set-password.js",
+    "users": "node set-password.js --list",
+    "make-admin": "node make-admin.js",
+    "mail:test": "node mail-test.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "csv-parse": "^5.5.3",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
+    "multer": "^1.4.5-lts.1",
+    "node-fetch": "^2.7.0",
+    "pg": "^8.22.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "pg-mem": "^3.0.14"
+  }
+}

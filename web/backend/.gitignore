@@ -1,0 +1,19 @@
+# Secrets — never commit
+.env
+*.env.local
+
+# Dependencies
+node_modules/
+
+# Runtime data (persisted call history + active profile)
+data/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

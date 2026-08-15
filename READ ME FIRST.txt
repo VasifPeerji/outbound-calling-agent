@@ -1,0 +1,86 @@
+OmniReach - AI Voice Outreach
+=============================
+
+Three files, in order. Double-click them; you never need a terminal.
+
+   1-SETUP.bat    Run ONCE on this computer. Installs what is needed and
+                  opens your settings file so you can paste in the keys.
+
+   2-START.bat    Run each time you want to use OmniReach. It starts the
+                  service and opens it in your browser automatically.
+
+   3-STOP.bat     Run when you are finished for the day.
+
+
+FIRST TIME
+----------
+1. Double-click 1-SETUP.bat and let it finish. It installs what is needed.
+   This copy already has the account keys in it, so there is nothing for
+   you to fill in.
+
+2. Double-click 2-START.bat. A black window titled "OmniReach Server"
+   appears and your browser opens at http://localhost:3002
+
+3. Look at the black window. The first time only, it prints a one-time
+   admin password:
+
+        email:     (the address shown next to it)
+        password:  (a long random one - copy it)
+
+   Sign in with those. You will be asked to choose your own password
+   immediately; the printed one stops working after that.
+
+   That password is generated on YOUR machine, so it is yours alone -
+   nobody else received it and it is not written down anywhere.
+
+
+EVERY DAY AFTER THAT
+--------------------
+   Double-click 2-START.bat  ->  work  ->  double-click 3-STOP.bat
+
+
+THINGS WORTH KNOWING
+--------------------
+* Leave the "OmniReach Server" window open while you are using it.
+  Closing that window stops the service, same as running 3-STOP.bat.
+
+* Nothing is lost when you stop. Calls, recordings and settings are saved.
+
+* Only you can see your own calls and recordings. An administrator can
+  see everyone's.
+
+* Simulation mode (the toggle at the top of the screen) runs a complete
+  dry run with no real phone call and no cost. It is the safe way to
+  practise or to demo without dialling anyone. Use it while you are
+  finding your way around - real calls cost money and reach real people.
+
+* This copy keeps its data on your own machine. Your calls and recordings
+  are not shared with the rest of the team, and theirs are not shared
+  with you.
+
+* The keys in this folder belong to the company account. Please do not
+  forward the folder on - if a colleague needs it, ask the person who
+  sent it to you.
+
+
+IF SOMETHING GOES WRONG
+-----------------------
+"Node.js is not installed"
+    Run 1-SETUP.bat - it will offer to open the download page. Install
+    the LTS version, then run 1-SETUP.bat again.
+
+"OmniReach did not start within 25 seconds"
+    Read the red text in the "OmniReach Server" window. It is almost
+    always a missing or mistyped key in web\backend\.env
+    Run 1-SETUP.bat again to reopen that file.
+
+The browser says it cannot connect
+    The service is not running. Double-click 2-START.bat
+
+Calls fail with a country or region error
+    International calling has to be switched on for the destination
+    country in the Twilio console. Ask whoever owns the Twilio account.
+
+Anything else
+    Send a screenshot of the "OmniReach Server" window - the answer is
+    almost always in there.

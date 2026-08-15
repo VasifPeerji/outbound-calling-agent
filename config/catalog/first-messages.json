@@ -1,0 +1,693 @@
+{
+  "_readme": "The opener the agent SPEAKS first on an outbound call, per language. ElevenLabs speaks `first_message` verbatim, so it cannot be 'translated on the fly' — it has to already be in the right language, which is what this file is for. Built as: greeting-for-time-of-day + identity confirmation + (optional) language-preference question. `{{customer_name}}` is filled by ElevenLabs; `{langs}` is filled with the native names of the profile's primary + mirror languages. These are plain editable templates: if a native speaker wants to refine the wording for a client, change it here, no code involved. Any language missing from this file falls back to English.",
+  "af": {
+    "greet": {
+      "morning": "Goeiemôre!",
+      "afternoon": "Goeiemiddag!",
+      "evening": "Goeienaand!"
+    },
+    "confirm": "Praat ek met {{customer_name}}?",
+    "ask": "Voor ons begin — in watter taal verkies u om voort te gaan: {langs}?",
+    "or": "of"
+  },
+  "ar": {
+    "greet": {
+      "morning": "صباح الخير!",
+      "afternoon": "مساء الخير!",
+      "evening": "مساء الخير!"
+    },
+    "confirm": "هل أتحدث مع {{customer_name}}؟",
+    "ask": "قبل أن نبدأ — بأي لغة تفضل أن نتحدث: {langs}؟",
+    "or": "أم"
+  },
+  "az": {
+    "greet": {
+      "morning": "Sabahınız xeyir!",
+      "afternoon": "Günortanız xeyir!",
+      "evening": "Axşamınız xeyir!"
+    },
+    "confirm": "{{customer_name}} ilə danışıram?",
+    "ask": "Başlamazdan əvvəl, hansı dildə davam etmək istərdiniz: {langs}?",
+    "or": "və ya"
+  },
+  "be": {
+    "greet": {
+      "morning": "Добрай раніцы!",
+      "afternoon": "Добры дзень!",
+      "evening": "Добры вечар!"
+    },
+    "confirm": "Я размаўляю з {{customer_name}}?",
+    "ask": "Перш чым пачаць, на якой мове вы хочаце працягнуць: {langs}?",
+    "or": "ці"
+  },
+  "bg": {
+    "greet": {
+      "morning": "Добро утро!",
+      "afternoon": "Добър ден!",
+      "evening": "Добър вечер!"
+    },
+    "confirm": "Говоря ли с {{customer_name}}?",
+    "ask": "Преди да започнем — на кой език предпочитате да продължим: {langs}?",
+    "or": "или"
+  },
+  "bn": {
+    "greet": {
+      "morning": "সুপ্রভাত!",
+      "afternoon": "নমস্কার!",
+      "evening": "শুভ সন্ধ্যা!"
+    },
+    "confirm": "আমি কি {{customer_name}} এর সাথে কথা বলছি?",
+    "ask": "শুরু করার আগে — আপনি কোন ভাষায় কথা বলতে চান: {langs}?",
+    "or": "নাকি"
+  },
+  "bs": {
+    "greet": {
+      "morning": "Dobro jutro!",
+      "afternoon": "Dobar dan!",
+      "evening": "Dobra večer!"
+    },
+    "confirm": "Razgovaram li sa {{customer_name}}?",
+    "ask": "Prije nego što počnemo, na kojem jeziku želite nastaviti: {langs}?",
+    "or": "ili"
+  },
+  "ca": {
+    "greet": {
+      "morning": "Bon dia!",
+      "afternoon": "Bona tarda!",
+      "evening": "Bon vespre!"
+    },
+    "confirm": "Parlo amb {{customer_name}}?",
+    "ask": "Abans de començar, en quin idioma prefereix continuar: {langs}?",
+    "or": "o"
+  },
+  "cs": {
+    "greet": {
+      "morning": "Dobré ráno!",
+      "afternoon": "Dobrý den!",
+      "evening": "Dobrý večer!"
+    },
+    "confirm": "Mluvím s {{customer_name}}?",
+    "ask": "Než začneme — v jakém jazyce chcete pokračovat: {langs}?",
+    "or": "nebo"
+  },
+  "cy": {
+    "greet": {
+      "morning": "Bore da!",
+      "afternoon": "Prynhawn da!",
+      "evening": "Noswaith dda!"
+    },
+    "confirm": "Ai {{customer_name}} sy'n siarad?",
+    "ask": "Cyn i ni ddechrau, pa iaith fyddai'n well gennych: {langs}?",
+    "or": "neu"
+  },
+  "da": {
+    "greet": {
+      "morning": "Godmorgen!",
+      "afternoon": "Goddag!",
+      "evening": "Godaften!"
+    },
+    "confirm": "Taler jeg med {{customer_name}}?",
+    "ask": "Før vi begynder — hvilket sprog foretrækker du: {langs}?",
+    "or": "eller"
+  },
+  "de": {
+    "greet": {
+      "morning": "Guten Morgen!",
+      "afternoon": "Guten Tag!",
+      "evening": "Guten Abend!"
+    },
+    "confirm": "Spreche ich mit {{customer_name}}?",
+    "ask": "Bevor wir beginnen — in welcher Sprache möchten Sie fortfahren: {langs}?",
+    "or": "oder"
+  },
+  "el": {
+    "greet": {
+      "morning": "Καλημέρα!",
+      "afternoon": "Καλησπέρα!",
+      "evening": "Καλησπέρα!"
+    },
+    "confirm": "Μιλάω με τον {{customer_name}};",
+    "ask": "Πριν ξεκινήσουμε — σε ποια γλώσσα προτιμάτε να συνεχίσουμε: {langs};",
+    "or": "ή"
+  },
+  "en": {
+    "greet": {
+      "morning": "Good morning!",
+      "afternoon": "Good afternoon!",
+      "evening": "Good evening!"
+    },
+    "confirm": "Am I speaking with {{customer_name}}?",
+    "ask": "Before we begin — which language would you prefer: {langs}?",
+    "or": "or"
+  },
+  "es": {
+    "greet": {
+      "morning": "¡Buenos días!",
+      "afternoon": "¡Buenas tardes!",
+      "evening": "¡Buenas noches!"
+    },
+    "confirm": "¿Hablo con {{customer_name}}?",
+    "ask": "Antes de empezar — ¿en qué idioma prefiere continuar: {langs}?",
+    "or": "o"
+  },
+  "et": {
+    "greet": {
+      "morning": "Tere hommikust!",
+      "afternoon": "Tere päevast!",
+      "evening": "Tere õhtust!"
+    },
+    "confirm": "Kas see on {{customer_name}}?",
+    "ask": "Enne kui alustame, millist keelt te eelistate: {langs}?",
+    "or": "või"
+  },
+  "fa": {
+    "greet": {
+      "morning": "صبح بخیر!",
+      "afternoon": "ظهر بخیر!",
+      "evening": "عصر بخیر!"
+    },
+    "confirm": "آیا با {{customer_name}} صحبت می‌کنم؟",
+    "ask": "پیش از شروع، ترجیح می‌دهید به چه زبانی ادامه دهیم: {langs}؟",
+    "or": "یا"
+  },
+  "fi": {
+    "greet": {
+      "morning": "Hyvää huomenta!",
+      "afternoon": "Hyvää päivää!",
+      "evening": "Hyvää iltaa!"
+    },
+    "confirm": "Puhunko {{customer_name}}:n kanssa?",
+    "ask": "Ennen kuin aloitamme — millä kielellä haluatte jatkaa: {langs}?",
+    "or": "vai"
+  },
+  "fil": {
+    "greet": {
+      "morning": "Magandang umaga!",
+      "afternoon": "Magandang hapon!",
+      "evening": "Magandang gabi!"
+    },
+    "confirm": "Kausap ko po ba si {{customer_name}}?",
+    "ask": "Bago po tayo magsimula — anong wika po ang mas gusto ninyo: {langs}?",
+    "or": "o"
+  },
+  "fr": {
+    "greet": {
+      "morning": "Bonjour !",
+      "afternoon": "Bonjour !",
+      "evening": "Bonsoir !"
+    },
+    "confirm": "Suis-je bien en ligne avec {{customer_name}} ?",
+    "ask": "Avant de commencer — dans quelle langue préférez-vous continuer : {langs} ?",
+    "or": "ou"
+  },
+  "ga": {
+    "greet": {
+      "morning": "Dia dhuit ar maidin!",
+      "afternoon": "Dia dhuit!",
+      "evening": "Tráthnóna maith!"
+    },
+    "confirm": "An bhfuil mé ag caint le {{customer_name}}?",
+    "ask": "Sula dtosaímid, cén teanga ab fhearr leat: {langs}?",
+    "or": "nó"
+  },
+  "gl": {
+    "greet": {
+      "morning": "Bos días!",
+      "afternoon": "Boas tardes!",
+      "evening": "Boas noites!"
+    },
+    "confirm": "Falo con {{customer_name}}?",
+    "ask": "Antes de comezar, en que idioma prefire continuar: {langs}?",
+    "or": "ou"
+  },
+  "gu": {
+    "greet": {
+      "morning": "સુપ્રભાત!",
+      "afternoon": "નમસ્તે!",
+      "evening": "શુભ સાંજ!"
+    },
+    "confirm": "શું હું {{customer_name}} સાથે વાત કરું છું?",
+    "ask": "શરૂ કરતાં પહેલાં, તમે કઈ ભાષામાં આગળ વધવા માંગો છો: {langs}?",
+    "or": "અથવા"
+  },
+  "ha": {
+    "greet": {
+      "morning": "Ina kwana!",
+      "afternoon": "Ina wuni!",
+      "evening": "Ina yamma!"
+    },
+    "confirm": "Ina magana da {{customer_name}}?",
+    "ask": "Kafin mu fara, wane harshe kake son mu ci gaba da shi: {langs}?",
+    "or": "ko"
+  },
+  "he": {
+    "greet": {
+      "morning": "בוקר טוב!",
+      "afternoon": "צהריים טובים!",
+      "evening": "ערב טוב!"
+    },
+    "confirm": "האם אני מדבר עם {{customer_name}}?",
+    "ask": "לפני שנתחיל — באיזו שפה תעדיף להמשיך: {langs}?",
+    "or": "או"
+  },
+  "hi": {
+    "greet": {
+      "morning": "सुप्रभात!",
+      "afternoon": "नमस्ते!",
+      "evening": "शुभ संध्या!"
+    },
+    "confirm": "क्या मेरी बात {{customer_name}} से हो रही है?",
+    "ask": "शुरू करने से पहले — आप किस भाषा में बात करना चाहेंगे: {langs}?",
+    "or": "या"
+  },
+  "hr": {
+    "greet": {
+      "morning": "Dobro jutro!",
+      "afternoon": "Dobar dan!",
+      "evening": "Dobra večer!"
+    },
+    "confirm": "Razgovaram li s {{customer_name}}?",
+    "ask": "Prije nego počnemo — na kojem jeziku želite nastaviti: {langs}?",
+    "or": "ili"
+  },
+  "hu": {
+    "greet": {
+      "morning": "Jó reggelt!",
+      "afternoon": "Jó napot!",
+      "evening": "Jó estét!"
+    },
+    "confirm": "{{customer_name}}-val beszélek?",
+    "ask": "Mielőtt elkezdenénk — melyik nyelven szeretné folytatni: {langs}?",
+    "or": "vagy"
+  },
+  "hy": {
+    "greet": {
+      "morning": "Բարի լույս!",
+      "afternoon": "Բարի օր!",
+      "evening": "Բարի երեկո!"
+    },
+    "confirm": "Ես խոսու՞մ եմ {{customer_name}}-ի հետ:",
+    "ask": "Նախքան սկսելը, ո՞ր լեզվով եք նախընտրում շարունակել՝ {langs}:",
+    "or": "կամ"
+  },
+  "id": {
+    "greet": {
+      "morning": "Selamat pagi!",
+      "afternoon": "Selamat siang!",
+      "evening": "Selamat malam!"
+    },
+    "confirm": "Apakah saya berbicara dengan {{customer_name}}?",
+    "ask": "Sebelum kita mulai — Anda ingin melanjutkan dalam bahasa apa: {langs}?",
+    "or": "atau"
+  },
+  "is": {
+    "greet": {
+      "morning": "Góðan morgun!",
+      "afternoon": "Góðan daginn!",
+      "evening": "Gott kvöld!"
+    },
+    "confirm": "Er ég að tala við {{customer_name}}?",
+    "ask": "Áður en við byrjum, á hvaða tungumáli viltu halda áfram: {langs}?",
+    "or": "eða"
+  },
+  "it": {
+    "greet": {
+      "morning": "Buongiorno!",
+      "afternoon": "Buon pomeriggio!",
+      "evening": "Buonasera!"
+    },
+    "confirm": "Parlo con {{customer_name}}?",
+    "ask": "Prima di iniziare — in quale lingua preferisce continuare: {langs}?",
+    "or": "o"
+  },
+  "ja": {
+    "greet": {
+      "morning": "おはようございます。",
+      "afternoon": "こんにちは。",
+      "evening": "こんばんは。"
+    },
+    "confirm": "{{customer_name}}様でいらっしゃいますか。",
+    "ask": "始める前に、どちらの言語がよろしいでしょうか：{langs}？",
+    "or": "または"
+  },
+  "ka": {
+    "greet": {
+      "morning": "დილა მშვიდობისა!",
+      "afternoon": "დღე მშვიდობისა!",
+      "evening": "საღამო მშვიდობისა!"
+    },
+    "confirm": "{{customer_name}}-თან ვსაუბრობ?",
+    "ask": "სანამ დავიწყებთ, რომელ ენაზე გირჩევნიათ გაგრძელება: {langs}?",
+    "or": "ან"
+  },
+  "kk": {
+    "greet": {
+      "morning": "Қайырлы таң!",
+      "afternoon": "Қайырлы күн!",
+      "evening": "Қайырлы кеш!"
+    },
+    "confirm": "Бұл {{customer_name}} ба?",
+    "ask": "Бастамас бұрын, қай тілде жалғастырғыңыз келеді: {langs}?",
+    "or": "немесе"
+  },
+  "kn": {
+    "greet": {
+      "morning": "ಶುಭೋದಯ!",
+      "afternoon": "ನಮಸ್ಕಾರ!",
+      "evening": "ಶುಭ ಸಂಜೆ!"
+    },
+    "confirm": "ನಾನು {{customer_name}} ಅವರೊಂದಿಗೆ ಮಾತನಾಡುತ್ತಿದ್ದೇನೆಯೇ?",
+    "ask": "ಪ್ರಾರಂಭಿಸುವ ಮೊದಲು, ನೀವು ಯಾವ ಭಾಷೆಯಲ್ಲಿ ಮುಂದುವರಿಯಲು ಬಯಸುತ್ತೀರಿ: {langs}?",
+    "or": "ಅಥವಾ"
+  },
+  "ko": {
+    "greet": {
+      "morning": "안녕하세요.",
+      "afternoon": "안녕하세요.",
+      "evening": "안녕하세요."
+    },
+    "confirm": "{{customer_name}}님 맞으신가요?",
+    "ask": "시작하기 전에, 어떤 언어로 진행할까요: {langs}?",
+    "or": "또는"
+  },
+  "ky": {
+    "greet": {
+      "morning": "Кайырлуу таң!",
+      "afternoon": "Кутмандуу күн!",
+      "evening": "Кутмандуу кеч!"
+    },
+    "confirm": "Мен {{customer_name}} менен сүйлөшүп жатамбы?",
+    "ask": "Баштоодон мурун, кайсы тилде улантууну каалайсыз: {langs}?",
+    "or": "же"
+  },
+  "lb": {
+    "greet": {
+      "morning": "Gudde Moien!",
+      "afternoon": "Gudden Dag!",
+      "evening": "Gudden Owend!"
+    },
+    "confirm": "Schwätzen ech mat {{customer_name}}?",
+    "ask": "Ier mir ufänken, a wéi enger Sprooch wëllt Dir weiderfueren: {langs}?",
+    "or": "oder"
+  },
+  "lt": {
+    "greet": {
+      "morning": "Labas rytas!",
+      "afternoon": "Laba diena!",
+      "evening": "Labas vakaras!"
+    },
+    "confirm": "Ar kalbu su {{customer_name}}?",
+    "ask": "Prieš pradedant, kokia kalba norėtumėte tęsti: {langs}?",
+    "or": "ar"
+  },
+  "lv": {
+    "greet": {
+      "morning": "Labrīt!",
+      "afternoon": "Labdien!",
+      "evening": "Labvakar!"
+    },
+    "confirm": "Vai es runāju ar {{customer_name}}?",
+    "ask": "Pirms sākam, kādā valodā vēlaties turpināt: {langs}?",
+    "or": "vai"
+  },
+  "mk": {
+    "greet": {
+      "morning": "Добро утро!",
+      "afternoon": "Добар ден!",
+      "evening": "Добра вечер!"
+    },
+    "confirm": "Дали разговарам со {{customer_name}}?",
+    "ask": "Пред да започнеме, на кој јазик сакате да продолжиме: {langs}?",
+    "or": "или"
+  },
+  "ml": {
+    "greet": {
+      "morning": "സുപ്രഭാതം!",
+      "afternoon": "നമസ്കാരം!",
+      "evening": "ശുഭ സന്ധ്യ!"
+    },
+    "confirm": "ഞാൻ {{customer_name}} യുമായി സംസാരിക്കുകയാണോ?",
+    "ask": "ആരംഭിക്കുന്നതിന് മുമ്പ്, നിങ്ങൾ ഏത് ഭാഷയിൽ തുടരാൻ ആഗ്രഹിക്കുന്നു: {langs}?",
+    "or": "അല്ലെങ്കിൽ"
+  },
+  "mr": {
+    "greet": {
+      "morning": "शुभ प्रभात!",
+      "afternoon": "नमस्कार!",
+      "evening": "शुभ संध्याकाळ!"
+    },
+    "confirm": "मी {{customer_name}} यांच्याशी बोलत आहे का?",
+    "ask": "सुरू करण्यापूर्वी, तुम्हाला कोणत्या भाषेत पुढे जायचे आहे: {langs}?",
+    "or": "किंवा"
+  },
+  "ms": {
+    "greet": {
+      "morning": "Selamat pagi!",
+      "afternoon": "Selamat tengah hari!",
+      "evening": "Selamat malam!"
+    },
+    "confirm": "Adakah saya bercakap dengan {{customer_name}}?",
+    "ask": "Sebelum kita mula — anda ingin teruskan dalam bahasa apa: {langs}?",
+    "or": "atau"
+  },
+  "ne": {
+    "greet": {
+      "morning": "शुभ प्रभात!",
+      "afternoon": "नमस्कार!",
+      "evening": "शुभ सन्ध्या!"
+    },
+    "confirm": "के म {{customer_name}} सँग कुरा गर्दै छु?",
+    "ask": "सुरु गर्नु अघि, तपाईं कुन भाषामा जारी राख्न चाहनुहुन्छ: {langs}?",
+    "or": "वा"
+  },
+  "nl": {
+    "greet": {
+      "morning": "Goedemorgen!",
+      "afternoon": "Goedemiddag!",
+      "evening": "Goedenavond!"
+    },
+    "confirm": "Spreek ik met {{customer_name}}?",
+    "ask": "Voordat we beginnen — in welke taal wilt u verdergaan: {langs}?",
+    "or": "of"
+  },
+  "no": {
+    "greet": {
+      "morning": "God morgen!",
+      "afternoon": "God dag!",
+      "evening": "God kveld!"
+    },
+    "confirm": "Snakker jeg med {{customer_name}}?",
+    "ask": "Før vi begynner — hvilket språk foretrekker du: {langs}?",
+    "or": "eller"
+  },
+  "pa": {
+    "greet": {
+      "morning": "ਸ਼ੁਭ ਸਵੇਰ!",
+      "afternoon": "ਸਤ ਸ੍ਰੀ ਅਕਾਲ!",
+      "evening": "ਸ਼ੁਭ ਸ਼ਾਮ!"
+    },
+    "confirm": "ਕੀ ਮੈਂ {{customer_name}} ਨਾਲ ਗੱਲ ਕਰ ਰਿਹਾ ਹਾਂ?",
+    "ask": "ਸ਼ੁਰੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ, ਤੁਸੀਂ ਕਿਸ ਭਾਸ਼ਾ ਵਿੱਚ ਜਾਰੀ ਰੱਖਣਾ ਚਾਹੋਗੇ: {langs}?",
+    "or": "ਜਾਂ"
+  },
+  "pl": {
+    "greet": {
+      "morning": "Dzień dobry!",
+      "afternoon": "Dzień dobry!",
+      "evening": "Dobry wieczór!"
+    },
+    "confirm": "Czy rozmawiam z {{customer_name}}?",
+    "ask": "Zanim zaczniemy — w jakim języku woli Pan kontynuować: {langs}?",
+    "or": "czy"
+  },
+  "ps": {
+    "greet": {
+      "morning": "سهار مو په خیر!",
+      "afternoon": "ورځ مو په خیر!",
+      "evening": "ماښام مو په خیر!"
+    },
+    "confirm": "ایا زه له {{customer_name}} سره خبرې کوم؟",
+    "ask": "مخکې له دې چې پیل وکړو، په کومه ژبه غواړئ دوام ورکړو: {langs}؟",
+    "or": "یا"
+  },
+  "pt": {
+    "greet": {
+      "morning": "Bom dia!",
+      "afternoon": "Boa tarde!",
+      "evening": "Boa noite!"
+    },
+    "confirm": "Falo com {{customer_name}}?",
+    "ask": "Antes de começarmos — em que idioma prefere continuar: {langs}?",
+    "or": "ou"
+  },
+  "ro": {
+    "greet": {
+      "morning": "Bună dimineața!",
+      "afternoon": "Bună ziua!",
+      "evening": "Bună seara!"
+    },
+    "confirm": "Vorbesc cu {{customer_name}}?",
+    "ask": "Înainte să începem — în ce limbă preferați să continuăm: {langs}?",
+    "or": "sau"
+  },
+  "ru": {
+    "greet": {
+      "morning": "Доброе утро!",
+      "afternoon": "Добрый день!",
+      "evening": "Добрый вечер!"
+    },
+    "confirm": "Я говорю с {{customer_name}}?",
+    "ask": "Прежде чем начать — на каком языке вам удобнее продолжить: {langs}?",
+    "or": "или"
+  },
+  "sd": {
+    "greet": {
+      "morning": "صبح جو سلام!",
+      "afternoon": "منجهند جو سلام!",
+      "evening": "شام جو سلام!"
+    },
+    "confirm": "ڇا مان {{customer_name}} سان ڳالهائي رهيو آهيان؟",
+    "ask": "شروع ڪرڻ کان اڳ، توهان ڪهڙي ٻولي ۾ اڳتي وڌڻ چاهيندا: {langs}؟",
+    "or": "يا"
+  },
+  "sk": {
+    "greet": {
+      "morning": "Dobré ráno!",
+      "afternoon": "Dobrý deň!",
+      "evening": "Dobrý večer!"
+    },
+    "confirm": "Hovorím s {{customer_name}}?",
+    "ask": "Než začneme — v akom jazyku chcete pokračovať: {langs}?",
+    "or": "alebo"
+  },
+  "sl": {
+    "greet": {
+      "morning": "Dobro jutro!",
+      "afternoon": "Dober dan!",
+      "evening": "Dober večer!"
+    },
+    "confirm": "Ali govorim z {{customer_name}}?",
+    "ask": "Preden začnemo, v katerem jeziku želite nadaljevati: {langs}?",
+    "or": "ali"
+  },
+  "so": {
+    "greet": {
+      "morning": "Subax wanaagsan!",
+      "afternoon": "Galab wanaagsan!",
+      "evening": "Habeen wanaagsan!"
+    },
+    "confirm": "Ma {{customer_name}} baan la hadlayaa?",
+    "ask": "Ka hor inta aynaan bilaabin, luqaddee ayaad doorbidaysaa: {langs}?",
+    "or": "ama"
+  },
+  "sr": {
+    "greet": {
+      "morning": "Dobro jutro!",
+      "afternoon": "Dobar dan!",
+      "evening": "Dobro veče!"
+    },
+    "confirm": "Da li razgovaram sa {{customer_name}}?",
+    "ask": "Pre nego što počnemo, na kom jeziku želite da nastavimo: {langs}?",
+    "or": "ili"
+  },
+  "sv": {
+    "greet": {
+      "morning": "God morgon!",
+      "afternoon": "God dag!",
+      "evening": "God kväll!"
+    },
+    "confirm": "Talar jag med {{customer_name}}?",
+    "ask": "Innan vi börjar — vilket språk föredrar du: {langs}?",
+    "or": "eller"
+  },
+  "sw": {
+    "greet": {
+      "morning": "Habari za asubuhi!",
+      "afternoon": "Habari za mchana!",
+      "evening": "Habari za jioni!"
+    },
+    "confirm": "Je, ninaongea na {{customer_name}}?",
+    "ask": "Kabla hatujaanza — ungependa tuendelee kwa lugha gani: {langs}?",
+    "or": "au"
+  },
+  "ta": {
+    "greet": {
+      "morning": "காலை வணக்கம்!",
+      "afternoon": "மதிய வணக்கம்!",
+      "evening": "மாலை வணக்கம்!"
+    },
+    "confirm": "நான் {{customer_name}} அவர்களிடம் பேசுகிறேனா?",
+    "ask": "தொடங்குவதற்கு முன் — எந்த மொழியில் தொடர விரும்புகிறீர்கள்: {langs}?",
+    "or": "அல்லது"
+  },
+  "te": {
+    "greet": {
+      "morning": "శుభోదయం!",
+      "afternoon": "నమస్కారం!",
+      "evening": "శుభ సాయంత్రం!"
+    },
+    "confirm": "నేను {{customer_name}} గారితో మాట్లాడుతున్నానా?",
+    "ask": "ప్రారంభించే ముందు, మీరు ఏ భాషలో కొనసాగించాలనుకుంటున్నారు: {langs}?",
+    "or": "లేదా"
+  },
+  "th": {
+    "greet": {
+      "morning": "สวัสดีตอนเช้า",
+      "afternoon": "สวัสดีตอนบ่าย",
+      "evening": "สวัสดีตอนเย็น"
+    },
+    "confirm": "ใช่คุณ {{customer_name}} ไหมคะ",
+    "ask": "ก่อนเริ่ม คุณต้องการใช้ภาษาใด: {langs}?",
+    "or": "หรือ"
+  },
+  "tr": {
+    "greet": {
+      "morning": "Günaydın!",
+      "afternoon": "İyi günler!",
+      "evening": "İyi akşamlar!"
+    },
+    "confirm": "{{customer_name}} ile mi görüşüyorum?",
+    "ask": "Başlamadan önce — hangi dilde devam etmek istersiniz: {langs}?",
+    "or": "veya"
+  },
+  "uk": {
+    "greet": {
+      "morning": "Доброго ранку!",
+      "afternoon": "Доброго дня!",
+      "evening": "Доброго вечора!"
+    },
+    "confirm": "Я розмовляю з {{customer_name}}?",
+    "ask": "Перш ніж почати — якою мовою вам зручніше продовжити: {langs}?",
+    "or": "чи"
+  },
+  "ur": {
+    "greet": {
+      "morning": "صبح بخیر!",
+      "afternoon": "السلام علیکم!",
+      "evening": "شام بخیر!"
+    },
+    "confirm": "کیا میں {{customer_name}} سے بات کر رہا ہوں؟",
+    "ask": "شروع کرنے سے پہلے — آپ کس زبان میں بات کرنا پسند کریں گے: {langs}؟",
+    "or": "یا"
+  },
+  "vi": {
+    "greet": {
+      "morning": "Chào buổi sáng!",
+      "afternoon": "Chào buổi chiều!",
+      "evening": "Chào buổi tối!"
+    },
+    "confirm": "Tôi đang nói chuyện với {{customer_name}} phải không ạ?",
+    "ask": "Trước khi bắt đầu — quý khách muốn tiếp tục bằng ngôn ngữ nào: {langs}?",
+    "or": "hay"
+  },
+  "zh": {
+    "greet": {
+      "morning": "早上好！",
+      "afternoon": "下午好！",
+      "evening": "晚上好！"
+    },
+    "confirm": "请问是{{customer_name}}吗？",
+    "ask": "开始之前，请问您希望用哪种语言继续：{langs}？",
+    "or": "还是"
+  }
+}

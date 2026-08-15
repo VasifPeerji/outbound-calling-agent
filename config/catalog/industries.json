@@ -1,0 +1,188 @@
+{
+  "Banking": {
+    "agent_role": "Customer Relationship Officer", "agent_name": "Riya",
+    "about": "{company} is a trusted bank offering everyday banking, cards, and loans.",
+    "offerings": [ { "name": "Personal Loan", "benefit": "quick funds for any personal need" }, { "name": "Credit Card", "benefit": "rewards on everyday spending" }, { "name": "Savings Account", "benefit": "everyday banking with attractive interest" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["penal charges", "credit-bureau reporting"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "branch appointment" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "card membership" } }
+  },
+  "Insurance": {
+    "agent_role": "Customer Care Executive", "agent_name": "Sara",
+    "about": "{company} is a trusted insurer offering motor, health, and life cover.",
+    "offerings": [ { "name": "Motor Insurance", "benefit": "comprehensive cover with fast claims" }, { "name": "Health Insurance", "benefit": "wide hospital network, cashless treatment" }, { "name": "Life Insurance", "benefit": "financial security for your family" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["policy lapse", "loss of no-claim discount"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "survey or inspection appointment" }, "feedback_survey": { "enabled": true, "scale": "1 to 10" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "policy" } }
+  },
+  "Healthcare": {
+    "agent_role": "Patient Care Coordinator", "agent_name": "Emily",
+    "about": "{company} runs clinics offering GP, dental, and specialist care with a patient-first approach.",
+    "offerings": [ { "name": "GP Consultations", "benefit": "same-week appointments, no long waits" }, { "name": "Health Check-ups", "benefit": "comprehensive screening packages" }, { "name": "Dental Care", "benefit": "routine and cosmetic dentistry" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": false }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "appointment" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "health plan" } }
+  },
+  "Hospitality & Travel": {
+    "agent_role": "Guest Relations Executive", "agent_name": "Maya",
+    "about": "{company} is a group of hotels and resorts known for warm service and memorable stays.",
+    "offerings": [ { "name": "Hotel Stays", "benefit": "best-rate rooms with member perks" }, { "name": "Resort Packages", "benefit": "all-inclusive getaways" }, { "name": "Rewards Membership", "benefit": "points, upgrades, and exclusive offers" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": false }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "booking" }, "feedback_survey": { "enabled": true, "scale": "1 to 10" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "rewards membership" } }
+  },
+  "Financial Services": {
+    "agent_role": "Financial Services Consultant", "agent_name": "Alex",
+    "about": "{company} offers loans, investments, insurance, and wealth advisory.",
+    "offerings": [ { "name": "Personal Loans", "benefit": "funds for any need, with clear terms" }, { "name": "Investments & Retirement", "benefit": "grow your money for the future" }, { "name": "Wealth Advisory", "benefit": "guidance from a qualified adviser" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["late-payment fees", "credit-bureau reporting"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "advisory appointment" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "policy" } }
+  },
+  "Retail": {
+    "agent_role": "Customer Experience Associate", "agent_name": "Alex",
+    "about": "{company} is a popular retailer delivering everyday essentials and electronics fast.",
+    "offerings": [ { "name": "Membership", "benefit": "free next-day delivery and member deals" }, { "name": "Electronics Deals", "benefit": "seasonal savings on top brands" }, { "name": "Buy Now, Pay Later", "benefit": "split your purchase into easy installments" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["late fee", "pause on future installment eligibility"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "delivery window" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "membership" } }
+  },
+  "Manufacturing": {
+    "agent_role": "Account Manager", "agent_name": "Lukas",
+    "about": "{company} manufactures precision equipment and supplies industry with reliable parts and service.",
+    "offerings": [ { "name": "Equipment", "benefit": "reliable machines with long service life" }, { "name": "Spare Parts", "benefit": "fast availability to minimise downtime" }, { "name": "Maintenance Contracts", "benefit": "planned servicing to keep lines running" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["late-payment interest as per contract", "a hold on further shipments"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": false }, "feedback_survey": { "enabled": true, "scale": "1 to 10" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "maintenance contract" } }
+  },
+  "Education": {
+    "agent_role": "Admissions & Student Services Advisor", "agent_name": "Chloe",
+    "about": "{company} offers career-focused undergraduate, postgraduate, and online programs.",
+    "offerings": [ { "name": "Undergraduate Degrees", "benefit": "career-focused programs with placements" }, { "name": "Postgraduate & MBA", "benefit": "advance your career with flexible study" }, { "name": "Online Courses", "benefit": "study anywhere, at your own pace" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["a hold on enrolment services", "a late-fee as per policy"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "counselling appointment" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "enrolment" } }
+  },
+  "Logistics": {
+    "agent_role": "Customer Service Executive", "agent_name": "Omar",
+    "about": "{company} delivers express parcels, freight, and warehousing, on time and with care.",
+    "offerings": [ { "name": "Express Delivery", "benefit": "next-day parcels across the country" }, { "name": "Freight & Cargo", "benefit": "reliable movement of large shipments" }, { "name": "Business Shipping Accounts", "benefit": "discounted rates and scheduled pickup" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["a hold on future shipments", "a late-payment charge"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "delivery window" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": false }, "renewal_retention": { "enabled": true, "renewal_noun": "business shipping account" } }
+  },
+  "Telecom": {
+    "agent_role": "Customer Care Executive", "agent_name": "Chidi",
+    "about": "{company} is a leading network offering voice, data, and broadband.",
+    "offerings": [ { "name": "Mobile Plans", "benefit": "voice and data bundles that suit your usage" }, { "name": "Home Broadband", "benefit": "fast, reliable internet at home" }, { "name": "Device Deals", "benefit": "phones on easy installments" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["service suspension", "a late-payment charge"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "installation visit" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "plan" } }
+  },
+  "Utilities": {
+    "agent_role": "Customer Account Executive", "agent_name": "Grace",
+    "about": "{company} supplies electricity and gas to homes and businesses, with fair pricing.",
+    "offerings": [ { "name": "Electricity & Gas", "benefit": "fair, fixed tariffs with no surprises" }, { "name": "Smart Meters", "benefit": "see and control your usage in real time" }, { "name": "Green Energy Plans", "benefit": "100% renewable electricity" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["a payment plan being required", "referral to our support team"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "engineer visit" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": false }, "renewal_retention": { "enabled": true, "renewal_noun": "energy tariff" } }
+  },
+  "Automobile": {
+    "agent_role": "Customer Relationship Executive", "agent_name": "Arjun",
+    "about": "{company} is a car dealership and service network for buying and maintaining vehicles.",
+    "offerings": [ { "name": "New Car Sales", "benefit": "the latest models with easy finance" }, { "name": "Service & Maintenance", "benefit": "expert care to keep your car running" }, { "name": "Extended Warranty", "benefit": "cover beyond the standard period" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": false }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "service appointment" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "extended warranty" } }
+  },
+  "Aviation": {
+    "agent_role": "Guest Experience Executive", "agent_name": "Layla",
+    "about": "{company} is an airline connecting travellers to the world with premium service.",
+    "offerings": [ { "name": "Flights & Fares", "benefit": "great fares across a global network" }, { "name": "Premium Cabins", "benefit": "award-winning business and first class" }, { "name": "Frequent Flyer Programme", "benefit": "miles, tier benefits, and upgrades" } ],
+    "use_cases": { "payment_reminder": { "enabled": false }, "overdue_followup": { "enabled": false }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "upcoming flight" }, "feedback_survey": { "enabled": true, "scale": "1 to 10" }, "lead_qualification": { "enabled": false }, "renewal_retention": { "enabled": true, "renewal_noun": "frequent flyer tier" } }
+  },
+  "Government": {
+    "agent_role": "Citizen Services Representative", "agent_name": "Sophie",
+    "about": "{company} provides public services to residents, from permits and taxes to community programs.",
+    "offerings": [ { "name": "Taxes & Utilities", "benefit": "manage your bills easily online" }, { "name": "Permits & Licences", "benefit": "apply and renew without the queue" }, { "name": "Community Programs", "benefit": "recreation, events, and support services" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["a late-payment penalty as per the by-law"] }, "sales_offer": { "enabled": false }, "appointment_reminder": { "enabled": true, "appointment_noun": "service appointment" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": false }, "renewal_retention": { "enabled": true, "renewal_noun": "permit or licence" } }
+  },
+  "Oil & Gas": {
+    "agent_role": "Supplier & Partner Relations", "agent_name": "Erik",
+    "about": "{company} is an energy operator working with a network of suppliers and contractors.",
+    "offerings": [ { "name": "Supplier Contracts", "benefit": "long-term partnerships with clear terms" }, { "name": "Vendor Onboarding", "benefit": "a smooth, compliant registration process" }, { "name": "Maintenance & Services", "benefit": "planned work to keep operations safe" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["a hold on new purchase orders", "late-payment terms as per contract"] }, "sales_offer": { "enabled": false }, "appointment_reminder": { "enabled": true, "appointment_noun": "site or inspection visit" }, "feedback_survey": { "enabled": true, "scale": "1 to 10" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "supplier contract" } }
+  },
+  "Call Centres": {
+    "agent_role": "Client Solutions Executive", "agent_name": "Bea",
+    "about": "{company} is a customer-experience provider running sales, support, and outreach for global brands.",
+    "offerings": [ { "name": "Inbound Support", "benefit": "24/7 customer support that delights" }, { "name": "Outbound Sales", "benefit": "trained teams that convert and retain" }, { "name": "AI Voice Agents", "benefit": "automate routine calls at scale" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["a pause on active programs", "late-payment terms as per the service agreement"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "discovery call" }, "feedback_survey": { "enabled": true, "scale": "1 to 10" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "service contract" } }
+  },
+  "Mining": {
+    "agent_role": "Stakeholder Relations Officer", "agent_name": "Jack",
+    "about": "{company} operates mines, working with suppliers, contractors, and local communities.",
+    "offerings": [ { "name": "Supplier Contracts", "benefit": "reliable, long-term supply partnerships" }, { "name": "Contractor Onboarding", "benefit": "safe, compliant site access" }, { "name": "Community Programs", "benefit": "local jobs, education, and support" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["a hold on new work orders", "late-payment terms as per contract"] }, "sales_offer": { "enabled": false }, "appointment_reminder": { "enabled": true, "appointment_noun": "site visit or induction" }, "feedback_survey": { "enabled": true, "scale": "1 to 10" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "supplier contract" } }
+  },
+  "Non-Profit": {
+    "agent_role": "Supporter Relations Officer", "agent_name": "Amara",
+    "about": "{company} is a charity providing education, clean water, and healthcare, powered by supporters.",
+    "offerings": [ { "name": "Monthly Giving", "benefit": "steady support that changes lives" }, { "name": "Sponsor a Child", "benefit": "education and care for a specific child" }, { "name": "Volunteer Programs", "benefit": "give your time and skills" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": false }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "event or visit" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "monthly donation" } }
+  },
+  "Food & Beverage": {
+    "agent_role": "Guest Care Executive", "agent_name": "Lucas",
+    "about": "{company} is a restaurant group serving fresh food with warm hospitality.",
+    "offerings": [ { "name": "Dine-In Reservations", "benefit": "your table ready when you arrive" }, { "name": "Catering & Events", "benefit": "great food for parties and offices" }, { "name": "Rewards Club", "benefit": "points, birthday treats, and member offers" } ],
+    "use_cases": { "payment_reminder": { "enabled": false }, "overdue_followup": { "enabled": false }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "reservation" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "rewards membership" } }
+  },
+  "Entertainment": {
+    "agent_role": "Member Experience Associate", "agent_name": "Jordan",
+    "about": "{company} is a streaming service with movies, series, live events, and originals.",
+    "offerings": [ { "name": "Streaming Plans", "benefit": "watch on any device, ad-free options" }, { "name": "Premium Tier", "benefit": "4K, more screens, and early access" }, { "name": "Live Events & PPV", "benefit": "concerts and events streamed live" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["a pause on your membership", "loss of access to premium content"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": false }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "membership" } }
+  },
+  "Construction & Real Estate": {
+    "agent_role": "Client Relations Manager", "agent_name": "Khalid",
+    "about": "{company} builds quality homes and commercial spaces, delivered on time.",
+    "offerings": [ { "name": "Homes for Sale", "benefit": "apartments and villas in prime locations" }, { "name": "Payment Plans", "benefit": "flexible instalments through to handover" }, { "name": "Property Management", "benefit": "hassle-free ownership and rentals" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["a late-payment charge as per the sale agreement", "a hold on unit processing"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "site visit or handover" }, "feedback_survey": { "enabled": true, "scale": "1 to 10" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": false } }
+  },
+  "Agriculture": {
+    "agent_role": "Farmer Support Officer", "agent_name": "Dewi",
+    "about": "{company} helps farmers with quality inputs, advisory, and fair market access.",
+    "offerings": [ { "name": "Seeds & Inputs", "benefit": "quality seeds and fertiliser at fair prices" }, { "name": "Crop Advisory", "benefit": "expert guidance to improve your harvest" }, { "name": "Input Financing", "benefit": "affordable credit for the season" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": false }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "advisory visit" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "advisory subscription" } }
+  },
+  "Pharmacy": {
+    "agent_role": "Pharmacy Care Coordinator", "agent_name": "Olivia",
+    "about": "{company} is a community pharmacy offering prescriptions, health advice, and vaccinations.",
+    "offerings": [ { "name": "Repeat Prescriptions", "benefit": "reorder and collect without the hassle" }, { "name": "Vaccinations", "benefit": "flu, travel, and seasonal jabs" }, { "name": "Health Consultations", "benefit": "private advice from a pharmacist" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": false }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "consultation or vaccination" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": false }, "renewal_retention": { "enabled": true, "renewal_noun": "repeat prescription" } }
+  },
+  "Legal Services": {
+    "agent_role": "Client Services Coordinator", "agent_name": "Priya",
+    "about": "{company} is a law firm advising individuals and businesses across property, corporate, and family matters.",
+    "offerings": [ { "name": "Conveyancing", "benefit": "buying or selling property without the stress" }, { "name": "Corporate & Commercial", "benefit": "contracts, incorporation, and compliance" }, { "name": "Wills & Estates", "benefit": "protecting your family's future" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["work paused on the matter"] }, "sales_offer": { "enabled": false }, "appointment_reminder": { "enabled": true, "appointment_noun": "consultation" }, "feedback_survey": { "enabled": true, "scale": "1 to 10" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "retainer" } }
+  },
+  "Accounting & Tax": {
+    "agent_role": "Client Relationship Executive", "agent_name": "Daniel",
+    "about": "{company} is an accountancy practice handling tax, audit, payroll, and advisory for businesses and individuals.",
+    "offerings": [ { "name": "Tax Filing", "benefit": "filed accurately and on time, every time" }, { "name": "Payroll", "benefit": "your team paid correctly without the admin" }, { "name": "Business Advisory", "benefit": "practical advice as your business grows" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["late-filing penalties"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "review meeting" }, "feedback_survey": { "enabled": true, "scale": "1 to 10" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "annual engagement" } }
+  },
+  "SaaS & Technology": {
+    "agent_role": "Customer Success Manager", "agent_name": "Alex",
+    "about": "{company} builds software that helps teams work faster, with support that actually answers.",
+    "offerings": [ { "name": "Professional Plan", "benefit": "the full toolkit for growing teams" }, { "name": "Onboarding & Training", "benefit": "your team productive in days, not months" }, { "name": "Priority Support", "benefit": "answers when you need them" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["account suspension"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "onboarding session" }, "feedback_survey": { "enabled": true, "scale": "1 to 10" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "subscription" } }
+  },
+  "Fitness & Wellness": {
+    "agent_role": "Member Experience Executive", "agent_name": "Maya",
+    "about": "{company} runs fitness and wellness studios helping members train, recover, and stay consistent.",
+    "offerings": [ { "name": "Annual Membership", "benefit": "unlimited access at the best rate" }, { "name": "Personal Training", "benefit": "a plan built around your goals" }, { "name": "Group Classes", "benefit": "train with people who keep you going" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["membership on hold"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "class or session" }, "feedback_survey": { "enabled": true, "scale": "1 to 10" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "membership" } }
+  },
+  "Staffing & Recruitment": {
+    "agent_role": "Talent Consultant", "agent_name": "Sofia",
+    "about": "{company} connects skilled people with employers who need them, across permanent and contract roles.",
+    "offerings": [ { "name": "Permanent Placement", "benefit": "the right hire, properly vetted" }, { "name": "Contract Staffing", "benefit": "skilled people on site quickly" }, { "name": "Executive Search", "benefit": "discreet hiring for senior roles" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": false }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "interview" }, "feedback_survey": { "enabled": true, "scale": "1 to 10" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": false } }
+  },
+  "Home Services": {
+    "agent_role": "Service Coordinator", "agent_name": "Omar",
+    "about": "{company} provides home maintenance and installation — plumbing, cooling, electrical, and pest control.",
+    "offerings": [ { "name": "Annual Service Plan", "benefit": "scheduled maintenance and priority callouts" }, { "name": "Installation", "benefit": "fitted properly, first time" }, { "name": "Emergency Callout", "benefit": "someone there when it goes wrong" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["plan suspension"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "service visit" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "service plan" } }
+  },
+  "IT Services & Enterprise Technology": {
+    "agent_role": "Client Success Executive", "agent_name": "Anika",
+    "about": "{company} runs and modernises enterprise technology — managed infrastructure, hybrid cloud, and the software estates that businesses depend on.",
+    "offerings": [ { "name": "Managed Infrastructure", "benefit": "your estate monitored and supported around the clock" }, { "name": "Support & Subscription", "benefit": "entitled fixes, security patches, and version upgrades" }, { "name": "Modernisation Services", "benefit": "moving off end-of-support platforms without the drama" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true, "consequences": ["support entitlement lapsing"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "service review" }, "feedback_survey": { "enabled": true, "scale": "1 to 10" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "support subscription" } }
+  },
+  "Veterinary & Pet Care": {
+    "agent_role": "Practice Coordinator", "agent_name": "Grace",
+    "about": "{company} is a veterinary practice caring for pets through routine health, vaccination, and treatment.",
+    "offerings": [ { "name": "Wellness Plan", "benefit": "routine care spread over affordable monthly payments" }, { "name": "Vaccinations", "benefit": "protection kept up to date automatically" }, { "name": "Dental & Surgery", "benefit": "expert care when it is needed" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": false }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "appointment" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": false }, "renewal_retention": { "enabled": true, "renewal_noun": "wellness plan" } }
+  }
+}
