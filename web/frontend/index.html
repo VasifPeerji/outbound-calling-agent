@@ -1675,8 +1675,21 @@ function renderAccessRequests() {
 async function decideAccessRequest(id, action) {
   const r = accessRequests.find(x => x.id === id);
   if (action === 'reject' && !confirm(`Reject the request from ${r ? r.email : 'this address'}?`)) return;
+  const body = {};
+  if (action === 'approve' && r) {
+    // Which organisation they join. The default is their email domain, which is wrong exactly when
+    // the address is a personal one: approve a colleague on gmail and, left alone, they land in an
+    // org of one and cannot see their own team's calls.
+    const suggested = (r.consumerDomain || r.disposableDomain) ? (currentUser.orgId || r.domain) : r.domain;
+    const org = prompt(
+      `Approve ${r.email}.\n\nWhich organisation do they belong to? Colleagues in the same organisation see each other's calls and analytics.\n\n` +
+      ((r.consumerDomain || r.disposableDomain) ? 'Their address is a personal one, so the domain is probably NOT their employer.\n' : ''),
+      suggested);
+    if (org === null) return;
+    body.orgId = org.trim();
+  }
   try {
-    const d = await apiFetch(`/api/admin/access-requests/${id}/${action}`, 'POST', {});
+    const d = await apiFetch(`/api/admin/access-requests/${id}/${action}`, 'POST', body);
     toast('success', action === 'approve' ? 'Approved' : 'Rejected', d.message || (r ? r.email : ''));
     loadAccessRequests(); initSignup();
   } catch (e) { toast('error', 'Could not update the request', e.message); }

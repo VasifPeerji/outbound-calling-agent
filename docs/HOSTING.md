@@ -29,6 +29,37 @@ separate front end to deploy.
 application reads `config/` and `prompts/` from two levels up, so those folders must be present on
 disk even though the process starts inside `web/backend`.
 
+### Running under PM2
+
+A process definition is committed at `ecosystem.config.js` in the repository root.
+
+```bash
+git clone https://github.com/VasifPeerji/outbound-calling-agent.git
+cd outbound-calling-agent/web/backend && npm install --omit=dev && cd ../..
+pm2 start ecosystem.config.js --env production
+pm2 save && pm2 startup        # bring it back after a server reboot
+```
+
+Then, day to day:
+
+```bash
+pm2 logs omnireach             # follow the log
+pm2 reload omnireach           # restart after a deploy
+pm2 status
+```
+
+**Keep it at one instance.** The config sets `instances: 1` deliberately, and it should stay that
+way. Two parts of the application assume a single writer: the scheduler fires on its own timer, so a
+second copy would ring the same customers a second time, and the storage layer rewrites whole tables
+on save, so copies would overwrite each other. Scale by giving the machine more resources, not by
+adding instances.
+
+**Secrets do not go in `ecosystem.config.js`.** It is committed to the repository. Put them in
+`web/backend/.env` on the server (permissions `600`), or export them in the shell PM2 starts from.
+
+`env_production` already sets `TRUST_PROXY=true`, which is correct for the usual PM2-behind-nginx
+arrangement.
+
 **What we need back from you:** the final HTTPS URL. Nothing else, and it does not have to exist
 before the code is deployed. See "About PUBLIC_BASE" below for why.
 

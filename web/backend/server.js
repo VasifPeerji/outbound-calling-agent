@@ -1339,9 +1339,16 @@ app.post('/api/auth/verify-code', verifyLimiter, (req, res) => {
   // means: nobody at Streebo has to provision a colleague of a partner one at a time.
   let u = auth.findByEmail(email);
   if (!u) {
+    // Normally the email domain IS the organisation. But an individually approved address often is
+    // not: a colleague on a personal address, or a contractor. If the admin named an organisation
+    // when approving them, honour it — otherwise that person lands alone in a "gmail.com" org and
+    // cannot see their own team's calls, which is precisely the confusion this is meant to prevent.
+    const approved = accessRequests.find(r => r.email === email && r.status === 'approved' && r.orgId);
+    const orgId = approved ? approved.orgId : signin.domainOf(email);
+    if (approved) console.log(`👥  ${email} placed in "${orgId}" as decided when their request was approved.`);
     u = {
       id: uuidv4(), email, name: String(b.name || '').trim() || email.split('@')[0],
-      org: String(b.company || '').trim(), orgId: signin.domainOf(email), role: 'user',
+      org: String(b.company || '').trim(), orgId, role: 'user',
       passwordHash: '', active: true, createdAt: new Date().toISOString(), verifiedAt: new Date().toISOString(),
       signInMethod: 'code', approvedByDomain: true,
       // No per-user quota: the platform default applies, so one admin change moves everybody.
@@ -1519,9 +1526,15 @@ app.post('/api/admin/access-requests/:id/approve', requirePlatformAdmin, (req, r
   // No account is created here. They still have to prove the mailbox with a code, which is the
   // whole point: approval grants permission to try, not access.
   r.status = 'approved'; r.decidedBy = req.user.id; r.decidedByEmail = req.user.email; r.decidedAt = new Date().toISOString();
-  if (req.body && req.body.orgId) r.orgId = String(req.body.orgId).toLowerCase().trim();
+  // Which organisation they join. Matters most for an address whose domain is not their employer,
+  // where the default would strand them in an org of one.
+  const chosen = signin.normaliseDomain((req.body || {}).orgId);
+  if (chosen) r.orgId = chosen;
   saveAccessRequests();
-  res.json({ success: true, request: r, message: `${email} can now request a sign-in code.` });
+  res.json({
+    success: true, request: r,
+    message: `${email} can now request a sign-in code${r.orgId ? `, and will join "${r.orgId}"` : ''}.`
+  });
 });
 app.post('/api/admin/access-requests/:id/reject', requirePlatformAdmin, (req, res) => {
   const r = accessRequests.find(x => x.id === req.params.id);
