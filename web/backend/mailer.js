@@ -87,58 +87,72 @@ function explainSendError(d, status) {
 }
 
 // ── the adapters ────────────────────────────────────────
+/** One address or many, in whatever shape the caller had it. */
+function recipientList(to) {
+  const arr = Array.isArray(to) ? to : String(to || '').split(/[,;]/);
+  return arr.map(x => String(x || '').trim()).filter(Boolean);
+}
+
 const adapters = {
-  async graph({ to, subject, text }) {
+  async graph({ to, subject, text, html }) {
     const from = (process.env.GRAPH_MAIL_FROM || '').trim();
     if (!from) throw new Error('GRAPH_MAIL_FROM must be set to the mailbox the app is allowed to send as.');
     const token = await graphToken();
+    const people = recipientList(to);
 
     const r = await fetch(`${GRAPH}/users/${encodeURIComponent(from)}/sendMail`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      // Plain text on purpose. A sign-in code needs no HTML, and a message with no links at all is
-      // immune to link-rewriting scanners (Defender Safe Links, Proofpoint) and scores far better
-      // against phishing filters than a styled mail carrying a button.
+      // Plain text unless the caller supplies HTML. A sign-in code needs no markup, and a message
+      // with no links at all is immune to link-rewriting scanners (Defender Safe Links, Proofpoint)
+      // and scores far better against phishing filters than a styled mail carrying a button. The
+      // daily report is the exception: it is a table, and a table has to be drawn.
       body: JSON.stringify({
         message: {
           subject,
-          body: { contentType: 'Text', content: text },
-          toRecipients: [{ emailAddress: { address: to } }]
+          body: html ? { contentType: 'HTML', content: html } : { contentType: 'Text', content: text },
+          toRecipients: people.map(address => ({ emailAddress: { address } }))
         },
         // Sign-in codes in Sent Items are just clutter in a shared mailbox, and a small liability.
-        saveToSentItems: false
+        // A report is worth keeping, so it is the one thing we file.
+        saveToSentItems: !!html
       }),
-      timeout: 25000
+      timeout: 30000
     });
 
-    if (r.status === 202) return { ok: true, provider: 'graph', detail: `sent as ${from}` };
+    if (r.status === 202) return { ok: true, provider: 'graph', detail: `sent as ${from} to ${people.length} recipient${people.length === 1 ? '' : 's'}` };
     const d = await r.json().catch(() => ({}));
     throw new Error(explainSendError(d, r.status));
   },
 
-  async smtp({ to, subject, text }) {
+  async smtp({ to, subject, text, html }) {
     let nodemailer;
     try { nodemailer = require('nodemailer'); }
     catch { throw new Error('MAIL_PROVIDER=smtp needs nodemailer:  npm install nodemailer'); }
     const url = (process.env.SMTP_URL || '').trim();
     if (!url) throw new Error('SMTP_URL must be set, e.g. smtps://user%40streebo.com:pass@smtp.office365.com:587');
     const from = (process.env.GRAPH_MAIL_FROM || process.env.SMTP_FROM || '').trim();
-    const info = await nodemailer.createTransport(url).sendMail({ from, to, subject, text });
+    const info = await nodemailer.createTransport(url).sendMail({ from, to: recipientList(to).join(', '), subject, text, html: html || undefined });
     return { ok: true, provider: 'smtp', detail: info.messageId };
   },
 
-  async dev({ to, subject, text }) {
-    console.log(`\n📧  [dev mailer] would send to ${to}\n    subject: ${subject}\n    ${text.replace(/\n/g, '\n    ')}\n`);
+  async dev({ to, subject, text, html }) {
+    const people = recipientList(to).join(', ');
+    console.log(`\n📧  [dev mailer] would send to ${people}\n    subject: ${subject}\n    ${String(text).replace(/\n/g, '\n    ')}\n${html ? `    (plus an HTML body of ${html.length} characters)\n` : ''}`);
     return { ok: true, provider: 'dev', detail: 'printed to server log (no mail sent)' };
   }
 };
 
-/** Send one message. Throws with a human-readable reason; callers decide whether that is fatal. */
-async function send({ to, subject, text }) {
+/**
+ * Send one message. Throws with a human-readable reason; callers decide whether that is fatal.
+ * `to` may be one address or a list. Pass `html` for a rendered body; `text` is still required
+ * and becomes the fallback for clients that will not render it.
+ */
+async function send({ to, subject, text, html }) {
   const adapter = adapters[PROVIDER];
   if (!adapter) throw new Error(`Unknown MAIL_PROVIDER "${PROVIDER}". Use graph, smtp or dev.`);
-  if (!to || !subject || !text) throw new Error('send() needs to, subject and text.');
-  return adapter({ to, subject, text });
+  if (!recipientList(to).length || !subject || !text) throw new Error('send() needs to, subject and text.');
+  return adapter({ to, subject, text, html });
 }
 
 /** Is this provider actually configured? Used by the readiness check, and by the startup warning. */
@@ -154,4 +168,4 @@ function status() {
   return { provider: 'dev', configured: true, missing: [], delivers: false };
 }
 
-module.exports = { send, status, _internals: { graphToken, explainAuthError, explainSendError } };
+module.exports = { send, status, recipientList, _internals: { graphToken, explainAuthError, explainSendError } };

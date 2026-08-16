@@ -163,12 +163,54 @@ there is a real proxy to trust — and it trusts exactly one hop, not the whole 
 ## After the first deploy
 
 1. **Sign in.** Existing accounts work unchanged; the database comes with them.
-2. **Check the boot log.** It states which organisation owns the platform and who the super
-   administrators are. If either looks wrong, fix it before letting partners in.
-3. **Add the approved email domains** under Admin → Sign-up & access. Until a domain is listed,
+2. **Check the boot log.** It states which organisation owns the platform, who the super
+   administrators are, and where the daily report is addressed. If any of those looks wrong, fix it
+   before letting partners in.
+3. **Add the approved email domains** under Admin → Sign-up & limits. Until a domain is listed,
    people from it are refused and land in the access-request queue instead.
-4. **Turn on the daily allowance** under Admin → Guardrails when you want it enforced.
+4. **Turn on the daily allowance** under Admin → Sign-up & limits → Guardrails when you want it enforced.
 5. **Confirm mail works** by signing in with a code, or run `npm run mail:test -- you@streebo.com`.
+6. **Check the daily report** under Admin → Daily report. Press *Preview* to see exactly what will
+   be sent, and *Send a test to me* to prove delivery end to end.
+
+---
+
+## The daily activity report
+
+Once a day the server emails Streebo one message covering **every partner**: calls placed, who they
+called and in which country, talk time, the industries demonstrated, and any allowance boosts in
+force. It exists so nobody has to log in and page through the console to know whether the platform
+is being used.
+
+Nothing needs configuring on the host beyond working mail. The defaults are:
+
+| Setting | Default |
+| --- | --- |
+| Send at | 00:15 |
+| Day boundary | `Asia/Kolkata` — midnight to midnight, India time |
+| Recipients | vasif.peerji@streebo.com, presales@streebo.com, vibhuti.ramanuj@streebosolutions.com |
+
+All of it is editable in the console under **Admin → Daily report**, by a super administrator only.
+
+Three things worth knowing:
+
+- **The day is a real day in a real place.** The window is midnight to midnight in the report's own
+  timezone, never the host's clock, so moving the server to a machine in another region does not
+  silently redraw every day boundary. The report always covers the day that has just *finished*,
+  whatever hour it is sent at.
+- **No recordings are attached.** A day across every partner would be tens of megabytes, and
+  Microsoft Graph's simple send would refuse it. The report carries everything needed to decide
+  which conversations are worth hearing; the audio stays in the console behind the usual
+  permissions. That also stops a message sitting in an inbox from becoming an unguarded copy of real
+  customer conversations.
+- **It cannot be sent to a partner.** It puts every customer's activity side by side, so an address
+  on a partner's own domain is refused outright rather than merely discouraged. Only a super
+  administrator can change the recipients at all.
+
+If it fails to send, the server retries on its next check, up to five times for that day, and both
+the failure and the reason appear in the log and under Admin → Daily report → Delivery. A restart or
+an overnight outage cannot make a day disappear: whenever the process is next alive past the send
+time, the day it owes still goes out.
 
 ## Verifying it is healthy
 

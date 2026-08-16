@@ -26,6 +26,7 @@ const { simulateCall } = require('./simulator');
 const auth = require('./auth');
 const signin = require('./signin');
 const mailer = require('./mailer');
+const report = require('./report');
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -118,6 +119,11 @@ function requirePlatformAdmin(req, res, next) {
   if (!isPlatformAdmin(req.user)) return res.status(403).json({ error: 'That is a platform-wide setting and is managed by the platform operator.' });
   next();
 }
+/** Narrower still: reserved for things that decide where the whole estate's data goes. */
+function requireSuperAdmin(req, res, next) {
+  if (!isSuper(req.user)) return res.status(403).json({ error: 'Only a super administrator can change this.' });
+  next();
+}
 /** Guard for any change aimed AT a user. Returns an error string, or null when allowed. */
 function blockedFromEditing(actor, target) {
   if (isSuper(target) && !isSuper(actor)) return 'That account is a super administrator and can only be changed by another super administrator.';
@@ -208,6 +214,7 @@ let signup = { enabled: false, allowedDomains: [], allowedEmails: [], allowOther
 let otps = [];             // pending sign-in codes, one per email address
 let accessRequests = [];   // people from a domain we have not whitelisted, awaiting an admin's decision
 let orgQuotas = {};       // per-organisation allowance boosts: { orgId: {callsPerDay,minutesPerDay,bulk,until,reason} }
+let dailyReport = {};     // the nightly activity email: who receives it, when, and what it last did
 let otpSendLog = [];       // in-memory only: how recently each address was mailed, for the resend throttle
 let schedules = [];   // scheduled calls/campaigns, per user
 let bookmarks = [];   // saved Agent Builder configurations, per user
@@ -666,6 +673,7 @@ async function hydrate() {
   if (d.guardrails) guardrails = { ...guardrails, ...d.guardrails };
   if (d.signup) signup = { ...signup, ...d.signup };
   orgQuotas = d.orgQuotas || {};
+  dailyReport = report.withDefaults(d.dailyReport);
   schedules = d.schedules || [];
   bookmarks = d.bookmarks || [];
   otps = (d.otps || []).filter(o => o && o.expiresAt > Date.now());
@@ -800,7 +808,8 @@ function makeSimulatedEntry(toNumber, vars, profile) {
   const sim = simulateCall(vars, profile);
   const entry = {
     id: uuidv4(), toNumber: toNumber || '', customerName: vars.customer_name || '', useCase: vars.use_case || sim.useCase || '',
-    company: (profile.company || {}).name || '', provider: 'simulator', callId: 'sim_' + uuidv4().slice(0, 8),
+    company: (profile.company || {}).name || '', industry: (profile.company || {}).industry || '',
+    provider: 'simulator', callId: 'sim_' + uuidv4().slice(0, 8),
     status: 'ended', simulated: true, timestamp: new Date().toISOString(), variables: vars,
     callStatus: 'ended', hasAudio: false, transcript: sim.transcript, durationMs: sim.durationMs,
     userSentiment: sim.userSentiment, callSuccessful: sim.callSuccessful, disposition: sim.disposition,
@@ -1138,7 +1147,9 @@ async function runSchedule(s, opts = {}) {
   const targets = (s.target && Array.isArray(s.target.customers) && s.target.customers.length)
     ? s.target.customers
     : [{ to_number: (s.target || {}).toNumber, customer_name: (s.target || {}).customerName, variables: (s.target || {}).variables || {} }];
-  const company = (profile.company || {}).name || '';
+  // Stamped onto every call, not looked up later: a partner who re-skins their agent for a different
+  // industry tomorrow must not retroactively relabel what they demonstrated today.
+  const company = (profile.company || {}).name || '', industry = (profile.company || {}).industry || '';
   let placed = 0, failed = 0;
   const delayMs = simulate ? 150 : Math.max(1, (s.delaySeconds || config.bulkDelay || 3)) * 1000;
 
@@ -1155,14 +1166,14 @@ async function runSchedule(s, opts = {}) {
         entry = makeSimulatedEntry(t.to_number, vars, profile);
       } else {
         const { providerName, providerCallId } = await placeCall(t.to_number, vars, profile, fakeReq.user);
-        entry = { id: uuidv4(), toNumber: t.to_number, customerName: t.customer_name || '', useCase: vars.use_case || '', company, provider: providerName, callId: providerCallId, status: 'initiated', timestamp: new Date().toISOString(), variables: vars };
+        entry = { id: uuidv4(), toNumber: t.to_number, customerName: t.customer_name || '', useCase: vars.use_case || '', company, industry, provider: providerName, callId: providerCallId, status: 'initiated', timestamp: new Date().toISOString(), variables: vars };
       }
       entry.scheduleId = s.id; entry.scheduleName = s.name;
       stampUser(entry, user); callHistory.unshift(entry); placed++;
       const wb = getWriteback(s.userId);
       if (simulate && wb.enabled) { try { await runWritebackForEntries([entry], wb, s.userId); } catch (e) { /* keep going */ } }
     } catch (err) {
-      const entry = { id: uuidv4(), toNumber: t.to_number, customerName: t.customer_name || '', useCase: vars.use_case || '', company, provider: activeProviderName(profile), status: 'failed', error: err.message, timestamp: new Date().toISOString(), variables: vars, scheduleId: s.id, scheduleName: s.name };
+      const entry = { id: uuidv4(), toNumber: t.to_number, customerName: t.customer_name || '', useCase: vars.use_case || '', company, industry, provider: activeProviderName(profile), status: 'failed', error: err.message, timestamp: new Date().toISOString(), variables: vars, scheduleId: s.id, scheduleName: s.name };
       stampUser(entry, user); callHistory.unshift(entry); failed++;
     }
     if (i < targets.length - 1 && !s._cancelRun) await sleep(delayMs);
@@ -1556,9 +1567,11 @@ app.post('/api/admin/users/:id/approve', requireAdmin, (req, res) => {
 });
 app.post('/api/admin/users', requireAdmin, (req, res) => {
   const b = req.body || {};
-  if (!b.email || !b.password) return res.status(400).json({ error: 'Email and password are required.' });
+  if (!b.email) return res.status(400).json({ error: 'An email address is required.' });
   if (auth.findByEmail(b.email)) return res.status(409).json({ error: 'A user with that email already exists.' });
-  // The admin picks a temporary password; the user must replace it at first sign-in.
+  // A password is OPTIONAL. Everyone signs in with a code sent to their mailbox, and an account
+  // created here is active, so it can request one even from a domain that is not whitelisted. Set a
+  // password only when a fallback is genuinely wanted; if one is set, it must be replaced at first use.
   // orgId defaults to the email domain, but an admin can override it so somebody whose address does
   // not match their employer still lands with their colleagues rather than alone in their own org.
   const email = String(b.email).toLowerCase();
@@ -1569,9 +1582,11 @@ app.post('/api/admin/users', requireAdmin, (req, res) => {
   const orgId = isPlatformAdmin(req.user)
     ? String(b.orgId || domainOf(email)).toLowerCase()
     : orgIdOf(req.user);
-  const u = { id: uuidv4(), email, name: b.name || b.email, org: b.org || '', orgId, role: b.role === 'admin' ? 'admin' : 'user', passwordHash: auth.hashPassword(b.password), active: true, mustChangePassword: true, createdAt: new Date().toISOString(), createdBy: req.user.id, quota: { callsPerDay: b.callsPerDay != null && b.callsPerDay !== '' ? parseInt(b.callsPerDay) : null }, usage: { calls: 0 } };
+  const u = { id: uuidv4(), email, name: b.name || b.email, org: b.org || '', orgId, role: b.role === 'admin' ? 'admin' : 'user', active: true, createdAt: new Date().toISOString(), createdBy: req.user.id, quota: { callsPerDay: b.callsPerDay != null && b.callsPerDay !== '' ? parseInt(b.callsPerDay) : null }, usage: { calls: 0 } };
+  if (b.password) { u.passwordHash = auth.hashPassword(b.password); u.mustChangePassword = true; }
   auth.upsertUser(u);
-  res.json({ success: true, user: userForClient(u) });
+  console.log(`👤  ${req.user.email} created ${email} in "${orgId}"${b.password ? ' with a temporary password' : ' (code sign-in only)'}.`);
+  res.json({ success: true, user: userForClient(u), message: b.password ? `Created ${email}. They must change the temporary password at first sign-in.` : `Created ${email}. They sign in with a code sent to that mailbox.` });
 });
 app.post('/api/admin/users/:id', requireAdmin, (req, res) => {
   const u = auth.findById(req.params.id); if (!u) return res.status(404).json({ error: 'User not found.' });
@@ -1994,14 +2009,16 @@ app.post('/api/call/single', callLimiter, async (req, res) => {
   if (!providerConfigured(name)) return res.status(400).json({ error: `Voice provider "${name}" is not configured. Add its credentials in Settings.` });
   const { toNumber, variables } = req.body;
   if (!toNumber) return res.status(400).json({ error: 'toNumber is required.' });
-  const company = (profile.company || {}).name || '';
+  // Stamped onto every call, not looked up later: a partner who re-skins their agent for a different
+  // industry tomorrow must not retroactively relabel what they demonstrated today.
+  const company = (profile.company || {}).name || '', industry = (profile.company || {}).industry || '';
   try {
     const { providerName, providerCallId } = await placeCall(toNumber, variables || {}, profile, req.user);
-    const entry = { id: uuidv4(), toNumber, customerName: (variables || {}).customer_name || '', useCase: (variables || {}).use_case || '', company, provider: providerName, callId: providerCallId, status: 'initiated', timestamp: new Date().toISOString(), variables };
+    const entry = { id: uuidv4(), toNumber, customerName: (variables || {}).customer_name || '', useCase: (variables || {}).use_case || '', company, industry, provider: providerName, callId: providerCallId, status: 'initiated', timestamp: new Date().toISOString(), variables };
     stampUser(entry, req.user); callHistory.unshift(entry); saveHistory();
     res.json({ success: true, callId: providerCallId, entry });
   } catch (err) {
-    const entry = { id: uuidv4(), toNumber, customerName: (variables || {}).customer_name || '', useCase: (variables || {}).use_case || '', company, provider: name, status: 'failed', error: err.message, timestamp: new Date().toISOString(), variables };
+    const entry = { id: uuidv4(), toNumber, customerName: (variables || {}).customer_name || '', useCase: (variables || {}).use_case || '', company, industry, provider: name, status: 'failed', error: err.message, timestamp: new Date().toISOString(), variables };
     stampUser(entry, req.user); callHistory.unshift(entry); saveHistory();
     res.status(500).json({ error: err.message, entry });
   }
@@ -2047,7 +2064,9 @@ app.get('/api/connectors', (req, res) => res.json({ sources: connectors.SOURCE_M
 app.post('/api/campaign/launch', callLimiter, requireBulk, async (req, res) => {
   const profile = getProfile(req);
   const name = activeProviderName(profile);
-  const company = (profile.company || {}).name || '';
+  // Stamped onto every call, not looked up later: a partner who re-skins their agent for a different
+  // industry tomorrow must not retroactively relabel what they demonstrated today.
+  const company = (profile.company || {}).name || '', industry = (profile.company || {}).industry || '';
   const simulate = !!req.body.simulate;
   const gate = guardCheck(req, simulate); if (!gate.ok) return res.status(429).json({ error: gate.error, code: gate.code });
   if (!simulate && !providerConfigured(name)) return res.status(400).json({ error: `Voice provider "${name}" is not configured.` });
@@ -2075,11 +2094,11 @@ app.post('/api/campaign/launch', callLimiter, requireBulk, async (req, res) => {
           if (wb.enabled) { try { await runWritebackForEntries([entry], wb, uid); } catch (e) { /* keep going */ } }
         } else {
           const { providerName, providerCallId } = await placeCall(customer.to_number, vars, profile, req.user);
-          entry = { id: uuidv4(), toNumber: customer.to_number, customerName: customer.customer_name, useCase: customer.use_case, company, provider: providerName, callId: providerCallId, status: 'initiated', timestamp: new Date().toISOString(), variables: vars, intelligenceReason: customer.intelligence_reason };
+          entry = { id: uuidv4(), toNumber: customer.to_number, customerName: customer.customer_name, useCase: customer.use_case, company, industry, provider: providerName, callId: providerCallId, status: 'initiated', timestamp: new Date().toISOString(), variables: vars, intelligenceReason: customer.intelligence_reason };
           stampUser(entry, req.user); callHistory.unshift(entry); camp.entries.push(entry); camp.success++;
         }
       } catch (err) {
-        const entry = { id: uuidv4(), toNumber: customer.to_number, customerName: customer.customer_name, useCase: customer.use_case, company, provider: name, status: 'failed', error: err.message, timestamp: new Date().toISOString(), intelligenceReason: customer.intelligence_reason };
+        const entry = { id: uuidv4(), toNumber: customer.to_number, customerName: customer.customer_name, useCase: customer.use_case, company, industry, provider: name, status: 'failed', error: err.message, timestamp: new Date().toISOString(), intelligenceReason: customer.intelligence_reason };
         stampUser(entry, req.user); callHistory.unshift(entry); camp.entries.push(entry); camp.failed++;
       }
       camp.processed++;
@@ -2123,9 +2142,25 @@ app.delete('/api/history', (req, res) => {
 });
 
 // Campaign analytics — aggregate outcomes across all calls
+//
+// Everything here is scoped by visibleCalls(), so a partner sees their own company and a platform
+// admin sees the estate. The trend and hour-of-day figures are cut in the VIEWER'S timezone, passed
+// up from the browser: an Australian partner's "yesterday" is not an Indian admin's yesterday, and
+// bucketing both on the server's clock would quietly mis-state one of them.
 app.get('/api/analytics', (req, res) => {
   if (req.query.userId && !mayViewUser(req, req.query.userId)) return res.status(403).json({ error: 'That user is not in your organisation.' });
-  const calls = req.query.userId ? visibleCalls(req).filter(c => c.userId === req.query.userId) : visibleCalls(req);
+  const scope = visibleCalls(req);
+  let calls = req.query.userId ? scope.filter(c => c.userId === req.query.userId) : scope;
+  const tz = String(req.query.tz || dailyReport.timezone || 'Asia/Kolkata');
+  // One range control governs the whole page. "all" still draws a 30-day trend, because a trend
+  // needs a bounded axis to mean anything.
+  const range = String(req.query.range || 'all');
+  const rangeDays = /^\d+$/.test(range) ? Math.min(365, Math.max(1, parseInt(range))) : 0;
+  if (rangeDays) {
+    const cutoff = Date.now() - rangeDays * 86400000;
+    calls = calls.filter(c => c.timestamp && new Date(c.timestamp).getTime() >= cutoff);
+  }
+  const days = Math.min(120, rangeDays || 30);
   const n = calls.length;
   const buckets = { connected: 0, noReach: 0, failed: 0, pending: 0 };
   calls.forEach(c => { buckets[classifyCall(c)]++; });
@@ -2137,8 +2172,85 @@ app.get('/api/analytics', (req, res) => {
   const surveys = calls.filter(c => c.survey && c.survey.score);
   const scores = surveys.map(c => parseFloat(c.survey.score)).filter(x => !isNaN(x));
   const durations = calls.filter(c => c.durationMs).map(c => c.durationMs);
+  const talkSeconds = calls.reduce((s, c) => s + Math.max(0, Math.round((c.durationMs || 0) / 1000)), 0);
+
+  // ── where, what and who ──
+  // Country comes off the dialled number rather than a stored field, so it is answerable for every
+  // call ever placed rather than only the ones made since the platform started recording it.
+  const byCountry = {}, byIndustry = {}, byDestination = {}, byAgentBrand = {};
+  const byUser = {}, byOrg = {};
+  calls.forEach(c => {
+    const country = report.countryOf(c.toNumber);
+    byCountry[country] = (byCountry[country] || 0) + 1;
+    const ind = c.industry || ((userProfiles[c.userId] || {}).company || {}).industry || '';
+    if (ind) byIndustry[ind] = (byIndustry[ind] || 0) + 1;
+    if (c.customerName) byDestination[c.customerName] = (byDestination[c.customerName] || 0) + 1;
+    if (c.company) byAgentBrand[c.company] = (byAgentBrand[c.company] || 0) + 1;
+
+    const secs = Math.max(0, Math.round((c.durationMs || 0) / 1000));
+    const cls = classifyCall(c);
+    const uid = c.userId || 'unknown';
+    if (!byUser[uid]) byUser[uid] = { id: uid, name: c.userName || 'Unknown', orgId: c.orgId || '', calls: 0, connected: 0, talkSeconds: 0, simulated: 0 };
+    byUser[uid].calls++; byUser[uid].talkSeconds += secs;
+    if (cls === 'connected') byUser[uid].connected++;
+    if (c.simulated) byUser[uid].simulated++;
+
+    const org = c.orgId || 'unassigned';
+    if (!byOrg[org]) byOrg[org] = { orgId: org, name: c.userOrg || org, calls: 0, connected: 0, talkSeconds: 0, people: {} };
+    byOrg[org].calls++; byOrg[org].talkSeconds += secs;
+    if (cls === 'connected') byOrg[org].connected++;
+    byOrg[org].people[uid] = true;
+  });
+  Object.values(byOrg).forEach(o => { o.people = Object.keys(o.people).length; });
+
+  // ── the last N days, and the hour of day ──
+  const today = sched.zoneParts(new Date(), tz).dateKey;
+  const trend = [];
+  const byKey = {};
+  for (let i = days - 1; i >= 0; i--) {
+    const k = sched.zoneParts(new Date(Date.now() - i * 86400000), tz).dateKey;
+    const row = { date: k, calls: 0, connected: 0, failed: 0, talkSeconds: 0, isToday: k === today };
+    byKey[k] = row; trend.push(row);
+  }
+  const byHour = Array.from({ length: 24 }, (_, h) => ({ hour: h, calls: 0 }));
+  calls.forEach(c => {
+    if (!c.timestamp) return;
+    const p = sched.zoneParts(new Date(c.timestamp), tz);
+    const row = byKey[p.dateKey];
+    if (row) {
+      row.calls++;
+      row.talkSeconds += Math.max(0, Math.round((c.durationMs || 0) / 1000));
+      const cls = classifyCall(c);
+      if (cls === 'connected') row.connected++;
+      if (cls === 'failed') row.failed++;
+    }
+    if (byHour[p.hour]) byHour[p.hour].calls++;
+  });
+
+  // How long conversations actually run. An average hides the shape; the buckets show whether the
+  // agent is being hung up on at ten seconds or holding real conversations.
+  const talkBuckets = [
+    { label: 'under 30s', min: 0, max: 30, n: 0 },
+    { label: '30s – 1m', min: 30, max: 60, n: 0 },
+    { label: '1 – 2m', min: 60, max: 120, n: 0 },
+    { label: '2 – 5m', min: 120, max: 300, n: 0 },
+    { label: 'over 5m', min: 300, max: Infinity, n: 0 }
+  ];
+  calls.filter(c => c.durationMs).forEach(c => {
+    const s = c.durationMs / 1000;
+    const b = talkBuckets.find(x => s >= x.min && s < x.max);
+    if (b) b.n++;
+  });
+
   res.json({
     total: n, failed, noReach, connected, pending, resolved,
+    timezone: tz, days, range, scopeTotal: scope.length,
+    talkSeconds, longestMs: durations.length ? Math.max(...durations) : null,
+    live: calls.filter(c => !c.simulated).length,
+    byCountry, byIndustry, byDestination, byAgentBrand, talkBuckets, trend, byHour,
+    byUser: Object.values(byUser).sort((a, b) => b.calls - a.calls),
+    byOrg: isPlatformAdmin(req.user) ? Object.values(byOrg).sort((a, b) => b.calls - a.calls) : [],
+    scopeLabel: isPlatformAdmin(req.user) ? 'every organisation' : (orgIdOf(req.user) || 'your organisation'),
     connectRate: resolved ? Math.round(connected / resolved * 100) : 0,
     withOutcome: calls.filter(c => c.outcomes && c.outcomes.length).length,
     simulated: calls.filter(c => c.simulated).length,
@@ -2159,6 +2271,171 @@ app.get('/api/analytics', (req, res) => {
     },
     avgDurationMs: durations.length ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length) : null
   });
+});
+
+// ── THE DAILY ACTIVITY REPORT ───────────────────────────
+// One email a day to Streebo covering every partner: what they called, where, for how long, and
+// which allowances are open. It exists so nobody has to log in and page through the console to know
+// whether the platform is being used.
+//
+// TWO PROPERTIES THIS CODE PROTECTS:
+//   • It is a STREEBO report, never a partner one. It carries every partner's activity side by side,
+//     so a single wrong recipient would hand one customer a view of all the others. Saving is
+//     restricted to a super administrator, and an address on a partner's own domain is refused
+//     outright rather than merely discouraged.
+//   • No recordings are attached. The mail carries enough to decide which conversations are worth
+//     hearing; the audio stays in the console behind the usual permissions, so a report sitting in
+//     an inbox never becomes an unguarded copy of real customer conversations.
+function saveDailyReport() { store.saveSetting('daily_report', dailyReport); }
+
+/** Every organisation on the platform that is NOT the platform operator, i.e. every customer. */
+function partnerDomains() {
+  const platform = platformOrg();
+  const out = new Set();
+  auth.loadUsers().forEach(u => { const o = orgIdOf(u); if (o && o !== platform) out.add(o); });
+  return out;
+}
+/**
+ * Refuse a recipient list that would leak the estate to one of the companies inside it.
+ *
+ * Addresses ALREADY on the list are grandfathered: the day somebody at a Streebo sister company gets
+ * an account, that domain starts counting as a partner, and without this an existing, deliberate
+ * configuration would become impossible to re-save. New additions are still refused.
+ */
+function checkRecipients(list) {
+  const partners = partnerDomains();
+  const existing = new Set(dailyReport.recipients || []);
+  const bad = list.filter(e => !existing.has(String(e).toLowerCase()) && partners.has(String(e).split('@')[1] || ''));
+  if (bad.length) {
+    return `This report contains every partner's activity, so it cannot be sent to a partner address. Remove: ${bad.join(', ')}.`;
+  }
+  return null;
+}
+
+/** Build the report for one day from the live state. Pure read; safe to call for a preview. */
+function buildDailyReport(dateKey, partial) {
+  return report.buildReport(
+    { calls: callHistory, users: auth.loadUsers(), orgQuotas, userProfiles },
+    {
+      dateKey, timezone: dailyReport.timezone,
+      includeSimulated: dailyReport.includeSimulated !== false,
+      includeQuietPartners: dailyReport.includeQuietPartners !== false,
+      maxCallRowsPerCompany: dailyReport.maxCallRowsPerCompany,
+      partial: !!partial
+    }
+  );
+}
+
+async function sendDailyReport(dateKey, opts = {}) {
+  const r = buildDailyReport(dateKey, opts.partial);
+  const to = (opts.to && opts.to.length) ? opts.to : dailyReport.recipients;
+  const subject = (opts.partial ? '[part day] ' : '') + report.subjectFor(r);
+  const sent = await mailer.send({ to, subject, text: report.renderText(r), html: report.renderHtml(r) });
+  return { report: r, to, subject, detail: sent.detail, provider: sent.provider };
+}
+
+// Retry state lives in memory on purpose: a restart is itself a fix worth retrying after.
+let reportFailures = {};
+async function reportTick() {
+  const cfg = dailyReport;
+  if (!cfg || !cfg.enabled) return;
+  const now = new Date();
+  const parts = sched.zoneParts(now, cfg.timezone);
+  const target = sched.parseHHMM(cfg.sendAt, 15);
+  // The report always covers the day that has just finished, whatever hour it is sent at. That way
+  // "midnight to midnight" stays true even if somebody moves the send time to 8am.
+  const due = report.previousDateKey(now, cfg.timezone);
+  if (cfg.lastSentDateKey === due) return;         // already gone out
+  if (parts.minutes < target) return;              // not yet time today
+  if ((reportFailures[due] || 0) >= 5) return;     // stop hammering a broken mailbox
+
+  try {
+    const out = await sendDailyReport(due);
+    dailyReport.lastSentDateKey = due;
+    dailyReport.lastResult = { at: new Date().toISOString(), dateKey: due, ok: true, detail: out.detail, recipients: out.to, calls: out.report.totals.calls };
+    saveDailyReport();
+    delete reportFailures[due];
+    console.log(`📊  Daily report for ${due} sent to ${out.to.join(', ')} — ${out.report.totals.calls} call(s) across ${out.report.totals.activeCompanies} partner(s).`);
+  } catch (e) {
+    reportFailures[due] = (reportFailures[due] || 0) + 1;
+    dailyReport.lastResult = { at: new Date().toISOString(), dateKey: due, ok: false, detail: e.message, recipients: cfg.recipients };
+    saveDailyReport();
+    console.warn(`⚠️   Daily report for ${due} failed (attempt ${reportFailures[due]} of 5): ${e.message}`);
+  }
+}
+
+// Reading the configuration is open to any platform admin — knowing a report exists is not a risk.
+app.get('/api/admin/report', requirePlatformAdmin, (req, res) => {
+  const now = new Date();
+  res.json({
+    settings: dailyReport,
+    mail: mailer.status(),
+    canEdit: isSuper(req.user),
+    today: report.currentDateKey(now, dailyReport.timezone),
+    yesterday: report.previousDateKey(now, dailyReport.timezone),
+    serverTime: now.toISOString(),
+    localTime: sched.hhmm(sched.zoneParts(now, dailyReport.timezone).minutes),
+    partnerDomains: [...partnerDomains()]
+  });
+});
+
+app.post('/api/admin/report', requireSuperAdmin, (req, res) => {
+  const b = req.body || {};
+  // A malformed time falls back to what is already saved, not to the shipped default. Otherwise a
+  // typo in the box would silently move a carefully chosen 07:30 back to midnight.
+  const sendAt = /^\d{1,2}:\d{2}$/.test(String(b.sendAt || '').trim()) ? String(b.sendAt).trim() : dailyReport.sendAt;
+  const merged = report.withDefaults(Object.assign({}, dailyReport, {
+    enabled: b.enabled !== undefined ? !!b.enabled : dailyReport.enabled,
+    timezone: b.timezone || dailyReport.timezone,
+    sendAt,
+    recipients: b.recipients !== undefined ? b.recipients : dailyReport.recipients,
+    includeQuietPartners: b.includeQuietPartners !== undefined ? !!b.includeQuietPartners : dailyReport.includeQuietPartners,
+    includeSimulated: b.includeSimulated !== undefined ? !!b.includeSimulated : dailyReport.includeSimulated,
+    maxCallRowsPerCompany: b.maxCallRowsPerCompany ? Math.min(300, Math.max(5, parseInt(b.maxCallRowsPerCompany) || 40)) : dailyReport.maxCallRowsPerCompany
+  }));
+  // A bad timezone would silently redraw every day boundary, so prove it resolves before saving it.
+  try { new Intl.DateTimeFormat('en-US', { timeZone: merged.timezone }); }
+  catch (e) { return res.status(400).json({ error: `"${merged.timezone}" is not a timezone this server recognises. Use an IANA name such as Asia/Kolkata.` }); }
+  const bad = checkRecipients(merged.recipients);
+  if (bad) return res.status(400).json({ error: bad });
+
+  // Changing WHEN it goes out should not resend a day that has already been reported.
+  dailyReport = merged;
+  saveDailyReport();
+  reportFailures = {};
+  console.log(`📊  Daily report settings updated by ${req.user.email}: ${dailyReport.enabled ? `ON at ${dailyReport.sendAt} ${dailyReport.timezone}` : 'OFF'} → ${dailyReport.recipients.join(', ')}`);
+  res.json({ settings: dailyReport, message: dailyReport.enabled ? `Saved. The report goes out at ${dailyReport.sendAt} ${dailyReport.timezone} to ${dailyReport.recipients.length} recipient${dailyReport.recipients.length === 1 ? '' : 's'}.` : 'Saved. The daily report is switched off.' });
+});
+
+// Preview renders the real thing rather than a mock-up, so what you approve is what lands.
+app.get('/api/admin/report/preview', requirePlatformAdmin, (req, res) => {
+  const now = new Date();
+  const dateKey = String(req.query.dateKey || report.previousDateKey(now, dailyReport.timezone));
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) return res.status(400).json({ error: 'dateKey must look like 2026-08-15.' });
+  const partial = dateKey === report.currentDateKey(now, dailyReport.timezone);
+  const r = buildDailyReport(dateKey, partial);
+  res.json({
+    dateKey, partial, subject: report.subjectFor(r), html: report.renderHtml(r), text: report.renderText(r),
+    summary: { calls: r.totals.calls, partners: r.totals.activeCompanies, talkSeconds: r.totals.talkSeconds, countries: r.topCountries.length }
+  });
+});
+
+app.post('/api/admin/report/send-now', requireSuperAdmin, async (req, res) => {
+  const b = req.body || {};
+  const now = new Date();
+  const dateKey = String(b.dateKey || report.previousDateKey(now, dailyReport.timezone));
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) return res.status(400).json({ error: 'dateKey must look like 2026-08-15.' });
+  // "Send me a test" should reach the person asking, not the whole distribution list.
+  const to = b.onlyMe ? [req.user.email] : mailer.recipientList(b.to && b.to.length ? b.to : dailyReport.recipients);
+  const bad = checkRecipients(to);
+  if (bad) return res.status(400).json({ error: bad });
+  try {
+    const out = await sendDailyReport(dateKey, { to, partial: dateKey === report.currentDateKey(now, dailyReport.timezone) });
+    console.log(`📊  Daily report for ${dateKey} sent on demand by ${req.user.email} to ${to.join(', ')}.`);
+    res.json({ success: true, dateKey, to, provider: out.provider, detail: out.detail, message: `Sent to ${to.join(', ')}.${out.provider === 'dev' ? ' (MAIL_PROVIDER is "dev", so it was printed to the server log rather than delivered.)' : ''}` });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 // ── ELEVENLABS: AUTOMATIC ANALYSIS ──────────────────────
@@ -2569,7 +2846,10 @@ async function start() {
         : 'the oldest admin account — set a super admin to make this explicit');
     console.log(`    Platform owner:  ${po || '(none yet)'}  (${why})`);
     const supers = auth.loadUsers().filter(u => u.superAdmin && u.role === 'admin');
-    console.log(`    Super admins:    ${supers.length ? supers.map(u => u.email).join(', ') : 'none — run: npm run make-admin -- you@company.com super'}\n`);
+    console.log(`    Super admins:    ${supers.length ? supers.map(u => u.email).join(', ') : 'none — run: npm run make-admin -- you@company.com super'}`);
+    // Say who receives the estate-wide report out loud. It is the one thing that leaves the platform
+    // carrying every partner's data, so it should never be a setting nobody has read.
+    console.log(`    Daily report:    ${dailyReport.enabled ? `${dailyReport.sendAt} ${dailyReport.timezone} → ${dailyReport.recipients.join(', ')}` : 'off'}${dailyReport.enabled && !mailer.status().delivers ? '  ⚠️  MAIL_PROVIDER=dev, so it will only print to this log' : ''}\n`);
     securityAudit();
     const active = schedules.filter(s => s.enabled !== false && s.status !== 'completed').length;
     if (active) console.log(`⏰  Scheduler running — ${active} active schedule(s).\n`);
@@ -2580,6 +2860,11 @@ async function start() {
     // whether or not anyone has the console open.
     setInterval(syncPendingCalls, 20000);
     setTimeout(syncPendingCalls, 5000);
+    // The daily report checks once a minute rather than firing on a timer set at boot, so a restart,
+    // a deploy or an overnight outage cannot make a day's report disappear: whenever the process is
+    // next alive past the send time, the day it owes still goes out.
+    setInterval(reportTick, 60000);
+    setTimeout(reportTick, 25000);
     // Ask ElevenLabs what it speaks, shortly after boot and twice a day. Cheap, and it means a new
     // language on their side turns up in the log rather than in a demo.
     setTimeout(() => refreshLanguageCoverage(), 8000);

@@ -248,6 +248,77 @@
   .template-title { font-size: 13.5px; font-weight: 700; margin-bottom: 3px; }
   .template-desc { font-size: 11.5px; color: var(--text-dim); }
 
+  /* ── sub-tabs ──────────────────────────────────────────────────────────
+     Admin and Analytics both outgrew a single scrolling column of cards. One page, several
+     panels, one visible at a time: nothing is hidden, but nothing competes either. */
+  .subtabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; scrollbar-width: none; }
+  .subtabs::-webkit-scrollbar { display: none; }
+  .subtab { display: flex; align-items: center; gap: 7px; padding: 11px 15px; font-size: 13px; font-weight: 600; color: var(--text-muted); cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; white-space: nowrap; transition: color .15s, border-color .15s; font-family: 'Inter', sans-serif; }
+  .subtab:hover { color: var(--text); }
+  .subtab.active { color: var(--brand-700); border-bottom-color: var(--brand); }
+  .subtab .count { background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; padding: 1px 7px; font-size: 10px; font-family: 'DM Mono', monospace; font-weight: 500; }
+  .subtab.active .count { background: var(--brand-50); border-color: var(--brand-100); color: var(--brand-700); }
+  .subtab .count.alert { background: var(--amber-dim); border-color: rgba(196,121,12,0.25); color: var(--amber); }
+  .subpage { display: none; }
+  .subpage.active { display: block; animation: fadeIn .2s ease; }
+
+  /* ── charts, drawn in CSS ──────────────────────────────────────────────
+     The console loads no charting library and the content-security policy forbids adding one, so
+     every chart here is boxes and gradients. It also means they render instantly and never break
+     because a CDN moved. */
+  .chart-bars { display: flex; align-items: flex-end; gap: 3px; height: 132px; padding-top: 10px; }
+  .chart-col { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 5px; }
+  .chart-bar { width: 100%; max-width: 30px; background: linear-gradient(180deg, #6D66F0, var(--brand-700)); border-radius: 4px 4px 0 0; min-height: 2px; transition: filter .15s; }
+  .chart-col:hover .chart-bar { filter: brightness(1.25); }
+  .chart-bar.empty { background: var(--border); }
+  .chart-x { font-size: 9px; color: var(--text-muted); white-space: nowrap; font-family: 'DM Mono', monospace; }
+  .chart-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 11px; color: var(--text-muted); margin-top: 10px; }
+  .chart-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+
+  .rank-list { display: flex; flex-direction: column; }
+  .rank-row { padding: 8px 0; border-bottom: 1px solid var(--border-light); }
+  .rank-row:last-child { border-bottom: none; }
+  .rank-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .rank-name { font-size: 12.5px; font-weight: 500; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rank-val { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-dim); white-space: nowrap; flex-shrink: 0; }
+  .rank-meter { height: 6px; background: #E9EBF3; border-radius: 20px; overflow: hidden; margin-top: 6px; }
+  .rank-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--brand-700), var(--brand)); transition: width .4s ease; }
+  .rank-fill.green { background: linear-gradient(90deg, #0E7F58, var(--green)); }
+  .rank-fill.blue { background: linear-gradient(90deg, #23539F, var(--blue)); }
+  .rank-fill.amber { background: linear-gradient(90deg, #9C5F09, var(--amber)); }
+  .rank-fill.teal { background: linear-gradient(90deg, #0A767B, var(--teal)); }
+
+  /* Outcome mix as one horizontal band, so the split reads at a glance instead of as four numbers. */
+  .split-bar { display: flex; height: 12px; border-radius: 20px; overflow: hidden; background: var(--border-light); }
+  .split-bar > span { display: block; height: 100%; }
+
+  /* ── toolbars over tables ── */
+  .toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+  .toolbar input, .toolbar select { width: auto; font-size: 12.5px; padding: 8px 11px; }
+  .toolbar .grow { flex: 1; min-width: 190px; }
+  .toolbar .spacer { margin-left: auto; }
+  /* The people table carries eight columns; the default cell padding alone was 224px of it. */
+  #ad-users-table th, #ad-users-table td { padding: 8px 10px; }
+  tr.org-group td { background: var(--surface-2); font-weight: 700; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-dim); padding: 8px 10px; }
+  tr.org-group:hover td { background: var(--surface-2); color: var(--text-dim); }
+  tr.clickable { cursor: pointer; }
+  .row-actions { display: flex; gap: 4px; flex-wrap: wrap; }
+  th.sortable { cursor: pointer; user-select: none; }
+  th.sortable:hover { color: var(--brand); }
+  th .sort-arrow { color: var(--brand); font-size: 9px; }
+
+  /* ── key/value blocks, used across the user detail modal ── */
+  .kv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 11px; }
+  .kv { background: var(--surface-2); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 11px 13px; }
+  .kv-k { font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+  .kv-v { font-size: 14.5px; font-weight: 700; margin-top: 4px; letter-spacing: -0.01em; }
+  .kv-note { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
+  .modal.modal-wide { max-width: 1040px; padding: 0; }
+  .modal-pad { padding: 0 26px 26px; }
+  .modal-hero { padding: 22px 26px 18px; border-bottom: 1px solid var(--border-light); position: sticky; top: 0; background: var(--surface); z-index: 2; border-radius: 16px 16px 0 0; }
+  .avatar { width: 46px; height: 46px; border-radius: 13px; background: linear-gradient(150deg, #6D66F0, var(--brand-700)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700; flex-shrink: 0; letter-spacing: -0.02em; }
+  .section-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-muted); margin: 22px 0 10px; }
+
   .empty-state { text-align: center; padding: 44px 22px; color: var(--text-muted); }
   .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.5; }
   .empty-title { font-size: 14.5px; font-weight: 700; color: var(--text-dim); margin-bottom: 5px; }
@@ -312,11 +383,83 @@
   .status-banner.connected { background: var(--green-dim); border-color: rgba(18,153,107,0.22); }
   .status-banner.hidden { display: none; }
 
-  @media (max-width: 980px) { .app { grid-template-columns: 1fr; } nav { display: none; } .stats-row { grid-template-columns: 1fr 1fr; } .form-grid, .form-grid.three { grid-template-columns: 1fr; } .uc-grid { grid-template-columns: 1fr 1fr; } .profile-summary { grid-template-columns: 1fr 1fr; } .op-as .lbl { display: none; } }
+  .stats-row.five { grid-template-columns: repeat(5, 1fr); }
+  .stats-row.six { grid-template-columns: repeat(6, 1fr); }
+  .stats-row.tight { gap: 11px; margin-bottom: 18px; }
+  .stats-row.tight .stat-card { padding: 15px; }
+  .stats-row.tight .stat-value { font-size: 22px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: start; }
+
+  @media (max-width: 1320px) { .stats-row.six { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 1180px) { .stats-row.five { grid-template-columns: repeat(3, 1fr); } .grid-3 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 980px) {
+    .app { grid-template-columns: 1fr; }
+    /* The navigation used to vanish entirely below this width, which left a narrow window with no
+       way to change page at all. It becomes a scrolling strip instead. */
+    nav { flex-direction: row; overflow-x: auto; scrollbar-width: none; border-right: none; border-bottom: 1px solid var(--border); padding: 9px 12px; gap: 6px; position: sticky; top: 66px; z-index: 90; background: rgba(255,255,255,0.94); backdrop-filter: blur(18px); }
+    nav::-webkit-scrollbar { display: none; }
+    .nav-section { display: none; }
+    .nav-item { padding: 8px 12px; font-size: 12.5px; white-space: nowrap; flex-shrink: 0; }
+    .nav-item.active::before { display: none; }
+    main { padding: 20px 16px; }
+    .stats-row, .stats-row.five, .stats-row.six { grid-template-columns: 1fr 1fr; }
+    .form-grid, .form-grid.three, .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .uc-grid { grid-template-columns: 1fr 1fr; }
+    .profile-summary { grid-template-columns: 1fr 1fr; }
+    .op-as .lbl { display: none; }
+  }
+  @media (max-width: 620px) {
+    header { padding: 0 14px; }
+    .page-title { font-size: 21px; }
+    .stats-row, .stats-row.five, .stats-row.six { grid-template-columns: 1fr; }
+    .uc-grid, .profile-summary { grid-template-columns: 1fr; }
+    .modal { padding: 20px; }
+    .modal-pad { padding: 0 18px 20px; } .modal-hero { padding: 18px; }
+  }
 </style>
 </head>
 <body>
 <div id="toast-container"></div>
+
+<!-- ADD A PERSON -->
+<div class="modal-overlay" id="add-user-modal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-header"><div><div class="modal-title">Add a person</div><div style="font-size:12px;color:var(--text-muted);margin-top:3px" id="au-scope-note"></div></div><button class="modal-close" onclick="closeModal('add-user-modal')">✕</button></div>
+    <div class="form-grid">
+      <div class="field"><label>Name</label><input id="au-name" placeholder="Jane Partner"/></div>
+      <div class="field"><label>Email</label><input id="au-email" type="email" placeholder="jane@partner.com"/></div>
+      <div class="field"><label>Company</label><input id="au-org" placeholder="Acme Partner"/></div>
+      <div class="field"><label>Role</label><select id="au-role"><option value="user">User (partner)</option><option value="admin">Admin</option></select></div>
+      <div class="field"><label>Daily call limit <span class="hint">blank = platform default</span></label><input id="au-quota" type="number" placeholder="e.g. 50"/></div>
+      <div class="field"><label>Temporary password <span class="hint">optional — they can sign in by code instead</span></label><input id="au-pw" placeholder="leave blank for code sign-in"/></div>
+    </div>
+    <div id="au-note" style="font-size:11.5px;color:var(--text-muted);margin-top:12px;line-height:1.6">Everyone signs in with a six-digit code sent to their mailbox, so a password is optional. Set one only if you need a fallback for this account.</div>
+    <div class="btn-group"><button class="btn btn-primary" onclick="adminAddUser()">＋ Create the account</button><button class="btn btn-secondary" onclick="closeModal('add-user-modal')">Cancel</button></div>
+  </div>
+</div>
+
+<!-- PERSON DETAIL — everything about one account in one place -->
+<div class="modal-overlay" id="user-detail-modal">
+  <div class="modal modal-wide">
+    <div class="modal-hero" id="ud-hero"></div>
+    <div class="modal-pad" id="ud-body"></div>
+  </div>
+</div>
+
+<!-- DAILY REPORT PREVIEW — the real rendered email, not a mock-up -->
+<div class="modal-overlay" id="report-preview-modal">
+  <div class="modal modal-wide">
+    <div class="modal-hero" style="display:flex;align-items:center;justify-content:space-between;gap:14px">
+      <div><div class="modal-title">Daily report preview</div><div style="font-size:12px;color:var(--text-muted);margin-top:3px" id="rp-sub"></div></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="rp-date" type="date" style="width:auto;font-size:12.5px;padding:7px 10px" onchange="previewDailyReport(this.value)"/>
+        <button class="modal-close" onclick="closeModal('report-preview-modal')">✕</button>
+      </div>
+    </div>
+    <div class="modal-pad" style="padding-top:14px"><div id="rp-body"></div></div>
+  </div>
+</div>
 
 <!-- CALL DETAIL MODAL -->
 <div class="modal-overlay" id="call-detail-modal">
@@ -411,13 +554,22 @@
     </div>
     <div id="login-subtitle" style="text-align:center;color:var(--text-muted);font-size:13px;margin-bottom:20px">Sign in with your work email</div>
 
-    <!-- STEP 1 · who are you. No password: a code to the mailbox proves the domain is really theirs. -->
-    <form id="login-step-email" onsubmit="requestCode(event)" class="card" style="padding:22px;margin:0">
+    <!-- STEP 0 · REGISTER. What a first-time visitor lands on, because a bare email box tells us
+         nothing about who they are. Name and company are captured here and travel with the account,
+         so the admin queue shows a person rather than just an address. Anyone who has signed in on
+         this browser before skips straight to the sign-in step instead. -->
+    <form id="login-step-register" onsubmit="requestCode(event, true)" class="card" style="padding:22px;margin:0">
+      <div class="field" style="margin-bottom:12px"><label>Full name</label><input id="signup-name" autocomplete="name" placeholder="Jane Partner" required/></div>
+      <div class="field" style="margin-bottom:12px"><label>Company</label><input id="signup-org" autocomplete="organization" placeholder="Acme Partner Ltd" required/></div>
+      <div class="field" style="margin-bottom:12px"><label>Work email</label><input id="reg-email" type="email" autocomplete="username" placeholder="you@company.com" required/></div>
+      <div id="reg-error" style="color:var(--red);font-size:12.5px;min-height:16px;margin-bottom:8px"></div>
+      <button id="reg-btn" class="btn btn-primary btn-lg" type="submit" style="width:100%">Create my account</button>
+      <div style="text-align:center;font-size:11.5px;color:var(--text-muted);margin-top:10px">No password to choose. We'll email you a six-digit code to confirm it's you.</div>
+    </form>
+
+    <!-- STEP 1 · returning sign-in. No password: a code to the mailbox proves the domain is theirs. -->
+    <form id="login-step-email" onsubmit="requestCode(event)" class="card" style="padding:22px;margin:0;display:none">
       <div class="field" style="margin-bottom:12px"><label>Work email</label><input id="login-email" type="email" autocomplete="username" placeholder="you@company.com" required/></div>
-      <div id="login-extra" style="display:none">
-        <div class="field" style="margin-bottom:12px"><label>Your name</label><input id="signup-name" autocomplete="name" placeholder="Jane Partner"/></div>
-        <div class="field" style="margin-bottom:12px"><label>Company</label><input id="signup-org" autocomplete="organization" placeholder="Acme Partner Ltd"/></div>
-      </div>
       <div id="login-error" style="color:var(--red);font-size:12.5px;min-height:16px;margin-bottom:8px"></div>
       <div id="login-ok" style="color:var(--green);font-size:12.5px;margin-bottom:8px;display:none"></div>
       <button id="login-btn" class="btn btn-primary btn-lg" type="submit" style="width:100%">Send me a sign-in code</button>
@@ -463,8 +615,16 @@
       <button id="adminpw-btn" class="btn btn-primary btn-lg" type="submit" style="width:100%">Sign in</button>
     </form>
 
-    <div id="login-switch" style="text-align:center;font-size:12px;margin-top:14px">
-      <a href="#" id="login-switch-link" onclick="showLoginStep(loginStep==='password'?'email':'password');return false" style="color:var(--text-muted);text-decoration:none">Administrator sign-in</a>
+    <div id="login-switch" style="text-align:center;font-size:12.5px;margin-top:16px">
+      <span id="login-switch-text" style="color:var(--text-muted)"></span>
+      <a href="#" id="login-switch-link" onclick="toggleRegister();return false" style="color:var(--brand);font-weight:600;text-decoration:none"></a>
+    </div>
+    <!-- No "Administrator sign-in" link any more. Administrators are accounts we grant deliberately,
+         and signing in with a code already confers whatever the account holds, so a separate door
+         only invited people to try one that was never meant for them. The password form above is
+         still reachable at #admin as a break-glass route, so a mail outage cannot lock everyone out. -->
+    <div id="login-admin-switch" style="text-align:center;font-size:11.5px;margin-top:10px;display:none">
+      <a href="#" onclick="showLoginStep(loginStep==='password'?'register':'password');return false" style="color:var(--text-muted);text-decoration:none">Back to code sign-in</a>
     </div>
     <div style="text-align:center;color:var(--text-muted);font-size:11px;margin-top:14px">Streebo · OmniReach Voice Platform</div>
   </div>
@@ -618,105 +778,227 @@
 
     <!-- ADMIN -->
     <div class="page" id="page-admin">
-      <div class="page-header"><div class="page-title">Admin Dashboard</div><div class="page-subtitle">Manage users and track everyone's activity across the platform. <button class="btn btn-ghost btn-sm" onclick="initAdmin()">↻ Refresh</button></div></div>
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-label">Users</div><div class="stat-value" id="ad-users">0</div><div class="stat-icon">👥</div></div>
+      <div class="page-header"><div class="page-title">Administration</div><div class="page-subtitle" id="ad-subtitle">Everyone on the platform, what they are allowed to do, and what they have done with it.</div></div>
+
+      <div class="stats-row six tight">
+        <div class="stat-card"><div class="stat-label">People</div><div class="stat-value" id="ad-users">0</div><div class="stat-icon">👥</div></div>
         <div class="stat-card green"><div class="stat-label">Active</div><div class="stat-value" style="color:var(--green)" id="ad-active">0</div><div class="stat-icon">✅</div></div>
-        <div class="stat-card blue"><div class="stat-label">Total Calls</div><div class="stat-value" style="color:var(--blue)" id="ad-calls">0</div><div class="stat-icon">📞</div></div>
-        <div class="stat-card amber"><div class="stat-label">Partners</div><div class="stat-value" style="color:var(--amber)" id="ad-partners">0</div><div class="stat-icon">🤝</div></div>
-        <div class="stat-card"><div class="stat-label">Awaiting approval</div><div class="stat-value" id="ad-pending">0</div><div class="stat-icon">⏳</div></div>
-        <div class="stat-card amber"><div class="stat-label">Access requests</div><div class="stat-value" style="color:var(--amber)" id="ad-requests">0</div><div class="stat-icon">📮</div></div>
+        <div class="stat-card amber"><div class="stat-label">Companies</div><div class="stat-value" style="color:var(--amber)" id="ad-partners">0</div><div class="stat-icon">🤝</div></div>
+        <div class="stat-card blue"><div class="stat-label">Calls placed</div><div class="stat-value" style="color:var(--blue)" id="ad-calls">0</div><div class="stat-icon">📞</div></div>
+        <div class="stat-card" id="ad-kpi-pending"><div class="stat-label">Awaiting approval</div><div class="stat-value" id="ad-pending">0</div><div class="stat-icon">⏳</div></div>
+        <!-- The access-request queue belongs to the platform operator; a partner admin has none, so
+             the card is hidden for them rather than sitting there permanently reading zero. -->
+        <div class="stat-card amber" id="ad-kpi-requests"><div class="stat-label">Access requests</div><div class="stat-value" style="color:var(--amber)" id="ad-requests">0</div><div class="stat-icon">📮</div></div>
       </div>
 
-      <!-- People refused at the door because their domain is not whitelisted. Nobody reaches the
-           platform this way without an explicit decision here. -->
-      <div class="card" style="margin-bottom:16px" id="ar-card">
-        <div class="card-header">
-          <div><div class="card-title">Access requests</div><div class="card-subtitle">Someone tried to sign in from a domain you have not approved. Approving lets them request a sign-in code; they still have to prove they hold the mailbox.</div></div>
-          <div style="display:flex;gap:6px;align-items:center">
-            <select id="ar-filter" onchange="loadAccessRequests()" style="width:auto;font-size:12px;padding:5px 8px">
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-              <option value="">All</option>
+      <div class="subtabs" id="ad-subtabs">
+        <button class="subtab active" onclick="showSubtab('ad','people',this)">👥 People <span class="count" id="ad-tab-people">0</span></button>
+        <button class="subtab" id="ad-tab-requests-btn" onclick="showSubtab('ad','requests',this)">📮 Access requests <span class="count" id="ad-tab-requests">0</span></button>
+        <button class="subtab" id="ad-tab-allow-btn" onclick="showSubtab('ad','allowances',this)">📶 Allowances</button>
+        <button class="subtab" id="ad-tab-access-btn" onclick="showSubtab('ad','access',this)">🔐 Sign-up &amp; limits</button>
+        <button class="subtab" id="ad-tab-report-btn" onclick="showSubtab('ad','report',this)">📊 Daily report</button>
+      </div>
+
+      <!-- ══ PEOPLE ══ -->
+      <div class="subpage active" id="ad-sub-people">
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">People</div><div class="card-subtitle" id="ad-people-sub">Click anyone to see everything they have done.</div></div>
+            <button class="btn btn-primary btn-sm" onclick="openAddUser()">＋ Add a person</button>
+          </div>
+          <div class="toolbar">
+            <input class="grow" id="ad-search" placeholder="Search name, email or company…" oninput="renderAdminUsers()"/>
+            <select id="ad-filter-role" onchange="renderAdminUsers()">
+              <option value="">Every role</option>
+              <option value="admin">Administrators</option>
+              <option value="user">Users</option>
             </select>
-            <button class="btn btn-ghost btn-sm" onclick="loadAccessRequests()">↻</button>
+            <select id="ad-filter-status" onchange="renderAdminUsers()">
+              <option value="">Any status</option>
+              <option value="active">Active</option>
+              <option value="pending">Awaiting approval</option>
+              <option value="disabled">Disabled</option>
+              <option value="boosted">Has a boost</option>
+              <option value="quiet">Never called</option>
+            </select>
+            <select id="ad-filter-org" onchange="renderAdminUsers()"><option value="">Every company</option></select>
+            <label style="display:flex;align-items:center;gap:7px;font-size:12px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--text-dim);cursor:pointer"><input type="checkbox" id="ad-group" style="width:auto" checked onchange="renderAdminUsers()"/> Group by company</label>
+          </div>
+          <div id="ad-users-table"></div>
+          <div id="ad-users-count" style="font-size:11.5px;color:var(--text-muted);margin-top:10px"></div>
+        </div>
+      </div>
+
+      <!-- ══ ACCESS REQUESTS ══
+           People refused at the door because their domain is not whitelisted. Nobody reaches the
+           platform this way without an explicit decision here. -->
+      <div class="subpage" id="ad-sub-requests">
+        <div class="card" id="ar-card">
+          <div class="card-header">
+            <div><div class="card-title">Access requests</div><div class="card-subtitle">Someone tried to sign in from a domain you have not approved. Approving lets them request a sign-in code; they still have to prove they hold the mailbox.</div></div>
+            <div style="display:flex;gap:6px;align-items:center">
+              <select id="ar-filter" onchange="loadAccessRequests()" style="width:auto;font-size:12px;padding:5px 8px">
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+                <option value="">All</option>
+              </select>
+              <button class="btn btn-ghost btn-sm" onclick="loadAccessRequests()">↻</button>
+            </div>
+          </div>
+          <div id="ar-table"><div class="cd-note">Loading…</div></div>
+        </div>
+      </div>
+
+      <!-- ══ ALLOWANCES ══ -->
+      <div class="subpage" id="ad-sub-allowances">
+        <div class="card" id="oq-card">
+          <div class="card-header">
+            <div><div class="card-title">Company allowances</div><div class="card-subtitle">Raise the daily limit for a whole partner company, for a day, a week, or until you revoke it. A boost on one person overrides the company one.</div></div>
+            <button class="btn btn-primary btn-sm" onclick="promptOrgBoost()">＋ Boost a company</button>
+          </div>
+          <div id="oq-table"><div class="cd-note">Loading…</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Personal boosts</div><div class="card-subtitle">Individual exceptions, newest first. Every one carries an expiry unless it was granted permanently.</div></div></div>
+          <div id="ad-boosts"></div>
+        </div>
+      </div>
+
+      <!-- ══ SIGN-UP & LIMITS ══ -->
+      <div class="subpage" id="ad-sub-access">
+        <div class="card" style="margin-bottom:16px" id="gr-card">
+          <div class="card-header"><div><div class="card-title">Guardrails</div><div class="card-subtitle">Set the limits here; they stay OFF until you switch them on. Nothing is enforced by default — real calls flow freely until you decide otherwise.</div></div><span class="badge badge-muted" id="gr-status">enforcement off</span></div>
+          <div class="form-grid three">
+            <div class="field"><label>Enforce daily limits</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="gr-enforceQuota" style="width:auto"/> Stop a user's real calls once they reach their daily limit</label></div>
+            <div class="field"><label>Calls per day <span class="hint">blank = unlimited</span></label><input id="gr-defaultCallsPerDay" type="number" min="0" placeholder="e.g. 3"/></div>
+            <div class="field"><label>Talk time per day <span class="hint">minutes, blank = unlimited</span></label><input id="gr-defaultMinutesPerDay" type="number" min="0" placeholder="e.g. 10"/></div>
+            <div class="field"><label>Rate limit <span class="hint">calls/min per user, blank = off</span></label><input id="gr-rateLimitPerMin" type="number" min="0" placeholder="e.g. 10"/></div>
+            <div class="field" style="grid-column:span 2"><label>Bulk campaigns for partners</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="gr-allowBulkForPartners" style="width:auto"/> Let every partner use bulk calling, CSV imports and CRM pulls</label></div>
+            <div class="field" style="grid-column:span 3;padding-top:2px"><div style="font-size:11.5px;color:var(--text-muted);line-height:1.6">Whichever runs out first stops them. Each call is also capped at the talk time they have left, so a single long call cannot overspend the day's allowance. Bulk stays off for partners unless you tick the box above or boost an individual account, because someone on a three-call allowance who uploads five hundred contacts gets a queue of refusals rather than a demo.</div></div>
+            <div class="field" style="grid-column:span 3"><label>Simulation-only mode</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="gr-simulationOnly" style="width:auto"/> Force everyone into Simulation mode — no real telephony spend (ideal for wide-open partner demos)</label></div>
+          </div>
+          <div class="btn-group" style="margin-top:12px"><button class="btn btn-primary btn-sm" onclick="adminSaveGuardrails()">💾 Save guardrails</button></div>
+        </div>
+        <div class="card">
+          <div class="card-header" id="su-card-header"><div><div class="card-title">Sign-up &amp; access</div><div class="card-subtitle">Let partners create their own accounts. Anyone on a trusted company domain is approved automatically; everyone else waits for you to approve them here.</div></div><span class="badge badge-muted" id="su-status">sign-up off</span></div>
+          <div class="form-grid three">
+            <div class="field"><label>Self sign-up</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="su-enabled" style="width:auto"/> Allow people to register themselves</label></div>
+            <div class="field"><label>Unknown domains</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="su-allowOthersPending" style="width:auto"/> Accept, but hold for your approval</label></div>
+            <div class="field"><label>Daily limit for auto-approved <span class="hint">blank = unlimited</span></label><input id="su-autoApproveCallsPerDay" type="number" min="0" placeholder="e.g. 25"/></div>
+            <div class="field" style="grid-column:span 3"><label>Trusted email domains <span class="hint">comma or line separated, e.g. acmepartner.com, prospect.co</span></label><textarea id="su-allowedDomains" rows="2" placeholder="acmepartner.com&#10;prospect.co"></textarea></div>
+            <div class="field" style="grid-column:span 3"><label>Individually approved addresses <span class="hint">for one person at a company you don't want to open wholesale</span></label><textarea id="su-allowedEmails" rows="2" placeholder="one.person@bigcorp.com"></textarea></div>
+          </div>
+          <div class="btn-group" style="margin-top:12px"><button class="btn btn-primary btn-sm" onclick="adminSaveSignup()">💾 Save sign-up settings</button></div>
+          <div style="font-size:11.5px;color:var(--text-muted);margin-top:10px">Anyone on a trusted domain signs in by receiving a six-digit code, so the mailbox is proven before they get in. Everyone else is refused and appears under Access requests for you to decide on.</div>
+        </div>
+      </div>
+
+      <!-- ══ DAILY REPORT ══
+           The one thing that leaves the platform carrying every partner's activity side by side.
+           Reading it is open to any platform admin; changing where it goes is the super
+           administrator's alone. -->
+      <div class="subpage" id="ad-sub-report">
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header">
+            <div><div class="card-title">Daily activity report</div><div class="card-subtitle">One email covering every partner: calls placed, who they called and where, talk time, industries, and any allowance boosts in force. It is a whole-estate view, so it goes to Streebo and never to a partner.</div></div>
+            <span class="badge badge-muted" id="dr-status">loading…</span>
+          </div>
+          <div class="form-grid three">
+            <div class="field"><label>Send the report</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="dr-enabled" style="width:auto"/> On, once a day</label></div>
+            <div class="field"><label>Send at <span class="hint">24-hour clock</span></label><input id="dr-sendAt" placeholder="00:15"/></div>
+            <div class="field"><label>Day boundary <span class="hint">the report's timezone</span></label><select id="dr-timezone"></select></div>
+            <div class="field" style="grid-column:span 3"><label>Recipients <span class="hint">one per line — Streebo addresses only</span></label><textarea id="dr-recipients" rows="3" placeholder="vasif.peerji@streebo.com&#10;presales@streebo.com"></textarea></div>
+            <div class="field"><label>Simulated calls</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="dr-includeSimulated" style="width:auto"/> Count them, marked as simulated</label></div>
+            <div class="field"><label>Quiet partners</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="dr-includeQuietPartners" style="width:auto"/> Name the ones who called nobody</label></div>
+            <div class="field"><label>Calls listed per company <span class="hint">5–300</span></label><input id="dr-maxCallRowsPerCompany" type="number" min="5" max="300" placeholder="40"/></div>
+          </div>
+          <div id="dr-note" style="font-size:11.5px;color:var(--text-muted);margin-top:12px;line-height:1.65"></div>
+          <div class="btn-group">
+            <button class="btn btn-primary btn-sm" onclick="saveDailyReportSettings()" id="dr-save">💾 Save</button>
+            <button class="btn btn-secondary btn-sm" onclick="previewDailyReport()">👁 Preview</button>
+            <button class="btn btn-secondary btn-sm" onclick="sendDailyReportNow(true)" id="dr-test">✉ Send a test to me</button>
+            <button class="btn btn-ghost btn-sm" onclick="sendDailyReportNow(false)" id="dr-sendall">Send to everyone now</button>
           </div>
         </div>
-        <div id="ar-table"><div class="cd-note">Loading…</div></div>
-      </div>
-
-      <!-- Company-wide allowance boosts, so a whole partner can be raised without touching each person. -->
-      <div class="card" style="margin-bottom:16px" id="oq-card">
-        <div class="card-header">
-          <div><div class="card-title">Company allowances</div><div class="card-subtitle">Raise the daily limit for a whole partner company, for a day, a week, or until you revoke it. A boost on one person overrides the company one.</div></div>
-          <button class="btn btn-ghost btn-sm" onclick="promptOrgBoost()">+ Boost a company</button>
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Delivery</div><div class="card-subtitle">What happened the last time it ran.</div></div></div>
+          <div id="dr-last"></div>
         </div>
-        <div id="oq-table"><div class="cd-note">Loading…</div></div>
-      </div>
-
-      <div class="card" style="margin-bottom:16px" id="gr-card">
-        <div class="card-header"><div><div class="card-title">Guardrails</div><div class="card-subtitle">Set the limits here; they stay OFF until you switch them on. Nothing is enforced by default — real calls flow freely until you decide otherwise.</div></div><span class="badge badge-muted" id="gr-status">enforcement off</span></div>
-        <div class="form-grid three">
-          <div class="field"><label>Enforce daily limits</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="gr-enforceQuota" style="width:auto"/> Stop a user's real calls once they reach their daily limit</label></div>
-          <div class="field"><label>Calls per day <span class="hint">blank = unlimited</span></label><input id="gr-defaultCallsPerDay" type="number" min="0" placeholder="e.g. 3"/></div>
-          <div class="field"><label>Talk time per day <span class="hint">minutes, blank = unlimited</span></label><input id="gr-defaultMinutesPerDay" type="number" min="0" placeholder="e.g. 10"/></div>
-          <div class="field"><label>Rate limit <span class="hint">calls/min per user, blank = off</span></label><input id="gr-rateLimitPerMin" type="number" min="0" placeholder="e.g. 10"/></div>
-          <div class="field" style="grid-column:span 3"><label>Bulk campaigns for partners</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="gr-allowBulkForPartners" style="width:auto"/> Let every partner use bulk calling, CSV imports and CRM pulls</label></div>
-          <div class="field" style="grid-column:span 3;padding-top:2px"><div style="font-size:11.5px;color:var(--text-muted);line-height:1.6">Whichever runs out first stops them. Each call is also capped at the talk time they have left, so a single long call cannot overspend the day's allowance. Bulk stays off for partners unless you tick the box above or boost an individual account, because someone on a three-call allowance who uploads five hundred contacts gets a queue of refusals rather than a demo.</div></div>
-          <div class="field" style="grid-column:span 3"><label>Simulation-only mode</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="gr-simulationOnly" style="width:auto"/> Force everyone into Simulation mode — no real telephony spend (ideal for wide-open partner demos)</label></div>
-        </div>
-        <div class="btn-group" style="margin-top:12px"><button class="btn btn-primary btn-sm" onclick="adminSaveGuardrails()">💾 Save guardrails</button></div>
-      </div>
-      <div class="card" style="margin-bottom:16px">
-        <div class="card-header" id="su-card-header"><div><div class="card-title">Sign-up &amp; access</div><div class="card-subtitle">Let partners create their own accounts. Anyone on a trusted company domain is approved automatically; everyone else waits for you to approve them here.</div></div><span class="badge badge-muted" id="su-status">sign-up off</span></div>
-        <div class="form-grid three">
-          <div class="field"><label>Self sign-up</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="su-enabled" style="width:auto"/> Allow people to register themselves</label></div>
-          <div class="field"><label>Unknown domains</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="su-allowOthersPending" style="width:auto"/> Accept, but hold for your approval</label></div>
-          <div class="field"><label>Daily limit for auto-approved <span class="hint">blank = unlimited</span></label><input id="su-autoApproveCallsPerDay" type="number" min="0" placeholder="e.g. 25"/></div>
-          <div class="field" style="grid-column:span 3"><label>Trusted email domains <span class="hint">comma or line separated, e.g. acmepartner.com, prospect.co</span></label><textarea id="su-allowedDomains" rows="2" placeholder="acmepartner.com&#10;prospect.co"></textarea></div>
-          <div class="field" style="grid-column:span 3"><label>Individually approved addresses <span class="hint">for one person at a company you don't want to open wholesale</span></label><textarea id="su-allowedEmails" rows="2" placeholder="one.person@bigcorp.com"></textarea></div>
-        </div>
-        <div class="btn-group" style="margin-top:12px"><button class="btn btn-primary btn-sm" onclick="adminSaveSignup()">💾 Save sign-up settings</button></div>
-        <div style="font-size:11.5px;color:var(--text-muted);margin-top:10px">Anyone on a trusted domain signs in by receiving a six-digit code, so the mailbox is proven before they get in. Everyone else is refused and appears above as an access request for you to decide on.</div>
-      </div>
-      <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div class="card-title">Add a user</div></div>
-        <div class="form-grid three">
-          <div class="field"><label>Name</label><input id="au-name" placeholder="Jane Partner"/></div>
-          <div class="field"><label>Email</label><input id="au-email" type="email" placeholder="jane@partner.com"/></div>
-          <div class="field"><label>Organisation</label><input id="au-org" placeholder="Acme Partner"/></div>
-          <div class="field"><label>Temporary password <span class="hint">they must change it at first sign-in</span></label><input id="au-pw" placeholder="e.g. a random string"/></div>
-          <div class="field"><label>Role</label><select id="au-role"><option value="user">User (partner)</option><option value="admin">Admin</option></select></div>
-          <div class="field"><label>Daily call limit <span class="hint">blank = unlimited</span></label><input id="au-quota" type="number" placeholder="e.g. 50"/></div>
-        </div>
-        <div class="btn-group" style="margin-top:12px"><button class="btn btn-primary btn-sm" onclick="adminAddUser()">＋ Create user</button></div>
-        <div id="au-note" style="font-size:11.5px;color:var(--text-muted);margin-top:8px"></div>
-      </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title">Users</div><div style="font-size:11.5px;color:var(--text-muted)">To see a user's conversations &amp; recordings, click <strong>View calls</strong>.</div></div>
-        <div id="ad-users-table"></div>
       </div>
     </div>
 
     <!-- ANALYTICS -->
     <div class="page" id="page-analytics">
-      <div class="page-header"><div class="page-title">Campaign Analytics</div><div class="page-subtitle">Live outcomes across every call — connect rate, dispositions, sentiment, and the actions the agent secured. <button class="btn btn-ghost btn-sm" onclick="initAnalytics()" style="margin-left:6px">↻ Refresh</button></div></div>
-      <div id="an-scope" style="margin-bottom:10px"></div>
-      <div id="analytics-empty" class="empty-state" style="display:none"><div class="empty-icon">📊</div><div class="empty-title">No calls yet</div><div class="empty-sub">Run a campaign (try 🧪 Simulation mode) — the results appear here.</div></div>
+      <div class="page-header"><div class="page-title">Analytics</div><div class="page-subtitle" id="an-subtitle">Everything the platform knows about the calls you can see: how many, to where, how long, how they ended, and who placed them.</div></div>
+
+      <div class="toolbar">
+        <select id="an-range" onchange="initAnalytics()" title="Every figure on this page respects this range">
+          <option value="all">All time</option>
+          <option value="7">Last 7 days</option>
+          <option value="30">Last 30 days</option>
+          <option value="90">Last 90 days</option>
+        </select>
+        <span id="an-scope"></span>
+        <span class="spacer"></span>
+        <button class="btn btn-secondary btn-sm" onclick="exportAnalyticsCsv()" title="Download the figures on this page as a spreadsheet">⇩ Export CSV</button>
+        <button class="btn btn-ghost btn-sm" onclick="initAnalytics()">↻ Refresh</button>
+      </div>
+
+      <div id="analytics-empty" class="empty-state" style="display:none"><div class="empty-icon">📊</div><div class="empty-title">Nothing to chart yet</div><div class="empty-sub">Place a call — or run one in 🧪 Simulation mode, which costs nothing — and every figure on this page fills in.</div></div>
+
       <div id="analytics-body" style="display:none">
-        <div class="stats-row">
-          <div class="stat-card"><div class="stat-label">Total Calls</div><div class="stat-value" id="an-total">0</div><div class="stat-icon">📞</div></div>
-          <div class="stat-card green"><div class="stat-label">Connect Rate</div><div class="stat-value" style="color:var(--green)" id="an-connect">0%</div><div class="stat-icon">✅</div></div>
-          <div class="stat-card blue"><div class="stat-label">With Outcome</div><div class="stat-value" style="color:var(--blue)" id="an-outcome">0</div><div class="stat-icon">🎯</div></div>
-          <div class="stat-card amber"><div class="stat-label">Avg Duration</div><div class="stat-value" style="color:var(--amber)" id="an-duration">—</div><div class="stat-icon">⏱️</div></div>
+        <div class="stats-row five tight">
+          <div class="stat-card"><div class="stat-label">Calls placed</div><div class="stat-value" id="an-total">0</div><div class="stat-icon">📞</div><div style="font-size:11px;color:var(--text-muted)" id="an-total-note"></div></div>
+          <div class="stat-card green"><div class="stat-label">Connect rate</div><div class="stat-value" style="color:var(--green)" id="an-connect">0%</div><div class="stat-icon">✅</div><div style="font-size:11px;color:var(--text-muted)" id="an-connect-note"></div></div>
+          <div class="stat-card blue"><div class="stat-label">Talk time</div><div class="stat-value" style="color:var(--blue)" id="an-talk">—</div><div class="stat-icon">⏱️</div><div style="font-size:11px;color:var(--text-muted)" id="an-talk-note"></div></div>
+          <div class="stat-card amber"><div class="stat-label">Countries reached</div><div class="stat-value" style="color:var(--amber)" id="an-countries">0</div><div class="stat-icon">🌍</div><div style="font-size:11px;color:var(--text-muted)" id="an-countries-note"></div></div>
+          <div class="stat-card"><div class="stat-label">Outcome captured</div><div class="stat-value" id="an-outcome">0</div><div class="stat-icon">🎯</div><div style="font-size:11px;color:var(--text-muted)" id="an-outcome-note"></div></div>
         </div>
-        <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:16px;margin-top:4px">
-          <div class="card"><div class="card-header"><div class="card-title">Outcomes (disposition)</div></div><div id="an-dispositions"></div></div>
-          <div class="card"><div class="card-header"><div class="card-title">By use case</div></div><div id="an-usecases"></div></div>
+
+        <div class="subtabs">
+          <button class="subtab active" onclick="showSubtab('an','overview',this)">📈 Overview</button>
+          <button class="subtab" onclick="showSubtab('an','reach',this)">🌍 Reach</button>
+          <button class="subtab" onclick="showSubtab('an','outcomes',this)">🎯 Outcomes</button>
+          <button class="subtab" onclick="showSubtab('an','people',this)">👥 People</button>
         </div>
-        <div class="card" style="margin-bottom:16px"><div class="card-header"><div class="card-title">Actions secured</div></div><div id="an-actions" class="stats-row" style="margin-bottom:0"></div></div>
-        <div class="card"><div class="card-header"><div class="card-title">Customer sentiment</div><span class="badge badge-muted" id="an-sim-note"></span></div><div id="an-sentiment"></div></div>
+
+        <div class="subpage active" id="an-sub-overview">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Calls a day</div><div class="card-subtitle" id="an-trend-sub">Bars are calls placed; the green line under each is the share that reached a person.</div></div><span class="badge badge-muted" id="an-trend-badge"></span></div>
+            <div id="an-trend"></div>
+          </div>
+          <div class="grid-2">
+            <div class="card"><div class="card-header"><div><div class="card-title">How calls ended</div><div class="card-subtitle">Every call falls into exactly one of these.</div></div></div><div id="an-outcome-split"></div></div>
+            <div class="card"><div class="card-header"><div><div class="card-title">How long conversations ran</div><div class="card-subtitle">An average hides the shape. This does not.</div></div></div><div id="an-talkdist"></div></div>
+          </div>
+          <div class="card"><div class="card-header"><div><div class="card-title">Time of day</div><div class="card-subtitle" id="an-hour-sub">When calls actually go out, in your local time.</div></div></div><div id="an-hours"></div></div>
+        </div>
+
+        <div class="subpage" id="an-sub-reach">
+          <div class="grid-2">
+            <div class="card"><div class="card-header"><div><div class="card-title">Countries called</div><div class="card-subtitle">Worked out from the number dialled, so it covers every call ever placed.</div></div></div><div id="an-countries-list"></div></div>
+            <div class="card"><div class="card-header"><div><div class="card-title">Industries demonstrated</div><div class="card-subtitle">Taken from the agent profile each call was placed with.</div></div></div><div id="an-industries"></div></div>
+          </div>
+          <div class="grid-2">
+            <div class="card"><div class="card-header"><div><div class="card-title">Who was called</div><div class="card-subtitle">The businesses and people on the receiving end.</div></div></div><div id="an-destinations"></div></div>
+            <div class="card"><div class="card-header"><div><div class="card-title">Calling as</div><div class="card-subtitle">The brand the agent introduced itself with.</div></div></div><div id="an-brands"></div></div>
+          </div>
+        </div>
+
+        <div class="subpage" id="an-sub-outcomes">
+          <div class="card" style="margin-bottom:16px"><div class="card-header"><div><div class="card-title">Actions secured</div><div class="card-subtitle">What the agent actually got out of the conversations, not just whether they connected.</div></div></div><div id="an-actions" class="stats-row six tight" style="margin-bottom:0"></div></div>
+          <div class="grid-2">
+            <div class="card"><div class="card-header"><div class="card-title">Dispositions</div></div><div id="an-dispositions"></div></div>
+            <div class="card"><div class="card-header"><div class="card-title">By use case</div></div><div id="an-usecases"></div></div>
+          </div>
+          <div class="card"><div class="card-header"><div class="card-title">Customer sentiment</div><span class="badge badge-muted" id="an-sim-note"></span></div><div id="an-sentiment"></div></div>
+        </div>
+
+        <div class="subpage" id="an-sub-people">
+          <div class="card" id="an-org-card" style="display:none"><div class="card-header"><div><div class="card-title">By company</div><div class="card-subtitle">Every partner organisation on the platform, busiest first.</div></div></div><div id="an-orgs"></div></div>
+          <div class="card"><div class="card-header"><div><div class="card-title">By person</div><div class="card-subtitle">Click anyone to open their full activity.</div></div></div><div id="an-users"></div></div>
+        </div>
       </div>
     </div>
 
@@ -859,7 +1141,9 @@
             </select>
             <div id="ab-oem-note" style="font-size:11.5px;color:var(--text-muted);margin-top:6px;line-height:1.6"></div>
           </div>
-          <div class="field"><label>Provider</label><select id="ab-provider" onchange="onProviderChange()"><option value="elevenlabs">ElevenLabs (primary)</option><option value="retell">Retell (fallback)</option></select></div>
+          <!-- Provider is fixed to ElevenLabs. Kept as a hidden input so composeProfile and the
+               bookmark round-trip keep working unchanged. -->
+          <input type="hidden" id="ab-provider" value="elevenlabs"/>
           <div class="field"><label>Speaks (language)</label><select id="ab-language" onchange="onLanguageChange()"></select></div>
           <div class="field"><label>Also mirrors <span class="hint">languages the agent will switch to</span></label>
             <input type="hidden" id="ab-mirror"/>
@@ -1025,7 +1309,7 @@
       <div class="card">
         <div class="card-header"><div class="card-title">Backend &amp; Providers</div></div>
         <div class="settings-section"><div class="settings-label">Backend Server</div>
-          <div class="form-grid"><div class="field"><label>Backend URL <span class="required">*</span></label><input type="text" id="s-backend-url" placeholder="http://localhost:3002" oninput="backendUrl=this.value"/></div><div class="field"><label>Default provider</label><select id="s-default-provider"><option value="elevenlabs">ElevenLabs (primary)</option><option value="retell">Retell (fallback)</option></select></div></div>
+          <div class="form-grid"><div class="field"><label>Backend URL <span class="required">*</span></label><input type="text" id="s-backend-url" placeholder="http://localhost:3002" oninput="backendUrl=this.value"/></div><input type="hidden" id="s-default-provider" value="elevenlabs"/></div>
           <div class="btn-group" style="margin-top:12px"><button class="btn btn-secondary btn-sm" onclick="connectBackend()">🔌 Connect</button></div>
         </div>
         <div class="settings-section"><div class="settings-label">ElevenLabs · primary · credentials stay on the backend</div>
@@ -1038,15 +1322,10 @@
           <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Sends stability / speed / similarity when your agent allows them (auto-detected, so it never fails). Turn <strong>off</strong> to always use the agent's own voice settings.</div>
           <div class="btn-group" style="margin-top:10px"><button class="btn btn-secondary btn-sm" onclick="testConnection('elevenlabs')">🔌 Test ElevenLabs</button></div>
         </div>
-        <div class="settings-section"><div class="settings-label">Retell · fallback</div>
-          <div class="form-grid three">
-            <div class="field"><label>API Key</label><div class="api-key-field"><input type="password" id="s-rt-key" placeholder="key_… (leave blank to keep)"/><button class="api-key-toggle" onclick="toggleVis('s-rt-key')">👁</button></div></div>
-            <div class="field"><label>Agent ID</label><input type="text" id="s-rt-agent" placeholder="agent_…"/></div>
-            <div class="field"><label>Caller ID <span class="hint">E.164</span></label><input type="text" id="s-rt-from" placeholder="+1XXXXXXXXXX"/></div>
-          </div>
-          <div class="btn-group" style="margin-top:10px"><button class="btn btn-secondary btn-sm" onclick="testConnection('retell')">🔌 Test Retell</button></div>
-        </div>
-        <div class="settings-section"><div class="settings-label">Public URL · for live action-tools &amp; write-back webhooks</div>
+        <!-- Retell credentials removed from the UI: the platform runs on ElevenLabs. The ids remain
+     as hidden inputs so the settings save path is unchanged. -->
+<input type="hidden" id="s-rt-key" value=""/><input type="hidden" id="s-rt-agent" value=""/><input type="hidden" id="s-rt-from" value=""/>
+<div class="settings-section"><div class="settings-label">Public URL · for live action-tools &amp; write-back webhooks</div>
           <div class="form-grid"><div class="field" style="grid-column:1/-1"><label>Public base URL <span class="hint">tunnel or deploy — no trailing slash</span></label><input type="text" id="s-public-base" placeholder="https://abc123.ngrok.app"/></div></div>
           <div class="btn-group" style="margin-top:10px"><button class="btn btn-secondary btn-sm" onclick="downloadToolManifest()">⬇ Tool registration manifest</button><button class="btn btn-ghost btn-sm" onclick="viewToolManifest()">👁 Preview</button></div>
           <div id="manifest-note" style="font-size:11.5px;color:var(--text-muted);margin-top:8px">The action tools to register on the agent. The manifest fills each tool's webhook URL from the base above.</div>
@@ -1067,7 +1346,7 @@
         <div class="info-row"><span class="info-key">Active Company</span><span class="info-val" id="cfg-company">—</span></div>
         <div class="info-row"><span class="info-key">Default provider</span><span class="info-val" id="cfg-provider">—</span></div>
         <div class="info-row"><span class="info-key">ElevenLabs</span><span class="info-val" id="cfg-el">—</span></div>
-        <div class="info-row"><span class="info-key">Retell</span><span class="info-val" id="cfg-rt">—</span></div>
+        <span id="cfg-rt" style="display:none"></span>
         <div class="info-row"><span class="info-key">Status</span><span id="cfg-status"><span class="badge badge-muted">Not Connected</span></span></div>
       </div></div>
     </div>
@@ -1178,19 +1457,42 @@ let signupMode = false; // kept for the legacy password-register path; the code 
 let loginStep = 'email', pendingEmail = '', pendingDeviceId = '';
 const DEVICE_KEY = 'omni_device_token', LAST_EMAIL_KEY = 'omni_last_email';
 
-function showLogin() { document.getElementById('login-screen').style.display = 'flex'; showLoginStep('email'); }
+function showLogin() {
+  document.getElementById('login-screen').style.display = 'flex';
+  // Register is the front door. Anyone who has signed in on this browser before is shown the
+  // sign-in step instead, because asking a returning colleague to "create an account" is confusing.
+  //
+  // #admin is the break-glass route to the password form. It is not advertised anywhere: passwords
+  // exist only so that a Graph outage or an expired client secret cannot lock the whole platform
+  // out, and an account with no password simply cannot sign in this way.
+  if (location.hash === '#admin') return showLoginStep('password');
+  showLoginStep(localStorage.getItem(LAST_EMAIL_KEY) ? 'email' : 'register');
+}
 function hideLogin() { document.getElementById('login-screen').style.display = 'none'; }
 
 function showLoginStep(step) {
   loginStep = step;
-  const panels = { email: 'login-step-email', code: 'login-step-code', pending: 'login-step-pending', password: 'login-step-password' };
+  const panels = { register: 'login-step-register', email: 'login-step-email', code: 'login-step-code', pending: 'login-step-pending', password: 'login-step-password' };
   Object.entries(panels).forEach(([k, id]) => { const el = document.getElementById(id); if (el) el.style.display = k === step ? '' : 'none'; });
-  const sub = { email: 'Sign in with your work email', code: 'Check your inbox', pending: 'Access request', password: 'Administrator sign-in' }[step];
+  const sub = { register: 'Create your account', email: 'Welcome back', code: 'Check your inbox',
+                pending: 'Access request', password: 'Administrator sign-in' }[step];
   const subEl = document.getElementById('login-subtitle'); if (subEl) subEl.textContent = sub;
-  const link = document.getElementById('login-switch-link');
-  if (link) {
-    link.textContent = step === 'password' ? 'Sign in with a code instead' : 'Administrator sign-in';
-    link.parentElement.style.display = (step === 'code' || step === 'pending') ? 'none' : 'block';
+
+  // One link toggles register and sign-in. The way back out of the break-glass password form is the
+  // only time the second line appears at all.
+  const link = document.getElementById('login-switch-link'), txt = document.getElementById('login-switch-text');
+  const wrap = document.getElementById('login-switch'), adminWrap = document.getElementById('login-admin-switch');
+  const onEntry = step === 'register' || step === 'email';
+  if (wrap) wrap.style.display = onEntry ? 'block' : 'none';
+  if (adminWrap) adminWrap.style.display = step === 'password' ? 'block' : 'none';
+  if (link && txt && onEntry) {
+    txt.textContent = step === 'register' ? 'Already have an account? ' : 'New here? ';
+    link.textContent = step === 'register' ? 'Sign in' : 'Create an account';
+  }
+
+  if (step === 'register') {
+    document.getElementById('reg-error').textContent = '';
+    setTimeout(() => { const el = document.getElementById('signup-name'); if (el) el.focus(); }, 40);
   }
   if (step === 'email') {
     const e = document.getElementById('login-email');
@@ -1209,12 +1511,15 @@ function clientContext() {
   return { timezone: tz, language: navigator.language || '' };
 }
 
-async function requestCode(e) {
+async function requestCode(e, fromRegister) {
   if (e) e.preventDefault();
-  const email = document.getElementById('login-email').value.trim().toLowerCase();
-  const err = document.getElementById('login-error'); err.textContent = '';
-  document.getElementById('login-ok').style.display = 'none';
-  const btn = document.getElementById('login-btn'); btn.disabled = true; btn.textContent = 'Sending…';
+  const reg = !!fromRegister;
+  const email = document.getElementById(reg ? 'reg-email' : 'login-email').value.trim().toLowerCase();
+  const err = document.getElementById(reg ? 'reg-error' : 'login-error'); err.textContent = '';
+  if (!reg) document.getElementById('login-ok').style.display = 'none';
+  const btn = document.getElementById(reg ? 'reg-btn' : 'login-btn');
+  const label = reg ? 'Create my account' : 'Send me a sign-in code';
+  btn.disabled = true; btn.textContent = 'Sending…';
   try {
     const r = await apiFetch('/api/auth/request-code', 'POST', {
       email, ...clientContext(),
@@ -1236,7 +1541,16 @@ async function requestCode(e) {
       : `The code expires in ${r.expiresInMinutes || 10} minutes. Check your junk folder if it does not arrive.`;
     showLoginStep('code');
   } catch (ex) { err.textContent = ex.message || 'Could not send a code.'; }
-  finally { btn.disabled = false; btn.textContent = 'Send me a sign-in code'; }
+  finally { btn.disabled = false; btn.textContent = label; }
+}
+/** Flip between "create an account" and "sign in". */
+function toggleRegister() {
+  const going = loginStep === 'register' ? 'email' : 'register';
+  // Carry whatever they already typed across, so switching does not cost them the retype.
+  const from = document.getElementById(loginStep === 'register' ? 'reg-email' : 'login-email');
+  const to = document.getElementById(going === 'register' ? 'reg-email' : 'login-email');
+  if (from && to && from.value && !to.value) to.value = from.value;
+  showLoginStep(going);
 }
 
 async function verifyCode(e) {
@@ -1597,38 +1911,59 @@ async function submitPasswordChange(e) {
 // ══════ ADMIN DASHBOARD ══════
 let adminUsers = [];
 let adminUserFilter = null; // when set, the Call History page shows just this user's calls (admin)
+let adminSort = { key: 'calls', dir: -1 };
 async function initAdmin() {
   if (!currentUser || currentUser.role !== 'admin') return;
   try { const d = await apiFetch('/api/admin/users'); adminUsers = d.users || []; } catch (e) { return; }
-  const active = adminUsers.filter(u => u.active !== false).length;
-  const partners = adminUsers.filter(u => u.role !== 'admin').length;
-  const totalCalls = adminUsers.reduce((s, u) => s + ((u.stats && u.stats.calls) || 0), 0);
-  document.getElementById('ad-users').textContent = adminUsers.length;
-  document.getElementById('ad-active').textContent = active;
-  document.getElementById('ad-calls').textContent = totalCalls;
-  document.getElementById('ad-partners').textContent = partners;
-  document.getElementById('ad-pending').textContent = adminUsers.filter(u => u.pending).length;
-  renderAdminUsers();
-  // An admin who cannot grant must not be offered "Admin" in the Add-a-user form: the server would
-  // refuse it, and the refusal would read as a bug rather than as a deliberate boundary.
-  const roleSel = document.getElementById('au-role');
-  if (roleSel) {
-    const adminOpt = [...roleSel.options].find(o => o.value === 'admin');
-    if (adminOpt) { adminOpt.disabled = !iCanGrantAdmin(); adminOpt.textContent = iCanGrantAdmin() ? 'Admin' : 'Admin (super administrator only)'; }
-    if (!iCanGrantAdmin() && roleSel.value === 'admin') roleSel.value = 'user';
+
+  const orgs = [...new Set(adminUsers.map(u => u.orgId).filter(Boolean))].sort();
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('ad-users', adminUsers.length);
+  set('ad-active', adminUsers.filter(u => u.active !== false && !u.pending).length);
+  set('ad-partners', orgs.length);
+  set('ad-calls', adminUsers.reduce((s, u) => s + ((u.stats && u.stats.calls) || 0), 0));
+  set('ad-pending', adminUsers.filter(u => u.pending).length);
+  set('ad-tab-people', adminUsers.length);
+
+  // Keep the company filter in step with reality, without losing what is already selected.
+  const orgSel = document.getElementById('ad-filter-org');
+  if (orgSel) {
+    const keep = orgSel.value;
+    orgSel.innerHTML = '<option value="">Every company</option>' + orgs.map(o => {
+      const label = (adminUsers.find(u => u.orgId === o && u.org) || {}).org;
+      return '<option value="' + escapeHtml(o) + '">' + escapeHtml(label ? label + ' (' + o + ')' : o) + '</option>';
+    }).join('');
+    if ([...orgSel.options].some(o => o.value === keep)) orgSel.value = keep;
   }
-  // Guardrails, the platform whitelist and the access-request queue are platform-wide. A partner
-  // admin manages their own colleagues and nothing else, and these endpoints now refuse them, so
-  // hide the cards rather than showing controls that only produce a 403.
+
+  renderAdminUsers();
+
+  // Guardrails, the platform whitelist, the access-request queue and the estate-wide report are
+  // platform-wide. A partner admin manages their own colleagues and nothing else, and these
+  // endpoints refuse them, so hide the tabs rather than showing controls that only produce a 403.
   const platform = iAmPlatformAdmin();
-  ['gr-card', 'ar-card', 'oq-card'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = platform ? '' : 'none'; });
-  const suCard = document.getElementById('su-card-header'); if (suCard && suCard.parentElement) suCard.parentElement.style.display = platform ? '' : 'none';
-  const sub = document.querySelector('#page-admin .page-subtitle');
-  if (sub && !platform) sub.innerHTML = `Manage the people at <strong>${escapeHtml(orgLabel())}</strong> and see everything your team has called. <button class="btn btn-ghost btn-sm" onclick="initAdmin()">↻ Refresh</button>`;
-  if (platform) { initGuardrails(); initSignup(); loadAccessRequests(); loadOrgQuotas(); }
+  ['ad-tab-requests-btn', 'ad-tab-allow-btn', 'ad-tab-access-btn', 'ad-tab-report-btn', 'ad-kpi-requests'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.style.display = platform ? '' : 'none';
+  });
+  // If a partner admin lands on a tab that has just been hidden (it can happen when switching
+  // accounts without a reload), put them back on the one tab they do have.
+  if (!platform && !document.getElementById('ad-sub-people').classList.contains('active')) {
+    showSubtab('ad', 'people', document.querySelector('#ad-subtabs .subtab'));
+  }
+  const sub = document.getElementById('ad-subtitle');
+  if (sub) sub.innerHTML = platform
+    ? 'Everyone on the platform, what they are allowed to do, and what they have done with it.'
+    : 'The people at <strong>' + escapeHtml(orgLabel()) + '</strong> and everything your team has called.';
+  const peopleSub = document.getElementById('ad-people-sub');
+  if (peopleSub) peopleSub.textContent = platform
+    ? 'Click anyone to see everything they have done. Grouped by company by default.'
+    : 'Your colleagues at ' + orgLabel() + '. Click anyone to see everything they have done.';
+
+  if (platform) { initGuardrails(); initSignup(); loadAccessRequests(); loadOrgQuotas(); renderPersonalBoosts(); }
 }
 /** The organisation this user administers, for labelling a partner admin's own dashboard. */
 function orgLabel() { return (currentUser && (currentUser.org || currentUser.orgId)) || 'your organisation'; }
+
 
 // ══════ ACCESS REQUESTS ══════
 let accessRequests = [];
@@ -1641,6 +1976,10 @@ async function loadAccessRequests() {
     accessRequests = d.requests || [];
     const pending = (d.counts || {}).pending || 0;
     const chip = document.getElementById('ad-requests'); if (chip) chip.textContent = pending;
+    // The tab itself carries the count, and turns amber when somebody is waiting: a queue that only
+    // shows its length once you open it is a queue people forget to work.
+    const tab = document.getElementById('ad-tab-requests');
+    if (tab) { tab.textContent = pending; tab.className = 'count' + (pending ? ' alert' : ''); }
     renderAccessRequests();
   } catch (e) { box.innerHTML = `<div class="cd-note">Could not load requests: ${escapeHtml(e.message)}</div>`; }
 }
@@ -1729,32 +2068,119 @@ async function adminSaveGuardrails() {
   const body = { enforceQuota: document.getElementById('gr-enforceQuota').checked, simulationOnly: document.getElementById('gr-simulationOnly').checked, defaultCallsPerDay: val('gr-defaultCallsPerDay'), defaultMinutesPerDay: val('gr-defaultMinutesPerDay'), allowBulkForPartners: document.getElementById('gr-allowBulkForPartners').checked, rateLimitPerMin: val('gr-rateLimitPerMin') };
   try { const r = await apiFetch('/api/admin/guardrails', 'POST', body); paintGuardrailStatus(r.guardrails); toast('success', 'Guardrails saved', ''); } catch (e) { toast('error', 'Save failed', e.message); }
 }
+/** Sort key extraction, kept in one place so the header and the sort agree. */
+const AD_SORTERS = {
+  name: u => (u.name || u.email || '').toLowerCase(),
+  email: u => (u.email || '').toLowerCase(),
+  org: u => (u.org || u.orgId || '').toLowerCase(),
+  role: u => (u.superAdmin ? 3 : u.role === 'admin' ? 2 : 1),
+  calls: u => (u.stats && u.stats.calls) || 0,
+  today: u => (u.stats && u.stats.today) || 0,
+  talk: u => (u.stats && u.stats.secondsToday) || 0,
+  last: u => String((u.stats && u.stats.lastCall) || u.lastLogin || '')
+};
+function adminSortBy(key) {
+  adminSort = (adminSort.key === key) ? { key, dir: -adminSort.dir } : { key, dir: key === 'name' || key === 'org' || key === 'email' ? 1 : -1 };
+  renderAdminUsers();
+}
+function adSortHead(key, label, align) {
+  const arrow = adminSort.key === key ? ' <span class="sort-arrow">' + (adminSort.dir > 0 ? '▲' : '▼') + '</span>' : '';
+  return '<th class="sortable"' + (align ? ' style="text-align:' + align + '"' : '') + ' onclick="adminSortBy(\'' + key + '\')">' + label + arrow + '</th>';
+}
+
 function renderAdminUsers() {
   const el = document.getElementById('ad-users-table');
-  if (!adminUsers.length) { el.innerHTML = '<div class="cd-note">No users yet.</div>'; return; }
-  el.innerHTML = `<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Email</th><th>Org</th><th>Role</th><th>Calls</th><th>Today</th><th>Limit/day</th><th>Last active</th><th>Status</th><th>Actions</th></tr></thead><tbody>
-  ${[...adminUsers].sort((a, b) => (b.pending ? 1 : 0) - (a.pending ? 1 : 0)).map(u => `<tr style="${(u.active === false && !u.pending) ? 'opacity:.5' : ''}">
-    <td>${escapeHtml(u.name || '')}${u.id === currentUser.id ? ' <span class="badge badge-muted">you</span>' : ''}</td>
-    <td style="font-size:11.5px">${escapeHtml(u.email)}</td>
-    <td>${escapeHtml(u.org || '—')}${u.orgId ? `<div style="font-size:10px;color:var(--text-muted)" title="Colleagues sharing this organisation see each other's calls">${escapeHtml(u.orgId)}</div>` : ''}</td>
-    <td>${roleCell(u)}</td>
-    <td>${(u.stats && u.stats.calls) || 0}</td>
-    <td>${(u.stats && u.stats.today) || 0}</td>
-    <td>${limitCell(u)}</td>
-    <td style="font-size:10.5px;color:var(--text-muted)">${(u.stats && u.stats.lastCall) ? new Date(u.stats.lastCall).toLocaleDateString() : (u.lastLogin ? new Date(u.lastLogin).toLocaleDateString() : '—')}</td>
-    <td>${u.pending ? '<span class="badge badge-amber">awaiting approval</span>' : (u.active === false ? '<span class="badge badge-red">disabled</span>' : '<span class="badge badge-green">active</span>')}${u.selfRegistered ? `<div style="font-size:10px;color:var(--text-muted);margin-top:2px">self sign-up${u.approvedByDomain ? ' · trusted domain' : ''}</div>` : ''}</td>
-    <td><div style="display:flex;gap:4px;flex-wrap:wrap">
-      ${u.pending ? `<button class="btn btn-green btn-sm" onclick="adminApprove('${u.id}')">✓ Approve</button>` : ''}
-      ${roleButtons(u)}
-      <button class="btn btn-ghost btn-sm" onclick="viewUserCalls('${u.id}')">View calls</button>
-      ${!mayEdit(u) ? '<span style="font-size:10.5px;color:var(--text-muted);align-self:center">protected</span>' : `
-      <button class="btn btn-ghost btn-sm" onclick="adminToggleActive('${u.id}',${u.active === false})">${u.active === false ? 'Enable' : 'Disable'}</button>
-      <button class="btn btn-ghost btn-sm" onclick="adminSetQuota('${u.id}')">Limits</button>
-      ${iAmPlatformAdmin() ? `<button class="btn btn-ghost btn-sm" onclick="openBoost('user','${u.id}')" title="Temporarily raise this person's allowance">Boost</button>` : ''}
-      <button class="btn btn-ghost btn-sm" onclick="adminRevokeSessions('${u.id}')" title="End every session on every device">Sign out</button>
-      <button class="btn btn-ghost btn-sm" onclick="adminResetPw('${u.id}')">Reset pw</button>`}
-    </div></td></tr>`).join('')}
-  </tbody></table></div>`;
+  if (!el) return;
+  if (!adminUsers.length) { el.innerHTML = '<div class="cd-note">No accounts yet.</div>'; return; }
+
+  const q = (val('ad-search') || '').toLowerCase();
+  const fRole = val('ad-filter-role'), fStatus = val('ad-filter-status'), fOrg = val('ad-filter-org');
+  const groupBox = document.getElementById('ad-group');
+  const group = groupBox ? groupBox.checked : false;
+
+  let list = adminUsers.filter(u => {
+    if (q && !((u.name || '') + ' ' + (u.email || '') + ' ' + (u.org || '') + ' ' + (u.orgId || '')).toLowerCase().includes(q)) return false;
+    if (fRole === 'admin' && u.role !== 'admin') return false;
+    if (fRole === 'user' && u.role === 'admin') return false;
+    if (fOrg && u.orgId !== fOrg) return false;
+    if (fStatus === 'active' && (u.active === false || u.pending)) return false;
+    if (fStatus === 'pending' && !u.pending) return false;
+    if (fStatus === 'disabled' && u.active !== false) return false;
+    if (fStatus === 'boosted' && !u.activeBoost) return false;
+    if (fStatus === 'quiet' && ((u.stats && u.stats.calls) || 0) > 0) return false;
+    return true;
+  });
+
+  // Anyone awaiting approval floats to the top whatever the sort: it is the one row that is
+  // waiting on a decision rather than simply describing a state.
+  const sorter = AD_SORTERS[adminSort.key] || AD_SORTERS.calls;
+  list.sort((a, b) => {
+    if (!!a.pending !== !!b.pending) return a.pending ? -1 : 1;
+    const x = sorter(a), y = sorter(b);
+    return (x < y ? -1 : x > y ? 1 : 0) * adminSort.dir;
+  });
+
+  const countEl = document.getElementById('ad-users-count');
+  if (countEl) countEl.textContent = list.length === adminUsers.length
+    ? adminUsers.length + ' account' + (adminUsers.length === 1 ? '' : 's')
+    : 'Showing ' + list.length + ' of ' + adminUsers.length + ' accounts';
+
+  if (!list.length) { el.innerHTML = '<div class="cd-note">Nothing matches those filters.</div>'; return; }
+
+  const row = u => {
+    const s = u.stats || {};
+    // Only the states worth noticing get a badge. A green "active" on every row is noise, and it
+    // was costing enough width to push the last column off the screen.
+    const statusBadge = u.pending ? '<span class="badge badge-amber" title="Awaiting your approval before they can sign in">pending</span>'
+      : (u.active === false ? '<span class="badge badge-red">disabled</span>' : '');
+    return '<tr class="clickable" onclick="openUserDetail(\'' + u.id + '\')" style="' + ((u.active === false && !u.pending) ? 'opacity:.55' : '') + '">'
+      + '<td><div style="display:flex;align-items:center;gap:10px">'
+      + '<span class="avatar" style="width:32px;height:32px;border-radius:9px;font-size:12px">' + escapeHtml(initials(u.name, u.email)) + '</span>'
+      + '<div style="min-width:0"><div style="font-weight:600">' + escapeHtml(u.name || '—') + (u.id === currentUser.id ? ' <span class="badge badge-muted">you</span>' : '') + '</div>'
+      + '<div style="font-size:10.5px;color:var(--text-muted)">' + escapeHtml(u.email) + '</div></div></div></td>'
+      + (group ? '' : '<td>' + escapeHtml(u.org || u.orgId || '—') + '</td>')
+      + '<td>' + roleCell(u) + '</td>'
+      + '<td style="text-align:right"><strong>' + (s.calls || 0) + '</strong>'
+      + '<div style="font-size:10px;color:var(--text-muted)">' + (s.today || 0) + ' today</div></td>'
+      + '<td style="text-align:right">' + (s.secondsToday ? humanSeconds(s.secondsToday) : '<span style="color:var(--text-muted)">—</span>') + '</td>'
+      + '<td>' + limitCell(u) + '</td>'
+      + '<td style="font-size:10.5px;color:var(--text-muted);white-space:nowrap">' + (s.lastCall ? new Date(s.lastCall).toLocaleDateString() : (u.lastLogin ? new Date(u.lastLogin).toLocaleDateString() : 'never')) + '</td>'
+      + '<td style="text-align:right;white-space:nowrap">' + statusBadge + ' <span style="color:var(--text-muted)">›</span></td></tr>';
+  };
+
+  const head = '<thead><tr>' + adSortHead('name', 'Person')
+    + (group ? '' : adSortHead('org', 'Company'))
+    + adSortHead('role', 'Role')
+    + adSortHead('calls', 'Calls', 'right')
+    + adSortHead('talk', 'Talk', 'right')
+    + '<th>Allowance</th>' + adSortHead('last', 'Last seen') + '<th style="text-align:right">State</th></tr></thead>';
+
+  let bodyHtml;
+  if (group) {
+    // Grouping by company is what stops this becoming a wall once there are fifty accounts.
+    const byOrg = {};
+    list.forEach(u => { (byOrg[u.orgId || 'unassigned'] = byOrg[u.orgId || 'unassigned'] || []).push(u); });
+    const cols = 6;
+    // A company with somebody awaiting approval comes first, whatever its size. Otherwise the one
+    // row that is waiting on a decision sinks into the middle of the list.
+    // Seven columns when grouped (the Company column is redundant inside a company's own group);
+    // the header row spans all but the last, which carries the group's own Boost button.
+    const waiting = m => m.some(u => u.pending) ? 1 : 0;
+    bodyHtml = Object.entries(byOrg)
+      .sort((a, b) => waiting(b[1]) - waiting(a[1]) || b[1].length - a[1].length || a[0].localeCompare(b[0]))
+      .map(([orgId, members]) => {
+        const label = (members.find(m => m.org) || {}).org || orgId;
+        const calls = members.reduce((s, m) => s + ((m.stats && m.stats.calls) || 0), 0);
+        return '<tr class="org-group"><td colspan="' + cols + '">' + escapeHtml(label)
+          + ' <span style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--text-muted)">· ' + escapeHtml(orgId)
+          + ' · ' + members.length + ' account' + (members.length === 1 ? '' : 's') + ' · ' + calls + ' call' + (calls === 1 ? '' : 's') + '</span></td>'
+          + '<td style="text-align:right">' + (iAmPlatformAdmin() ? '<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBoost(\'org\',\'' + escapeHtml(orgId) + '\')">Boost</button>' : '') + '</td></tr>'
+          + members.map(row).join('');
+      }).join('');
+  } else {
+    bodyHtml = list.map(row).join('');
+  }
+  el.innerHTML = '<div class="table-wrapper"><table>' + head + '<tbody>' + bodyHtml + '</tbody></table></div>';
 }
 // Limit/day cell: admins are exempt; show a user's own quota, else the inherited platform default, else ∞.
 // ══════ ADMIN TIERS ══════
@@ -1892,14 +2318,20 @@ async function loadOrgQuotas() {
   try {
     const d = await apiFetch('/api/admin/org-quotas');
     orgQuotaMap = d.orgQuotas || {};
-    const rows = Object.entries(orgQuotaMap);
+    // Lapsed grants are shown greyed rather than hidden. A boost that quietly disappears when it
+    // expires leaves an admin wondering whether it was ever given, and it is the record of a decision.
+    const rows = Object.entries(orgQuotaMap).map(e => [e[0], e[1], true])
+      .concat(Object.entries(d.expired || {}).map(e => [e[0], e[1], false]));
     box.innerHTML = rows.length
-      ? `<div class="table-wrapper"><table><thead><tr><th>Organisation</th><th>Allowance</th><th>Reason</th><th>Granted by</th><th></th></tr></thead><tbody>${rows.map(([org, o]) => `<tr>
+      ? `<div class="table-wrapper"><table><thead><tr><th>Company</th><th>Allowance</th><th>Reason</th><th>State</th><th>Granted by</th><th></th></tr></thead><tbody>${rows.map(([org, o, live]) => `<tr style="${live ? '' : 'opacity:.6'}">
           <td><strong>${escapeHtml(org)}</strong></td>
           <td style="font-size:11.5px">${escapeHtml(describeBoostClient(o))}</td>
           <td style="font-size:11.5px;color:var(--text-muted)">${escapeHtml(o.reason || '—')}</td>
+          <td>${live
+            ? (o.until ? `<span class="badge badge-amber">until ${new Date(o.until).toLocaleDateString()}</span>` : '<span class="badge badge-green">no expiry</span>')
+            : `<span class="badge badge-muted">lapsed ${o.until ? new Date(o.until).toLocaleDateString() : ''}</span>`}</td>
           <td style="font-size:10.5px;color:var(--text-muted)">${escapeHtml(o.grantedBy || '')}</td>
-          <td><button class="btn btn-ghost btn-sm" onclick="openBoost('org','${escapeHtml(org)}')">Change</button></td></tr>`).join('')}</tbody></table></div>`
+          <td><button class="btn btn-ghost btn-sm" onclick="openBoost('org','${escapeHtml(org)}')">${live ? 'Change' : 'Grant again'}</button></td></tr>`).join('')}</tbody></table></div>`
       : '<div class="cd-note">No company-wide boosts. Everyone is on the standard allowance.</div>';
   } catch (e) { box.innerHTML = `<div class="cd-note">${escapeHtml(e.message)}</div>`; }
 }
@@ -1920,25 +2352,32 @@ function adminSetGrant(id, on) {
 function limitCell(u) {
   if (u.role === 'admin') return '<span style="color:var(--text-muted)">—</span>';
   const own = u.quota || {};
+  // Whether a number is this person's own or the platform default is worth knowing, but not worth a
+  // "(default)" after every figure — that doubled the width of the column. Inherited values are
+  // simply shown in grey, and the detail modal spells it out.
   const part = (ownVal, eff, unit) => {
     if (ownVal != null) return `${ownVal}${unit}`;
-    if (eff != null) return `${eff}${unit} <span class="hint">(default)</span>`;
+    if (eff != null) return `<span style="color:var(--text-muted)" title="inherited from the platform default">${eff}${unit}</span>`;
     return '∞';
   };
+  // Two lines at most. Both budgets still show, because either can be what actually stops somebody,
+  // but the qualifiers that used to make this four lines tall now live in the person's detail modal.
   const boost = u.activeBoost;
-  const used = (u.stats && u.stats.secondsToday) || 0;
-  return `${part(own.callsPerDay, u.effectiveLimit, '')} <span style="color:var(--text-muted)">calls</span>`
-    + `<div style="font-size:10.5px;margin-top:2px">${part(own.minutesPerDay, u.effectiveMinuteLimit, 'm')} <span style="color:var(--text-muted)">talk`
-    + `${used ? ` · ${Math.floor(used / 60)}m ${used % 60}s used` : ''}</span></div>`
-    + (boost ? `<div style="font-size:10px;margin-top:3px"><span class="badge badge-amber">boosted</span> <span style="color:var(--text-muted)">${escapeHtml(boost.until ? 'until ' + new Date(boost.until).toLocaleDateString() : 'until revoked')}</span></div>` : '')
-    + (u.mayBulkCall && !iAmPlatformAdminUser(u) ? '<div style="font-size:10px;color:var(--text-muted);margin-top:2px">bulk enabled</div>' : '');
+  return `<div style="white-space:nowrap">${part(own.callsPerDay, u.effectiveLimit, '')} <span style="color:var(--text-muted)">calls · </span>`
+    + `${part(own.minutesPerDay, u.effectiveMinuteLimit, 'm')} <span style="color:var(--text-muted)">talk</span></div>`
+    + (boost ? `<div style="margin-top:3px"><span class="badge badge-amber">boosted${boost.until ? ' to ' + new Date(boost.until).toLocaleDateString() : ''}</span></div>`
+      : (u.mayBulkCall && !iAmPlatformAdminUser(u) ? '<div style="font-size:10px;color:var(--text-muted);margin-top:2px">bulk enabled</div>' : ''));
 }
 async function adminAddUser() {
   const body = { name: val('au-name'), email: val('au-email'), org: val('au-org'), password: val('au-pw'), role: val('au-role'), callsPerDay: val('au-quota') };
   const note = document.getElementById('au-note');
-  if (!body.email || !body.password) { note.innerHTML = '<span style="color:var(--red)">Email and password are required.</span>'; return; }
-  try { const r = await apiFetch('/api/admin/users', 'POST', body); note.innerHTML = `✓ Created <strong>${escapeHtml(r.user.email)}</strong>.`; ['au-name', 'au-email', 'au-org', 'au-pw', 'au-quota'].forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; }); initAdmin(); toast('success', 'User created', r.user.email); }
-  catch (e) { note.innerHTML = `<span style="color:var(--red)">${escapeHtml(e.message)}</span>`; }
+  if (!body.email) { note.innerHTML = '<span style="color:var(--red)">An email address is required.</span>'; return; }
+  try {
+    const r = await apiFetch('/api/admin/users', 'POST', body);
+    closeModal('add-user-modal');
+    initAdmin();
+    toast('success', 'Account created', r.message || r.user.email);
+  } catch (e) { note.innerHTML = '<span style="color:var(--red)">' + escapeHtml(e.message) + '</span>'; }
 }
 async function adminUpdate(id, patch) { try { await apiFetch('/api/admin/users/' + id, 'POST', patch); initAdmin(); return true; } catch (e) { toast('error', 'Update failed', e.message); return false; } }
 function adminToggleActive(id, makeActive) { adminUpdate(id, { active: makeActive }).then(ok => { if (ok) toast('success', makeActive ? 'User enabled' : 'User disabled', ''); }); }
@@ -2319,30 +2758,102 @@ function paintSimToggle() { const el = document.getElementById('sim-toggle'); if
 
 // ══════ ANALYTICS ══════
 const DISP_LABELS = { promised_payment: 'Promised payment', already_paid: 'Already paid', callback_requested: 'Callback requested', appointment_set: 'Appointment set', lead_qualified: 'Lead qualified', renewed: 'Renewed', resolved: 'Resolved', not_interested: 'Not interested', do_not_call: 'Do not call', dispute_raised: 'Dispute raised', escalated_to_human: 'Escalated', no_answer_voicemail: 'No answer / VM', wrong_person: 'Wrong person', refused: 'Declined', reached_customer: 'Reached' };
+// ══════ ANALYTICS ══════
+let lastAnalytics = null;
 async function initAnalytics() {
   const empty = document.getElementById('analytics-empty'), body = document.getElementById('analytics-body');
-  if (!backendConnected) { empty.style.display = 'flex'; body.style.display = 'none'; empty.querySelector('.empty-sub').textContent = 'Connect to the backend first.'; return; }
+  if (!backendConnected) { empty.style.display = 'block'; body.style.display = 'none'; empty.querySelector('.empty-sub').textContent = 'Connect to the backend first.'; return; }
   const isAdmin = currentUser && currentUser.role === 'admin';
-  const q = (isAdmin && adminUserFilter) ? ('?userId=' + encodeURIComponent(adminUserFilter.id)) : '';
-  let a; try { a = await apiFetch('/api/analytics' + q); } catch (e) { return; }
-  // Scope banner: which user these numbers cover (admin filter), plus any calls still awaiting outcome sync.
-  const scope = document.getElementById('an-scope'); const bits = [];
-  if (isAdmin && adminUserFilter) bits.push(`<span class="badge badge-brand">Analytics for ${escapeHtml(adminUserFilter.name)}</span> <button class="btn btn-ghost btn-sm" onclick="adminUserFilter=null;initAnalytics()">✕ Show all users</button>`);
-  else if (isAdmin) bits.push(`<span class="badge badge-muted">All users</span>`);
-  if (a.pending) bits.push(`<span class="cd-note" style="margin:0">${a.pending} call${a.pending > 1 ? 's' : ''} placed, awaiting outcome sync — excluded from connect rate. <button class="btn btn-ghost btn-sm" onclick="syncHistory().then(initAnalytics)">↻ Sync now</button></span>`);
-  scope.innerHTML = bits.length ? `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">${bits.join('')}</div>` : '';
-  if (!a.total) { empty.style.display = 'flex'; body.style.display = 'none'; return; }
+  const params = new URLSearchParams();
+  params.set('range', val('an-range') || 'all');
+  // The viewer's own timezone, so an Australian partner's "yesterday" is their yesterday.
+  try { params.set('tz', Intl.DateTimeFormat().resolvedOptions().timeZone || ''); } catch (e) {}
+  if (isAdmin && adminUserFilter) params.set('userId', adminUserFilter.id);
+
+  let a; try { a = await apiFetch('/api/analytics?' + params.toString()); } catch (e) { return; }
+  lastAnalytics = a;
+
+  // Which calls these numbers cover. Never leave that implicit: the same page means something very
+  // different to a partner and to a platform admin.
+  const bits = [];
+  if (isAdmin && adminUserFilter) bits.push('<span class="badge badge-brand">Just ' + escapeHtml(adminUserFilter.name) + '</span> <button class="btn btn-ghost btn-sm" onclick="adminUserFilter=null;initAnalytics()">✕ Show everyone</button>');
+  else bits.push('<span class="badge badge-muted">' + escapeHtml(a.scopeLabel || 'your calls') + '</span>');
+  if (a.range !== 'all' && a.scopeTotal > a.total) bits.push('<span style="font-size:11.5px;color:var(--text-muted)">' + (a.scopeTotal - a.total) + ' older call' + (a.scopeTotal - a.total === 1 ? '' : 's') + ' outside this range</span>');
+  document.getElementById('an-scope').innerHTML = '<span style="display:inline-flex;align-items:center;gap:9px;flex-wrap:wrap">' + bits.join('') + '</span>';
+
+  if (!a.total) { empty.style.display = 'block'; body.style.display = 'none'; return; }
   empty.style.display = 'none'; body.style.display = 'block';
-  document.getElementById('an-total').textContent = a.total;
-  document.getElementById('an-connect').textContent = a.connectRate + '%';
-  document.getElementById('an-outcome').textContent = a.withOutcome;
-  document.getElementById('an-duration').textContent = a.avgDurationMs ? fmtDuration(a.avgDurationMs) : '—';
-  const simNote = document.getElementById('an-sim-note'); simNote.textContent = a.simulated ? `${a.simulated} simulated` : ''; simNote.style.display = a.simulated ? 'inline-flex' : 'none';
-  document.getElementById('an-dispositions').innerHTML = barList(a.byDisposition, a.total, k => DISP_LABELS[k] || k, dispColor);
+
+  const countries = Object.keys(a.byCountry || {});
+  const topCountry = Object.entries(a.byCountry || {}).sort((x, y) => y[1] - x[1])[0];
+  const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+  set('an-total', a.total);
+  set('an-total-note', a.simulated ? a.live + ' live · ' + a.simulated + ' simulated' : 'all live');
+  set('an-connect', a.connectRate + '%');
+  set('an-connect-note', a.connected + ' of ' + a.resolved + ' completed');
+  set('an-talk', humanSeconds(a.talkSeconds));
+  set('an-talk-note', a.avgDurationMs ? 'avg ' + fmtDuration(a.avgDurationMs) + ' a call' : 'no answered calls yet');
+  set('an-countries', countries.length);
+  set('an-countries-note', topCountry ? 'mostly ' + topCountry[0] : '');
+  set('an-outcome', a.withOutcome);
+  set('an-outcome-note', Math.round(a.withOutcome / a.total * 100) + '% of calls');
+
+  // ── Overview ──
+  document.getElementById('an-trend').innerHTML = trendChart(a.trend);
+  document.getElementById('an-trend-badge').textContent = a.range === 'all' ? 'last 30 days' : 'last ' + a.range + ' days';
+  document.getElementById('an-outcome-split').innerHTML = outcomeSplit(a);
+  document.getElementById('an-talkdist').innerHTML = rankList(
+    (a.talkBuckets || []).map(b => [b.label, b.n]),
+    { colour: 'teal', empty: 'No call has produced a duration yet.', total: (a.talkBuckets || []).reduce((s, b) => s + b.n, 0) });
+  document.getElementById('an-hours').innerHTML = hourChart(a.byHour || []);
+  const hourSub = document.getElementById('an-hour-sub');
+  if (hourSub) hourSub.textContent = 'When calls actually go out, in ' + (a.timezone || 'your local time') + '.';
+
+  // ── Reach ──
+  document.getElementById('an-countries-list').innerHTML = rankList(a.byCountry, { total: a.total, limit: 15, empty: 'No destination could be worked out.' });
+  document.getElementById('an-industries').innerHTML = rankList(a.byIndustry, { total: a.total, colour: 'blue', label: titleCase, empty: 'No industry was recorded against these calls. Calls placed before this was tracked show nothing here.' });
+  document.getElementById('an-destinations').innerHTML = rankList(a.byDestination, { total: a.total, colour: 'amber', limit: 12, empty: 'No customer names were supplied with these calls.' });
+  document.getElementById('an-brands').innerHTML = rankList(a.byAgentBrand, { total: a.total, colour: 'teal', limit: 10, empty: 'No company profile was attached.' });
+
+  // ── Outcomes ──
+  const simNote = document.getElementById('an-sim-note');
+  simNote.textContent = a.simulated ? a.simulated + ' simulated' : '';
+  simNote.style.display = a.simulated ? 'inline-flex' : 'none';
+  document.getElementById('an-dispositions').innerHTML = barList(a.byDisposition, a.total, k => DISP_LABELS[k] || titleCase(k), dispColor);
   document.getElementById('an-usecases').innerHTML = barList(a.byUseCase, a.total, k => ucMeta(k).label, () => 'var(--brand)');
   document.getElementById('an-actions').innerHTML = actionCards(a.actions);
   const st = a.sentiment || {}, stotal = (st.positive || 0) + (st.neutral || 0) + (st.negative || 0);
-  document.getElementById('an-sentiment').innerHTML = stotal ? barList({ Positive: st.positive, Neutral: st.neutral, Negative: st.negative }, stotal, k => k, k => ({ Positive: 'var(--green)', Neutral: 'var(--text-muted)', Negative: 'var(--red)' }[k])) : '<div class="cd-note">No sentiment captured yet.</div>';
+  document.getElementById('an-sentiment').innerHTML = stotal
+    ? barList({ Positive: st.positive, Neutral: st.neutral, Negative: st.negative }, stotal, k => k, k => ({ Positive: 'var(--green)', Neutral: 'var(--text-muted)', Negative: 'var(--red)' }[k]))
+    : '<div class="cd-note">No sentiment has been captured yet. It arrives with the post-call analysis once a real conversation ends.</div>';
+
+  // ── People ──
+  const orgCard = document.getElementById('an-org-card');
+  const orgs = a.byOrg || [];
+  orgCard.style.display = orgs.length ? '' : 'none';
+  if (orgs.length) {
+    document.getElementById('an-orgs').innerHTML = '<div class="table-wrapper"><table><thead><tr>'
+      + '<th>Company</th><th>People</th><th>Calls</th><th>Reached</th><th>Talk time</th><th>Share</th></tr></thead><tbody>'
+      + orgs.map(o => '<tr><td><strong>' + escapeHtml(o.name || o.orgId) + '</strong>'
+        + (o.name && o.name !== o.orgId ? '<div style="font-size:10px;color:var(--text-muted)">' + escapeHtml(o.orgId) + '</div>' : '')
+        + '</td><td>' + o.people + '</td><td><strong>' + o.calls + '</strong></td>'
+        + '<td>' + o.connected + ' <span style="color:var(--text-muted)">· ' + Math.round(o.connected / o.calls * 100) + '%</span></td>'
+        + '<td>' + humanSeconds(o.talkSeconds) + '</td>'
+        + '<td style="min-width:110px"><div class="rank-meter" style="margin:0"><div class="rank-fill" style="width:' + Math.round(o.calls / orgs[0].calls * 100) + '%"></div></div></td></tr>').join('')
+      + '</tbody></table></div>';
+  }
+  const canDrill = currentUser && currentUser.role === 'admin';
+  const people = a.byUser || [];
+  document.getElementById('an-users').innerHTML = people.length
+    ? '<div class="table-wrapper"><table><thead><tr><th>Person</th><th>Calls</th><th>Reached</th><th>Talk time</th><th>Share</th></tr></thead><tbody>'
+      + people.map(u => '<tr' + (canDrill ? ' class="clickable" onclick="openUserDetail(\'' + u.id + '\')"' : '') + '>'
+        + '<td><strong>' + escapeHtml(u.name) + '</strong>' + (u.simulated ? ' <span class="badge badge-muted">' + u.simulated + ' sim</span>' : '') + '</td>'
+        + '<td><strong>' + u.calls + '</strong></td>'
+        + '<td>' + u.connected + ' <span style="color:var(--text-muted)">· ' + Math.round(u.connected / u.calls * 100) + '%</span></td>'
+        + '<td>' + humanSeconds(u.talkSeconds) + '</td>'
+        + '<td style="min-width:110px"><div class="rank-meter" style="margin:0"><div class="rank-fill" style="width:' + Math.round(u.calls / people[0].calls * 100) + '%"></div></div></td></tr>').join('')
+      + '</tbody></table></div>' + (canDrill ? '<div style="font-size:11.5px;color:var(--text-muted);margin-top:10px">Click a row to open that person\'s full activity.</div>' : '')
+    : '<div class="cd-note">Nobody has placed a call in this period.</div>';
 }
 function barList(obj, total, labelFn, colorFn) {
   const entries = Object.entries(obj || {}).filter(([k, v]) => v > 0).sort((a, b) => b[1] - a[1]);
@@ -3057,9 +3568,11 @@ function renderOpenerPreview() {
     '<span style="color:var(--brand);font-weight:700;font-family:\'DM Mono\',monospace;font-size:11.5px">{customer_name}</span>');
   box.innerHTML = `<span style="color:var(--text-muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em">The agent opens with</span><br><strong style="font-size:12.5px">“${shown}”</strong>`;
 }
+// Kept as a no-op-shaped function because several call sites invoke it during builder setup.
+// The provider is fixed, so all this does now is keep the voice note accurate.
 function onProviderChange() {
-  const p = val('ab-provider');
-  document.getElementById('ab-provider-badge').textContent = p === 'retell' ? 'Retell' : 'ElevenLabs';
+  const p = 'elevenlabs';
+  document.getElementById('ab-provider-badge').textContent = 'ElevenLabs';
   document.getElementById('ab-voice-note').innerHTML = p === 'retell'
     ? 'Retell uses the voice configured on its own agent. Voice/accent picking here applies to ElevenLabs.'
     : 'Voices load automatically (or click <strong>↻ load</strong>) — the list is every voice on your ElevenLabs account; accent &amp; gender come from each voice. Add your key in Settings if the list is empty.';
@@ -3836,6 +4349,397 @@ function toast(type, title, msg) {
   c.appendChild(d); setTimeout(() => removeToast(d), 5000);
 }
 function removeToast(el) { if (!el || !el.parentElement) return; el.classList.add('removing'); setTimeout(() => el.remove(), 300); }
+// ══════════════════════════════════════════════════════════════════
+// ANALYTICS + ADMIN: shared rendering, the person detail modal, and the daily report.
+// ══════════════════════════════════════════════════════════════════
+// ══════ SHARED UI PRIMITIVES ══════
+/** Generic modal close, so every overlay does not need its own one-line function. */
+function closeModal(id) { const m = document.getElementById(id); if (m) m.classList.remove('open'); }
+/** Sub-tab switcher shared by Admin and Analytics. Panels are `<prefix>-sub-<name>`. */
+function showSubtab(prefix, name, el) {
+  document.querySelectorAll('[id^="' + prefix + '-sub-"]').forEach(p => p.classList.toggle('active', p.id === prefix + '-sub-' + name));
+  if (el && el.parentElement) [...el.parentElement.children].forEach(b => b.classList.toggle('active', b === el));
+  if (prefix === 'ad' && name === 'report') initDailyReport();
+}
+/** Seconds as something a person reads without converting. */
+function humanSeconds(s) {
+  s = Math.max(0, Math.round(s || 0));
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
+  if (h) return h + 'h ' + String(m).padStart(2, '0') + 'm';
+  if (m) return m + 'm ' + String(s % 60).padStart(2, '0') + 's';
+  return s + 's';
+}
+function titleCase(s) { return String(s || '').replace(/[_-]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).trim(); }
+function initials(name, email) {
+  const src = String(name || email || '?').trim();
+  const parts = src.split(/[\s.@_-]+/).filter(Boolean);
+  return ((parts[0] || '?')[0] + (parts.length > 1 ? parts[1][0] : '')).toUpperCase();
+}
+
+// ── charts, drawn in CSS ──
+// The console loads no charting library, and its content-security policy would refuse one anyway.
+// Boxes and gradients render instantly and cannot break because a CDN moved.
+/** Stacked columns over time: the green foot of each bar is the share that reached a person. */
+function trendChart(trend) {
+  if (!trend || !trend.length) return '<div class="cd-note">Nothing in this period.</div>';
+  const max = Math.max(1, ...trend.map(r => r.calls));
+  const step = Math.max(1, Math.ceil(trend.length / 10));
+  return '<div class="chart-bars">' + trend.map((r, i) => {
+    const h = r.calls ? Math.max(5, Math.round(r.calls / max * 106)) : 2;
+    const conn = r.calls ? Math.round(r.connected / r.calls * h) : 0;
+    const label = (i % step === 0 || i === trend.length - 1) ? r.date.slice(5).replace('-', '/') : '';
+    const fill = r.calls
+      ? 'background:linear-gradient(180deg, var(--brand) 0 ' + (h - conn) + 'px, var(--green) ' + (h - conn) + 'px 100%)'
+      : '';
+    return '<div class="chart-col" title="' + r.date + ' — ' + r.calls + ' call' + (r.calls === 1 ? '' : 's') + ', ' + r.connected + ' reached a person">'
+      + '<div class="chart-bar' + (r.calls ? '' : ' empty') + '" style="height:' + h + 'px;' + fill + '"></div>'
+      + '<div class="chart-x">' + label + '</div></div>';
+  }).join('') + '</div>'
+    + '<div class="chart-legend"><span><i style="background:var(--brand)"></i>placed</span><span><i style="background:var(--green)"></i>reached a person</span><span style="margin-left:auto">' + trend.length + ' days</span></div>';
+}
+/** Hour of day, in whatever timezone the browser is in. */
+function hourChart(byHour) {
+  const max = Math.max(1, ...byHour.map(h => h.calls));
+  return '<div class="chart-bars" style="height:104px">' + byHour.map(h => {
+    const height = h.calls ? Math.max(4, Math.round(h.calls / max * 78)) : 2;
+    return '<div class="chart-col" title="' + String(h.hour).padStart(2, '0') + ':00 — ' + h.calls + ' call' + (h.calls === 1 ? '' : 's') + '">'
+      + '<div class="chart-bar' + (h.calls ? '' : ' empty') + '" style="height:' + height + 'px"></div>'
+      + '<div class="chart-x">' + (h.hour % 3 === 0 ? String(h.hour).padStart(2, '0') : '') + '</div></div>';
+  }).join('') + '</div>';
+}
+/**
+ * Ranked bars. `entries` is [[key, value], …] or an object.
+ * opts: { label, fmt, colour, limit, total, empty, onClick }
+ */
+function rankList(entries, opts) {
+  const o = opts || {};
+  const rows = (Array.isArray(entries) ? entries : Object.entries(entries || {}))
+    .filter(e => e[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, o.limit || 12);
+  if (!rows.length) return '<div class="cd-note">' + escapeHtml(o.empty || 'Nothing captured yet.') + '</div>';
+  const max = rows[0][1];
+  const total = o.total != null ? o.total : rows.reduce((s, r) => s + r[1], 0);
+  return '<div class="rank-list">' + rows.map(([k, v]) => {
+    const click = o.onClick ? ' style="cursor:pointer" onclick="' + o.onClick(k) + '"' : '';
+    return '<div class="rank-row"' + click + '>'
+      + '<div class="rank-head"><div class="rank-name">' + escapeHtml(o.label ? o.label(k) : k) + '</div>'
+      + '<div class="rank-val">' + (o.fmt ? o.fmt(v) : v) + (total ? ' · ' + Math.round(v / total * 100) + '%' : '') + '</div></div>'
+      + '<div class="rank-meter"><div class="rank-fill ' + (o.colour || '') + '" style="width:' + Math.round(v / max * 100) + '%"></div></div>'
+      + '</div>';
+  }).join('') + '</div>';
+}
+/** One band showing how every call ended, because four separate numbers do not read as a split. */
+function outcomeSplit(a) {
+  const parts = [
+    ['Reached a person', a.connected, 'var(--green)'],
+    ['No answer or voicemail', a.noReach, 'var(--amber)'],
+    ['Could not connect', a.failed, 'var(--red)'],
+    ['Still in flight', a.pending, 'var(--blue)']
+  ].filter(p => p[1] > 0);
+  if (!parts.length) return '<div class="cd-note">Nothing yet.</div>';
+  const total = parts.reduce((s, p) => s + p[1], 0);
+  return '<div class="split-bar">' + parts.map(p => '<span style="width:' + (p[1] / total * 100) + '%;background:' + p[2] + '" title="' + p[0] + ': ' + p[1] + '"></span>').join('') + '</div>'
+    + '<div style="margin-top:14px">' + parts.map(p =>
+      '<div style="display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid var(--border-light)">'
+      + '<i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:' + p[2] + '"></i>'
+      + '<span style="font-size:12.5px">' + p[0] + '</span>'
+      + '<span style="margin-left:auto;font-family:\'DM Mono\',monospace;font-size:12px;color:var(--text-dim)">' + p[1] + ' · ' + Math.round(p[1] / total * 100) + '%</span></div>').join('') + '</div>'
+    + (a.pending ? '<div class="cd-note" style="margin-top:12px">' + a.pending + ' call' + (a.pending > 1 ? 's are' : ' is') + ' still waiting on an outcome, so ' + (a.pending > 1 ? 'they are' : 'it is') + ' left out of the connect rate. <button class="btn btn-ghost btn-sm" onclick="syncHistory().then(initAnalytics)">↻ Sync now</button></div>' : '');
+}
+
+/** Everything on the page as one spreadsheet, so it can be pasted into a deck without retyping. */
+function exportAnalyticsCsv() {
+  const a = lastAnalytics;
+  if (!a) return toast('error', 'Nothing to export', 'Load the page first.');
+  const rows = [];
+  const push = (...cells) => rows.push(cells.map(c => {
+    const s = String(c == null ? '' : c);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }).join(','));
+  push('Section', 'Item', 'Calls', 'Detail');
+  push('Summary', 'Calls placed', a.total, a.live + ' live, ' + a.simulated + ' simulated');
+  push('Summary', 'Reached a person', a.connected, a.connectRate + '%');
+  push('Summary', 'No answer or voicemail', a.noReach, '');
+  push('Summary', 'Could not connect', a.failed, '');
+  push('Summary', 'Still in flight', a.pending, '');
+  push('Summary', 'Talk time', '', humanSeconds(a.talkSeconds));
+  push('Summary', 'Average call', '', a.avgDurationMs ? fmtDuration(a.avgDurationMs) : '');
+  const dump = (section, obj, fmt) => Object.entries(obj || {}).sort((x, y) => y[1] - x[1]).forEach(([k, v]) => push(section, fmt ? fmt(k) : k, v, ''));
+  dump('Country', a.byCountry);
+  dump('Industry', a.byIndustry, titleCase);
+  dump('Use case', a.byUseCase, k => ucMeta(k).label);
+  dump('Disposition', a.byDisposition, k => DISP_LABELS[k] || titleCase(k));
+  dump('Called', a.byDestination);
+  (a.byOrg || []).forEach(o => push('Company', o.name || o.orgId, o.calls, humanSeconds(o.talkSeconds) + ' talk time, ' + o.people + ' people'));
+  (a.byUser || []).forEach(u => push('Person', u.name, u.calls, humanSeconds(u.talkSeconds) + ' talk time, ' + u.connected + ' reached'));
+  const blob = new Blob(['﻿' + rows.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'omnireach-analytics-' + new Date().toISOString().slice(0, 10) + '.csv';
+  document.body.appendChild(link); link.click(); link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+  toast('success', 'Exported', rows.length - 1 + ' rows.');
+}
+
+// ══════ ONE PERSON, EVERYTHING ══════
+// The table answers "who is on the platform". This answers "what has this person actually done",
+// which is the question an admin has when a name is in front of them, and it keeps every
+// administrative action in one place instead of scattered across a row of nine small buttons.
+let udUser = null;
+async function openUserDetail(id) {
+  const u = adminUsers.find(x => x.id === id);
+  if (!u) return toast('error', 'Not found', 'That account is no longer in the list. Refresh and try again.');
+  udUser = u;
+  document.getElementById('user-detail-modal').classList.add('open');
+  renderUserDetailShell(u);
+  let a = null, h = null;
+  try { a = await apiFetch('/api/analytics?userId=' + encodeURIComponent(id) + '&range=all'); } catch (e) {}
+  try { h = await apiFetch('/api/history?limit=25&userId=' + encodeURIComponent(id)); } catch (e) {}
+  renderUserDetailBody(u, a, h);
+}
+function renderUserDetailShell(u) {
+  const badges = [
+    u.superAdmin ? '<span class="badge badge-brand">★ super administrator</span>' : (u.role === 'admin' ? '<span class="badge badge-brand">administrator</span>' : '<span class="badge badge-muted">user</span>'),
+    u.isPlatformAdmin ? '<span class="badge badge-purple">platform</span>' : '',
+    u.pending ? '<span class="badge badge-amber">awaiting approval</span>' : (u.active === false ? '<span class="badge badge-red">disabled</span>' : '<span class="badge badge-green">active</span>'),
+    u.activeBoost ? '<span class="badge badge-amber">boosted</span>' : '',
+    u.canGrantAdmin && !u.superAdmin ? '<span class="badge badge-blue">can create admins</span>' : '',
+    u.mayBulkCall ? '<span class="badge badge-teal">bulk enabled</span>' : ''
+  ].filter(Boolean).join(' ');
+  document.getElementById('ud-hero').innerHTML =
+    '<div style="display:flex;align-items:flex-start;gap:15px">'
+    + '<span class="avatar">' + escapeHtml(initials(u.name, u.email)) + '</span>'
+    + '<div style="flex:1;min-width:0">'
+    + '<div class="modal-title">' + escapeHtml(u.name || u.email) + '</div>'
+    + '<div style="font-size:12.5px;color:var(--text-dim);margin-top:3px">' + escapeHtml(u.email)
+    + ' · ' + escapeHtml(u.org || u.orgId || 'no company recorded') + '</div>'
+    + '<div style="margin-top:9px;display:flex;gap:5px;flex-wrap:wrap">' + badges + '</div></div>'
+    + '<button class="modal-close" onclick="closeModal(\'user-detail-modal\')">✕</button></div>';
+  document.getElementById('ud-body').innerHTML = '<div class="cd-note" style="margin-top:18px">Loading their activity…</div>';
+}
+function renderUserDetailBody(u, a, h) {
+  const s = u.stats || {};
+  const calls = (h && h.calls) || [];
+  const kv = (k, v, note) => '<div class="kv"><div class="kv-k">' + k + '</div><div class="kv-v">' + v + '</div>' + (note ? '<div class="kv-note">' + note + '</div>' : '') + '</div>';
+  const limitText = u.role === 'admin' ? 'exempt' : (u.effectiveLimit == null ? 'unlimited' : u.effectiveLimit + ' a day');
+  const minsText = u.role === 'admin' ? 'exempt' : (u.effectiveMinuteLimit == null ? 'unlimited' : u.effectiveMinuteLimit + ' min a day');
+
+  const stats = '<div class="kv-grid">'
+    + kv('Calls placed', s.calls || 0, a ? (a.live || 0) + ' live · ' + (a.simulated || 0) + ' simulated' : '')
+    + kv('Today', s.today || 0, 'limit ' + limitText)
+    + kv('Talk time today', humanSeconds(s.secondsToday || 0), 'limit ' + minsText)
+    + kv('Talk time overall', a ? humanSeconds(a.talkSeconds) : '—', a && a.avgDurationMs ? 'avg ' + fmtDuration(a.avgDurationMs) : '')
+    + kv('Reached a person', a ? a.connectRate + '%' : '—', a ? a.connected + ' of ' + a.resolved + ' completed' : '')
+    + kv('Last call', s.lastCall ? new Date(s.lastCall).toLocaleDateString() : 'never', s.lastCall ? new Date(s.lastCall).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '')
+    + kv('Signed in', u.lastLogin ? new Date(u.lastLogin).toLocaleDateString() : 'never', '')
+    + kv('Account created', u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—', u.selfRegistered ? 'self sign-up' : 'created by an admin')
+    + '</div>';
+
+  const boost = u.activeBoost;
+  const boostBlock = boost
+    ? '<div class="card" style="margin:0;background:var(--brand-50);border-color:var(--brand-100)">'
+      + '<div style="font-size:13px;font-weight:700;margin-bottom:6px">Allowance boost in force</div>'
+      + '<div style="font-size:12.5px;color:var(--text-dim);line-height:1.65">' + escapeHtml(describeBoostClient(boost)) + '<br>'
+      + (boost.reason ? 'Reason: ' + escapeHtml(boost.reason) + '<br>' : '')
+      + (boost.until ? 'Expires ' + new Date(boost.until).toLocaleString() : 'No expiry — it stays until revoked')
+      + (boost.grantedBy ? ' · granted by ' + escapeHtml(boost.grantedBy) : '') + '</div></div>'
+    : '<div class="cd-note" style="margin:0">Standard allowance, no boost. ' + (u.role === 'admin' ? 'Platform administrators are exempt from limits anyway.' : '') + '</div>';
+
+  const reach = a && a.total
+    ? '<div class="grid-2" style="gap:14px">'
+      + '<div><div class="section-label" style="margin-top:0">Where they called</div>' + rankList(a.byCountry, { total: a.total, limit: 6 }) + '</div>'
+      + '<div><div class="section-label" style="margin-top:0">What they demonstrated</div>' + rankList(Object.keys(a.byIndustry || {}).length ? a.byIndustry : a.byUseCase, { total: a.total, limit: 6, colour: 'blue', label: k => (a.byIndustry && a.byIndustry[k]) ? titleCase(k) : ucMeta(k).label }) + '</div>'
+      + '</div>'
+      + '<div class="section-label">Activity</div>' + trendChart((a.trend || []).slice(-30))
+    : '<div class="cd-note">They have not placed a call yet.</div>';
+
+  const callRows = calls.length
+    ? '<div class="table-wrapper"><table><thead><tr><th>When</th><th>Called</th><th>Use case</th><th>Talk</th><th>Outcome</th></tr></thead><tbody>'
+      + calls.map(c => '<tr class="clickable" onclick="closeModal(\'user-detail-modal\');openCallFromHistory(\'' + c.id + '\')">'
+        + '<td style="font-size:11px;color:var(--text-muted);white-space:nowrap">' + (c.timestamp ? new Date(c.timestamp).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—') + '</td>'
+        + '<td><strong>' + escapeHtml(c.customerName || '—') + '</strong><div style="font-size:10.5px;color:var(--text-muted)">' + escapeHtml(c.toNumber || '') + '</div></td>'
+        + '<td>' + ucBadge(c.useCase) + '</td>'
+        + '<td style="white-space:nowrap">' + (c.durationMs ? fmtDuration(c.durationMs) : '—') + '</td>'
+        + '<td>' + (c.status === 'failed' ? '<span class="badge badge-red">failed</span>' : (c.disposition ? '<span class="badge badge-green">' + escapeHtml(DISP_LABELS[c.disposition] || titleCase(c.disposition)) + '</span>' : '<span class="badge badge-muted">' + escapeHtml(c.callStatus || 'in flight') + '</span>'))
+        + (c.simulated ? ' <span class="badge badge-muted">sim</span>' : '') + '</td></tr>').join('')
+      + '</tbody></table></div>'
+      + '<div style="margin-top:10px"><button class="btn btn-secondary btn-sm" onclick="closeModal(\'user-detail-modal\');viewUserCalls(\'' + u.id + '\')">Open every call in Call History →</button></div>'
+    : '<div class="cd-note">No calls to show.</div>';
+
+  // Only render a control this admin may actually use: a button that always 403s reads as a bug
+  // rather than as a boundary.
+  const acts = [];
+  if (u.pending) acts.push('<button class="btn btn-green btn-sm" onclick="adminApprove(\'' + u.id + '\')">✓ Approve this account</button>');
+  const rb = roleButtons(u);
+  if (rb) acts.push(rb);
+  if (mayEdit(u)) {
+    acts.push('<button class="btn btn-secondary btn-sm" onclick="adminToggleActive(\'' + u.id + '\',' + (u.active === false) + ')">' + (u.active === false ? 'Enable the account' : 'Disable the account') + '</button>');
+    acts.push('<button class="btn btn-secondary btn-sm" onclick="adminSetQuota(\'' + u.id + '\')">Change limits</button>');
+    if (iAmPlatformAdmin()) acts.push('<button class="btn btn-secondary btn-sm" onclick="openBoost(\'user\',\'' + u.id + '\')">Boost the allowance</button>');
+    acts.push('<button class="btn btn-secondary btn-sm" onclick="adminRevokeSessions(\'' + u.id + '\')" title="End every session on every device">Sign out everywhere</button>');
+    acts.push('<button class="btn btn-ghost btn-sm" onclick="adminResetPw(\'' + u.id + '\')">Set a password</button>');
+  } else {
+    acts.push('<span style="font-size:12px;color:var(--text-muted);align-self:center">This account is a super administrator and can only be changed by another super administrator.</span>');
+  }
+
+  document.getElementById('ud-body').innerHTML =
+    '<div class="section-label" style="margin-top:18px">Activity at a glance</div>' + stats
+    + '<div class="section-label">Allowance</div>' + boostBlock
+    + '<div class="section-label">Reach</div>' + reach
+    + '<div class="section-label">Recent calls</div>' + callRows
+    + '<div class="section-label">Administration</div><div class="row-actions">' + acts.join('') + '</div>'
+    + '<div style="font-size:11px;color:var(--text-muted);margin-top:14px;line-height:1.6">Call records cannot be deleted from here, or anywhere else in the console. A call log is the record of a real conversation with a customer and may be needed for a dispute or a do-not-call request.</div>';
+}
+/** Open one call's detail from its id, used when jumping out of the person modal. */
+function openCallFromHistory(id) {
+  const entry = (callHistory || []).find(c => c.id === id);
+  if (entry) return openCallDetail(entry);
+  viewUserCalls(udUser ? udUser.id : '');
+}
+
+function openAddUser() {
+  ['au-name', 'au-email', 'au-org', 'au-pw', 'au-quota'].forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
+  const roleSel = document.getElementById('au-role');
+  if (roleSel) {
+    roleSel.value = 'user';
+    const adminOpt = [...roleSel.options].find(o => o.value === 'admin');
+    if (adminOpt) { adminOpt.disabled = !iCanGrantAdmin(); adminOpt.textContent = iCanGrantAdmin() ? 'Admin' : 'Admin (super administrator only)'; }
+  }
+  const note = document.getElementById('au-scope-note');
+  if (note) note.textContent = iAmPlatformAdmin() ? 'Set the company to whichever partner they belong to.' : 'They will join ' + orgLabel() + ', the same company as you.';
+  document.getElementById('au-note').innerHTML = 'Everyone signs in with a six-digit code sent to their mailbox, so a password is optional. Set one only if this account needs a fallback.';
+  document.getElementById('add-user-modal').classList.add('open');
+}
+
+/** Personal boosts, gathered from the user list so there is one place to see every exception. */
+function renderPersonalBoosts() {
+  const box = document.getElementById('ad-boosts');
+  if (!box) return;
+  // quotaOverride only: activeBoost is also set for anyone INHERITING their company's boost, and
+  // listing those here would read as a dozen personal exceptions that nobody granted.
+  const rows = adminUsers.filter(u => u.quotaOverride);
+  if (!rows.length) { box.innerHTML = '<div class="cd-note">No individual boosts. Everyone is on their company\'s allowance.</div>'; return; }
+  box.innerHTML = '<div class="table-wrapper"><table><thead><tr><th>Person</th><th>Company</th><th>Raised to</th><th>Reason</th><th>Expires</th><th></th></tr></thead><tbody>'
+    + rows.map(u => {
+      const b = u.quotaOverride || u.activeBoost;
+      const live = !b.until || new Date(b.until).getTime() > Date.now();
+      return '<tr><td><strong>' + escapeHtml(u.name || u.email) + '</strong><div style="font-size:10.5px;color:var(--text-muted)">' + escapeHtml(u.email) + '</div></td>'
+        + '<td>' + escapeHtml(u.org || u.orgId || '—') + '</td>'
+        + '<td style="font-size:11.5px">' + escapeHtml(describeBoostClient(b)) + '</td>'
+        + '<td style="font-size:11.5px;color:var(--text-muted)">' + escapeHtml(b.reason || '—') + '</td>'
+        + '<td>' + (live ? (b.until ? '<span class="badge badge-amber">' + new Date(b.until).toLocaleDateString() + '</span>' : '<span class="badge badge-green">no expiry</span>') : '<span class="badge badge-muted">lapsed</span>') + '</td>'
+        + '<td><button class="btn btn-ghost btn-sm" onclick="openBoost(\'user\',\'' + u.id + '\')">Change</button></td></tr>';
+    }).join('') + '</tbody></table></div>';
+}
+
+// ══════ THE DAILY ACTIVITY REPORT ══════
+// The one thing that leaves the platform carrying every partner's activity side by side. Reading
+// the settings is open to any platform admin; changing where it goes belongs to the super
+// administrator alone, and the server enforces that whatever this page renders.
+const REPORT_TIMEZONES = ['Asia/Kolkata', 'UTC', 'Asia/Dubai', 'Asia/Riyadh', 'Asia/Singapore', 'Asia/Manila',
+  'Australia/Sydney', 'Australia/Perth', 'Pacific/Auckland', 'Europe/London', 'Europe/Amsterdam', 'Europe/Rome',
+  'Africa/Johannesburg', 'Africa/Lagos', 'Africa/Nairobi', 'America/New_York', 'America/Chicago',
+  'America/Los_Angeles', 'America/Sao_Paulo', 'America/Mexico_City'];
+let reportInfo = null;
+async function initDailyReport() {
+  const status = document.getElementById('dr-status');
+  let d;
+  try { d = await apiFetch('/api/admin/report'); }
+  catch (e) { if (status) { status.textContent = 'unavailable'; status.className = 'badge badge-red'; } return; }
+  reportInfo = d;
+  const s = d.settings || {};
+
+  const tzSel = document.getElementById('dr-timezone');
+  const zones = [...new Set([s.timezone].concat(REPORT_TIMEZONES).filter(Boolean))];
+  tzSel.innerHTML = zones.map(z => '<option value="' + escapeHtml(z) + '">' + escapeHtml(z) + '</option>').join('');
+  tzSel.value = s.timezone;
+
+  document.getElementById('dr-enabled').checked = !!s.enabled;
+  document.getElementById('dr-sendAt').value = s.sendAt || '00:15';
+  document.getElementById('dr-recipients').value = (s.recipients || []).join('\n');
+  document.getElementById('dr-includeSimulated').checked = s.includeSimulated !== false;
+  document.getElementById('dr-includeQuietPartners').checked = s.includeQuietPartners !== false;
+  document.getElementById('dr-maxCallRowsPerCompany').value = s.maxCallRowsPerCompany || 40;
+
+  if (status) {
+    status.textContent = s.enabled ? s.sendAt + ' ' + s.timezone : 'off';
+    status.className = 'badge ' + (s.enabled ? 'badge-green' : 'badge-muted');
+  }
+
+  // Everything is read-only unless you are the super administrator. Showing live controls that the
+  // server will refuse is worse than showing them disabled with the reason.
+  const editable = !!d.canEdit;
+  ['dr-enabled', 'dr-sendAt', 'dr-timezone', 'dr-recipients', 'dr-includeSimulated', 'dr-includeQuietPartners', 'dr-maxCallRowsPerCompany', 'dr-save', 'dr-test', 'dr-sendall']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.disabled = !editable; });
+
+  const mail = d.mail || {};
+  const warnings = [];
+  if (!editable) warnings.push('You can see these settings but only a super administrator can change them, because they decide where every partner\'s activity is sent.');
+  if (!mail.delivers) warnings.push('<strong style="color:var(--amber)">MAIL_PROVIDER is set to "' + escapeHtml(mail.provider || 'dev') + '", so nothing is actually delivered</strong> — the report is written to the server log instead. Set it to "graph" on the host to send real mail.');
+  else if (!mail.configured) warnings.push('<strong style="color:var(--red)">Mail is not fully configured</strong> — missing ' + escapeHtml((mail.missing || []).join(', ')) + '.');
+  warnings.push('It covers <strong>midnight to midnight in ' + escapeHtml(s.timezone) + '</strong> and always reports the day that has just finished, whatever hour you send it at. The server is currently at ' + escapeHtml(d.localTime) + ' there.');
+  warnings.push('Recordings and transcripts are deliberately <strong>not attached</strong>. A day across every partner would be far past what a mailbox accepts, and a report sitting in an inbox should not become an unguarded copy of real customer conversations. The report carries everything needed to decide which conversations are worth opening in the console.');
+  if ((d.partnerDomains || []).length) warnings.push('Addresses on a partner domain are refused: ' + d.partnerDomains.map(x => '<code>' + escapeHtml(x) + '</code>').join(', ') + '. This report shows every partner side by side, so it can only go to Streebo.');
+  document.getElementById('dr-note').innerHTML = warnings.map(w => '• ' + w).join('<br>');
+
+  const last = s.lastResult;
+  document.getElementById('dr-last').innerHTML = last
+    ? '<div class="kv-grid">'
+      + '<div class="kv"><div class="kv-k">Last run</div><div class="kv-v" style="font-size:13px">' + new Date(last.at).toLocaleString() + '</div><div class="kv-note">covering ' + escapeHtml(last.dateKey) + '</div></div>'
+      + '<div class="kv"><div class="kv-k">Result</div><div class="kv-v" style="font-size:13px;color:' + (last.ok ? 'var(--green)' : 'var(--red)') + '">' + (last.ok ? 'Delivered' : 'Failed') + '</div><div class="kv-note">' + escapeHtml(last.detail || '') + '</div></div>'
+      + (last.calls != null ? '<div class="kv"><div class="kv-k">Calls reported</div><div class="kv-v">' + last.calls + '</div></div>' : '')
+      + '<div class="kv"><div class="kv-k">Sent to</div><div class="kv-v" style="font-size:12px;font-weight:500">' + escapeHtml((last.recipients || []).join(', ')) + '</div></div>'
+      + '</div>'
+    : '<div class="cd-note">It has not run yet. The next one goes out at ' + escapeHtml(s.sendAt) + ' ' + escapeHtml(s.timezone) + ', covering ' + escapeHtml(d.today) + ' once that day closes.</div>';
+}
+async function saveDailyReportSettings() {
+  const body = {
+    enabled: document.getElementById('dr-enabled').checked,
+    sendAt: val('dr-sendAt'),
+    timezone: val('dr-timezone'),
+    recipients: val('dr-recipients').split(/[\n,;]+/).map(x => x.trim()).filter(Boolean),
+    includeSimulated: document.getElementById('dr-includeSimulated').checked,
+    includeQuietPartners: document.getElementById('dr-includeQuietPartners').checked,
+    maxCallRowsPerCompany: val('dr-maxCallRowsPerCompany')
+  };
+  if (!body.recipients.length) return toast('error', 'No recipients', 'Add at least one Streebo address, or switch the report off.');
+  try { const r = await apiFetch('/api/admin/report', 'POST', body); toast('success', 'Saved', r.message || ''); initDailyReport(); }
+  catch (e) { toast('error', 'Could not save', e.message); }
+}
+async function previewDailyReport(dateKey) {
+  const modal = document.getElementById('report-preview-modal');
+  modal.classList.add('open');
+  document.getElementById('rp-body').innerHTML = '<div class="cd-note">Building the report…</div>';
+  try {
+    const d = await apiFetch('/api/admin/report/preview' + (dateKey ? '?dateKey=' + encodeURIComponent(dateKey) : ''));
+    document.getElementById('rp-date').value = d.dateKey;
+    document.getElementById('rp-sub').textContent = d.subject + (d.partial ? ' — today so far, the day is not over' : '');
+    // Rendered inside a sandboxed iframe rather than injected into the page. The console's own
+    // stylesheet sets `table { width: 100% }`, which flattened every bar in the report to full width
+    // and restyled its cells — so the preview showed something the recipient would never see. An
+    // iframe gives it a document of its own, and the sandbox means nothing in it can run or navigate.
+    const frame = document.createElement('iframe');
+    frame.setAttribute('sandbox', '');
+    frame.setAttribute('title', 'Daily report preview');
+    frame.style.cssText = 'width:100%;height:68vh;border:1px solid var(--border);border-radius:10px;background:#EEF0F7';
+    frame.srcdoc = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0">' + d.html + '</body></html>';
+    const box = document.getElementById('rp-body');
+    box.innerHTML = '';
+    box.appendChild(frame);
+  } catch (e) {
+    document.getElementById('rp-body').innerHTML = '<div class="cd-note">Could not build the preview: ' + escapeHtml(e.message) + '</div>';
+  }
+}
+async function sendDailyReportNow(onlyMe) {
+  const which = onlyMe ? 'just you' : ((reportInfo && reportInfo.settings.recipients) || []).join(', ');
+  if (!confirm('Send the report for the last completed day to ' + which + ' now?')) return;
+  try {
+    const r = await apiFetch('/api/admin/report/send-now', 'POST', { onlyMe: !!onlyMe });
+    toast('success', 'Report sent', r.message || '');
+    initDailyReport();
+  } catch (e) { toast('error', 'Could not send', e.message); }
+}
+
 </script>
 </body>
 </html>

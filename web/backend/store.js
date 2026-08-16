@@ -27,6 +27,7 @@ const FILES = {
   guardrails: 'guardrails.json',
   signup: 'signup.json',
   orgQuotas: 'org-quotas.json',
+  dailyReport: 'daily-report.json',
   schedules: 'schedules.json',
   bookmarks: 'bookmarks.json',
   otps: 'otps.json',
@@ -143,6 +144,7 @@ async function loadAll() {
       guardrails: readFileJson('guardrails', null),
       signup: readFileJson('signup', null),
       orgQuotas: readFileJson('orgQuotas', null),
+      dailyReport: readFileJson('dailyReport', null),
       schedules: readFileJson('schedules', []) || [],
       bookmarks: readFileJson('bookmarks', []) || [],
       otps: readFileJson('otps', []) || [],
@@ -173,6 +175,7 @@ async function loadAll() {
     guardrails: setting('guardrails'),
     signup: setting('signup'),
     orgQuotas: setting('org_quotas'),
+    dailyReport: setting('daily_report'),
     schedules: schedules.rows.map(r => r.data),
     bookmarks: bookmarks.rows.map(r => r.data),
     otps: otps.rows.map(r => r.data),
@@ -263,7 +266,7 @@ function saveUserWriteback(map) {
   });
 }
 function saveSetting(name, data) {
-  const fileKey = { active_profile: 'activeProfile', guardrails: 'guardrails', signup: 'signup', org_quotas: 'orgQuotas' }[name];
+  const fileKey = { active_profile: 'activeProfile', guardrails: 'guardrails', signup: 'signup', org_quotas: 'orgQuotas', daily_report: 'dailyReport' }[name];
   schedule('setting:' + name, data, async (d) => {
     if (backend === 'file') return writeFileJson(fileKey, d);
     await pool.query('INSERT INTO settings (key,data,updated_at) VALUES ($1,$2,now()) ON CONFLICT (key) DO UPDATE SET data=EXCLUDED.data, updated_at=now()', [name, JSON.stringify(d)]);
