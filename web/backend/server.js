@@ -1950,7 +1950,13 @@ async function refreshLanguageCoverage(quiet) {
   }
 }
 // Everything the console needs to reason about languages, live where possible.
-app.get('/api/elevenlabs/languages', async (req, res) => {
+//
+// These two are reachable by a PARTNER, unlike the rest of the /api/elevenlabs/* family, because the
+// builder needs them to warn that a language will not come out right. They are therefore also served
+// under a neutral path, and the console calls that one: a partner watching the network tab should
+// not be able to read our supplier's name off a URL. The vendor-named paths stay as aliases so
+// nothing already pointed at them breaks.
+async function languageCoverageHandler(req, res) {
   if (!coverageState.checked) await refreshLanguageCoverage(true);
   res.json({
     live: coverageState.live, reason: coverageState.reason,
@@ -1958,16 +1964,19 @@ app.get('/api/elevenlabs/languages', async (req, res) => {
     checkedAt: modelCoverage ? modelCoverage.at : null,
     shipped: (languageCatalog().languages || []).length
   });
-});
-
+}
 // What engine is the agent actually on? Any signed-in user may ask: it is one model id, it leaks
 // nothing, and without it the language warning in the builder can only speak in generalities.
-app.get('/api/elevenlabs/agent-engine', async (req, res) => {
+async function agentEngineHandler(req, res) {
   const adapter = getProvider('elevenlabs');
   if (!adapter.isConfigured(config)) return res.json({ success: false, model_id: '' });
   try { res.json({ success: true, ...(await adapter.getAgentEngine(config)) }); }
   catch (e) { res.json({ success: false, model_id: '', error: e.message }); }
-});
+}
+app.get('/api/voice/languages', languageCoverageHandler);
+app.get('/api/voice/engine', agentEngineHandler);
+app.get('/api/elevenlabs/languages', languageCoverageHandler);
+app.get('/api/elevenlabs/agent-engine', agentEngineHandler);
 
 // The public Voice Library ("Explore" in ElevenLabs) — 15,000+ voices. Search, filtering and paging
 // are all done by ElevenLabs, so the console holds one page at a time instead of the whole library.
@@ -2336,31 +2345,64 @@ async function sendDailyReport(dateKey, opts = {}) {
 
 // Retry state lives in memory on purpose: a restart is itself a fix worth retrying after.
 let reportFailures = {};
+let reportSending = false;
+// How late a MISSED report may still go out. Inside this window the send is a catch-up (the process
+// was not alive at the send time, which is exactly what the tick exists to survive). Outside it, on
+// an instance that has never sent one, we are almost certainly looking at a fresh deployment rather
+// than a missed run, and a report for a day that closed many hours ago arriving out of the blue is
+// a surprise, not a service.
+const REPORT_CATCHUP_GRACE_MIN = 120;
+
 async function reportTick() {
   const cfg = dailyReport;
-  if (!cfg || !cfg.enabled) return;
+  // Async, and the interval keeps firing while a send is in flight. Without this guard two ticks can
+  // both pass the "already gone out" check and both send the same report.
+  if (!cfg || !cfg.enabled || reportSending) return;
   const now = new Date();
   const parts = sched.zoneParts(now, cfg.timezone);
   const target = sched.parseHHMM(cfg.sendAt, 15);
   // The report always covers the day that has just finished, whatever hour it is sent at. That way
   // "midnight to midnight" stays true even if somebody moves the send time to 8am.
   const due = report.previousDateKey(now, cfg.timezone);
-  if (cfg.lastSentDateKey === due) return;         // already gone out
-  if (parts.minutes < target) return;              // not yet time today
   if ((reportFailures[due] || 0) >= 5) return;     // stop hammering a broken mailbox
 
-  try {
-    const out = await sendDailyReport(due);
+  const decision = report.tickDecision({
+    nowMinutes: parts.minutes, sendAtMinutes: target, dueKey: due,
+    lastSentDateKey: cfg.lastSentDateKey, graceMinutes: REPORT_CATCHUP_GRACE_MIN
+  });
+  if (decision === 'wait') return;
+  // Arm: record the day as handled without sending, and say so, so it is never a silent gap.
+  // "Send to everyone now" in the console still posts it on demand.
+  if (decision === 'arm') {
     dailyReport.lastSentDateKey = due;
+    saveDailyReport();
+    console.log(`📊  Daily report armed for ${cfg.sendAt} ${cfg.timezone}. ${due} was NOT sent: this instance was not running when that day closed, and it is now ${sched.hhmm(parts.minutes)} there. Use Admin → Daily report → Send to everyone now if you want it.`);
+    return;
+  }
+
+  reportSending = true;
+  const previous = cfg.lastSentDateKey;
+  try {
+    // Claim the day and make the claim durable BEFORE sending. A restart in the seconds around a
+    // send would otherwise come back up, see the day unsent, and post it a second time.
+    dailyReport.lastSentDateKey = due;
+    saveDailyReport();
+    await store.flush();
+
+    const out = await sendDailyReport(due);
     dailyReport.lastResult = { at: new Date().toISOString(), dateKey: due, ok: true, detail: out.detail, recipients: out.to, calls: out.report.totals.calls };
     saveDailyReport();
     delete reportFailures[due];
     console.log(`📊  Daily report for ${due} sent to ${out.to.join(', ')} — ${out.report.totals.calls} call(s) across ${out.report.totals.activeCompanies} partner(s).`);
   } catch (e) {
+    // The send failed, so give the day back: the next tick should try again, up to five times.
+    dailyReport.lastSentDateKey = previous;
     reportFailures[due] = (reportFailures[due] || 0) + 1;
     dailyReport.lastResult = { at: new Date().toISOString(), dateKey: due, ok: false, detail: e.message, recipients: cfg.recipients };
     saveDailyReport();
     console.warn(`⚠️   Daily report for ${due} failed (attempt ${reportFailures[due]} of 5): ${e.message}`);
+  } finally {
+    reportSending = false;
   }
 }
 
@@ -2431,9 +2473,16 @@ app.post('/api/admin/report/send-now', requireSuperAdmin, async (req, res) => {
   if (bad) return res.status(400).json({ error: bad });
   try {
     const out = await sendDailyReport(dateKey, { to, partial: dateKey === report.currentDateKey(now, dailyReport.timezone) });
+    // Recorded like any other run, so Delivery answers "what happened last time" whether that was
+    // the schedule or somebody pressing the button. lastSentDateKey is deliberately NOT touched: a
+    // test send must not cancel the real one.
+    dailyReport.lastResult = { at: new Date().toISOString(), dateKey, ok: true, detail: out.detail, recipients: to, calls: out.report.totals.calls, manual: true, by: req.user.email };
+    saveDailyReport();
     console.log(`📊  Daily report for ${dateKey} sent on demand by ${req.user.email} to ${to.join(', ')}.`);
     res.json({ success: true, dateKey, to, provider: out.provider, detail: out.detail, message: `Sent to ${to.join(', ')}.${out.provider === 'dev' ? ' (MAIL_PROVIDER is "dev", so it was printed to the server log rather than delivered.)' : ''}` });
   } catch (e) {
+    dailyReport.lastResult = { at: new Date().toISOString(), dateKey, ok: false, detail: e.message, recipients: to, manual: true, by: req.user.email };
+    saveDailyReport();
     res.status(500).json({ error: e.message });
   }
 });

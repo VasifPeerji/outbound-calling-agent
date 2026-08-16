@@ -127,6 +127,30 @@ function dayWindow(dateKey, timezone) {
   return { dateKey, timezone, fromIso: from.toISOString(), toIso: to.toISOString(), from, to };
 }
 
+/**
+ * Send, arm, or wait?
+ *
+ * Pure on purpose: this is the rule that decides whether an email goes out, and it should be
+ * checkable without a clock, a mailbox or a running server.
+ *
+ *   'wait'  nothing to do — not yet time, or this day has already gone out
+ *   'send'  post the report for `dueKey`
+ *   'arm'   record `dueKey` as handled WITHOUT sending. Reserved for the first run on an instance
+ *           that has never sent one and is now hours past the send time: that is a fresh deployment
+ *           rather than a missed run, and a report for a day that closed long ago arriving out of
+ *           the blue is a surprise, not a service. A genuinely missed run always has a previous
+ *           lastSentDateKey, so it still sends however late it is.
+ *
+ * @param s { nowMinutes, sendAtMinutes, dueKey, lastSentDateKey, graceMinutes }
+ */
+function tickDecision(s) {
+  const grace = s.graceMinutes == null ? 120 : s.graceMinutes;
+  if (s.lastSentDateKey === s.dueKey) return 'wait';
+  if (s.nowMinutes < s.sendAtMinutes) return 'wait';
+  if (!s.lastSentDateKey && (s.nowMinutes - s.sendAtMinutes) > grace) return 'arm';
+  return 'send';
+}
+
 /** The calendar day, in the report's timezone, that has most recently finished. */
 function previousDateKey(now, timezone) {
   const p = scheduler.zoneParts(new Date(now.getTime() - 86400000), timezone);
@@ -606,7 +630,7 @@ function subjectFor(r) {
 }
 
 module.exports = {
-  DEFAULTS, withDefaults, buildReport, renderHtml, renderText, subjectFor,
+  DEFAULTS, withDefaults, buildReport, renderHtml, renderText, subjectFor, tickDecision,
   countryOf, dayWindow, previousDateKey, currentDateKey, hms, prettyDate,
   _internals: { DIAL_CODES, topOf, titleise }
 };

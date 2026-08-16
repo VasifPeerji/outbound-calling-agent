@@ -212,6 +212,20 @@ the failure and the reason appear in the log and under Admin → Daily report �
 an overnight outage cannot make a day disappear: whenever the process is next alive past the send
 time, the day it owes still goes out.
 
+**What happens on the very first boot.** A brand-new instance has no record of ever having sent one.
+If it starts up more than two hours after the send time, it does *not* post a report for a day that
+closed hours ago; it arms itself for the next one and says so in the log:
+
+```
+📊  Daily report armed for 00:15 Asia/Kolkata. 2026-08-15 was NOT sent: this instance was not
+    running when that day closed, and it is now 22:44 there.
+```
+
+That is deliberate. Without it, deploying at four in the afternoon posts yesterday's report
+immediately, which reads as a fault rather than a feature. A genuinely missed run, on an instance
+that has sent before, still goes out however late it is. If you do want the skipped day, press
+**Send to everyone now**.
+
 ## Verifying it is healthy
 
 ```

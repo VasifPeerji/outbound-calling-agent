@@ -309,15 +309,23 @@
 
   /* ── key/value blocks, used across the user detail modal ── */
   .kv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 11px; }
-  .kv { background: var(--surface-2); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 11px 13px; }
+  .kv { background: var(--surface-2); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 11px 13px; min-width: 0; overflow: hidden; }
   .kv-k { font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
-  .kv-v { font-size: 14.5px; font-weight: 700; margin-top: 4px; letter-spacing: -0.01em; }
+  /* overflow-wrap, not word-break: a long recipient list has to wrap inside its box, but it should
+     break between addresses where it can rather than mid-word wherever it happens to run out. */
+  .kv-v { font-size: 14.5px; font-weight: 700; margin-top: 4px; letter-spacing: -0.01em; overflow-wrap: anywhere; word-break: break-word; min-width: 0; }
   .kv-note { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
   .modal.modal-wide { max-width: 1040px; padding: 0; }
   .modal-pad { padding: 0 26px 26px; }
   .modal-hero { padding: 22px 26px 18px; border-bottom: 1px solid var(--border-light); position: sticky; top: 0; background: var(--surface); z-index: 2; border-radius: 16px 16px 0 0; }
   .avatar { width: 46px; height: 46px; border-radius: 13px; background: linear-gradient(150deg, #6D66F0, var(--brand-700)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700; flex-shrink: 0; letter-spacing: -0.02em; }
   .section-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-muted); margin: 22px 0 10px; }
+
+  /* PARTNER VIEW. Anything marked data-internal belongs to Streebo: vendor names, credentials,
+     model rosters, readiness checks, file paths. One class on <body> hides the lot, so a control
+     added later is covered the moment it carries the attribute. !important because several of
+     these set an inline display when they are shown. */
+  body.partner-view [data-internal] { display: none !important; }
 
   .empty-state { text-align: center; padding: 44px 22px; color: var(--text-muted); }
   .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.5; }
@@ -475,7 +483,7 @@
     <div class="vp-head">
       <div class="modal-header" style="margin-bottom:0"><div class="modal-title">🎙 Select a voice</div><button class="modal-close" onclick="closeVoicePicker()">✕</button></div>
       <div class="vp-tabs">
-        <button class="vp-tab on" id="vp-tab-library" onclick="vpSetTab('library')">Explore</button>
+        <button class="vp-tab on" id="vp-tab-library" data-internal onclick="vpSetTab('library')">Explore</button>
         <button class="vp-tab" id="vp-tab-mine" onclick="vpSetTab('mine')">My Voices</button>
       </div>
     </div>
@@ -1087,7 +1095,7 @@
         <div id="wb-sink-note" style="font-size:11.5px;color:var(--text-muted);margin-top:10px"></div>
       </div>
       <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div><div class="card-title">Field mapping</div><div class="card-subtitle">Call outcome → the column/field written back. Map to your own CRM fields in <code>connectors.js</code>.</div></div></div>
+        <div class="card-header"><div><div class="card-title">Field mapping</div><div class="card-subtitle">Call outcome → the column or field written back in your own system.</div></div></div>
         <div id="wb-mapping" class="uc-chips"></div>
       </div>
       <div class="card">
@@ -1127,7 +1135,7 @@
       </div>
 
       <div class="card">
-        <div class="card-header"><div class="card-title">2 · Voice, Language &amp; Brain</div><span class="badge badge-brand" id="ab-provider-badge">ElevenLabs</span></div>
+        <div class="card-header"><div class="card-title">2 · Voice, Language &amp; Brain</div><span class="badge badge-brand" id="ab-provider-badge" data-internal>ElevenLabs</span></div>
         <div class="form-grid three">
           <div class="field" style="grid-column:1/-1"><label>Runs on <span class="hint">OEM / enterprise tech stack</span></label>
             <select id="ab-oem" onchange="onOemChange()">
@@ -1158,7 +1166,7 @@
             <button type="button" class="voice-card" id="ab-voice-card" onclick="openVoicePicker()"></button>
             <div id="ab-voice-note" style="font-size:11px;color:var(--text-muted);margin-top:5px"></div>
           </div>
-          <div class="field"><label>LLM (brain)</label><select id="ab-llm">
+          <div class="field" data-internal><label>LLM (brain)</label><select id="ab-llm">
             <optgroup label="Google Gemini">
               <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
               <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite</option>
@@ -1189,14 +1197,14 @@
             </optgroup>
           </select></div>
           <div class="field"><label>Expressiveness</label><select id="ab-expr"><option value="natural">Natural</option><option value="expressive">Expressive</option><option value="calm">Calm &amp; steady</option></select></div>
-          <div class="field"><label>Voice engine <span class="hint">set on the agent too</span></label><select id="ab-model" onchange="onModelChange()">
+          <div class="field" data-internal><label>Voice engine <span class="hint">set on the agent too</span></label><select id="ab-model" onchange="onModelChange()">
             <option value="eleven_flash_v2_5">Flash v2.5 — fastest, 32 languages</option>
             <option value="eleven_turbo_v2_5">Turbo v2.5 — balanced, 32 languages</option>
             <option value="eleven_multilingual_v2">Multilingual v2 — richest, 29 languages</option>
             <option value="eleven_v3_conversational">v3 Conversational — all 74 languages, built for calls</option>
             <option value="eleven_v3">v3 — most expressive + audio tags, all 74 languages</option>
           </select></div>
-          <div class="field"><label>Audio tags <span class="hint">v3 only</span></label><label style="display:flex;align-items:center;gap:8px;font-size:13px;padding-top:9px;cursor:pointer"><input type="checkbox" id="ab-audiotags" style="width:auto"/> Emotive cues like [warmly], [chuckles]</label></div>
+          <div class="field" data-internal><label>Audio tags <span class="hint">v3 only</span></label><label style="display:flex;align-items:center;gap:8px;font-size:13px;padding-top:9px;cursor:pointer"><input type="checkbox" id="ab-audiotags" style="width:auto"/> Emotive cues like [warmly], [chuckles]</label></div>
           <div class="field"><label>Fill in realistic details <span class="hint">demo mode</span></label><label style="display:flex;align-items:center;gap:8px;font-size:13px;padding-top:9px;cursor:pointer"><input type="checkbox" id="ab-demo-realism" checked style="width:auto"/> Answer like a colleague who knows</label></div>
         </div>
         <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:12px">
@@ -1208,6 +1216,9 @@
           </label>
           <div id="ab-opener-preview" style="font-size:12px;color:var(--text-dim);background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;margin-top:9px"></div>
         </div>
+        <!-- NOT data-internal: for Streebo this holds the engine guidance, but for a partner it is
+             where "this language will not come out right" appears, which they must see. The
+             function decides what goes in it. -->
         <div id="ab-model-note" style="font-size:11px;color:var(--text-muted);margin-top:6px"></div>
       </div>
 
@@ -1292,7 +1303,7 @@
         <textarea id="profile-json" rows="16" spellcheck="false"></textarea>
         <div class="btn-group"><button class="btn btn-primary" onclick="applyProfileJson()">💾 Apply JSON</button></div>
       </div>
-      <div class="card">
+      <div class="card" data-internal>
         <div class="card-header"><div><div class="card-title">Variables sent to the agent</div><div class="card-subtitle">The flattened dynamic variables merged into every call</div></div></div>
         <div class="var-preview" id="var-preview"></div>
       </div>
@@ -1613,6 +1624,21 @@ function applyUser() {
   // platform operator alone. A partner admin administers their company, not Streebo's account.
   const setNav = document.getElementById('nav-settings'); if (setNav) setNav.style.display = iAmPlatformAdmin() ? '' : 'none';
   const gear = document.getElementById('btn-gear'); if (gear) gear.style.display = iAmPlatformAdmin() ? '' : 'none';
+  // PARTNER VIEW. A partner is a prospect or a customer sitting in front of the product: they should
+  // see a voice agent that works, not the vendor underneath it, the credentials it holds, the model
+  // roster it calls, or the files it is configured from. One class on <body> hides everything marked
+  // data-internal, wherever it sits and whenever it is rendered.
+  const partner = !iAmPlatformAdmin();
+  document.body.classList.toggle('partner-view', partner);
+  // The Settings page is DELETED rather than hidden. It is the one screen that is internal from top
+  // to bottom — credential fields, readiness checks, the tool manifest — and hiding it leaves the
+  // whole thing sitting in the DOM for anyone who opens devtools. Nothing else on the page needs to
+  // be removed this way; the rest is a badge and a couple of fields.
+  const settingsPage = document.getElementById('page-settings');
+  if (partner && settingsPage) settingsPage.remove();
+  // Removal is one-way, so if a Streebo account signs in afterwards in the same tab, reload once to
+  // get it back rather than leaving them a console with no Settings and no explanation.
+  if (!partner && !settingsPage) return location.reload();
   paintHistoryControls();
   refreshBulkAvailability();
   // Still on the password the account was created with? Make them set their own before anything else.
@@ -2425,7 +2451,10 @@ function showPage(id, el) {
   if (id === 'scheduler') initScheduler();
   if (id === 'intelligence') initSource();
   if (id === 'analytics') initAnalytics();
-  if (id === 'settings') { loadPreflight(); loadToolsStatus(); }
+  // Settings is the platform's own configuration: shared credentials, readiness checks, the tool
+  // manifest. The nav item is already hidden for partners; this is the second lock, so a stale
+  // bookmark or a typed URL cannot reach it either.
+  if (id === 'settings') { if (!iAmPlatformAdmin()) return showPage('single', document.querySelector('.nav-item')); loadPreflight(); loadToolsStatus(); }
   if (id === 'admin') initAdmin();
 }
 
@@ -2675,7 +2704,9 @@ function selectSource(type, btn) {
   csvCard.style.display = 'none'; cfg.style.display = 'block';
   if (type === 'crm') {
     const stubs = Object.entries((connectorsCatalog || {}).sources || {}).filter(([k, v]) => !v.live);
-    cfg.innerHTML = `<div style="font-size:12.5px;color:var(--text-dim);line-height:1.7">These adapters are <strong>interface-ready</strong> — add credentials in <code>connectors.js</code> to go live (see <code>docs/DATA_INTEGRATION.md</code>):</div><div class="uc-chips" style="margin-top:10px">${stubs.map(([k, v]) => `<span class="badge badge-muted">🗄️ ${escapeHtml(v.label)}</span>`).join('') || '<span style="color:var(--text-muted)">Connect to the backend to see adapters.</span>'}</div>`;
+    cfg.innerHTML = `<div style="font-size:12.5px;color:var(--text-dim);line-height:1.7">${iAmPlatformAdmin()
+      ? 'These adapters are <strong>interface-ready</strong> — add credentials in <code>connectors.js</code> to go live (see <code>docs/DATA_INTEGRATION.md</code>):'
+      : 'These systems are <strong>ready to connect</strong>. Tell your Streebo contact which one you use and it will be switched on for your account:'}</div><div class="uc-chips" style="margin-top:10px">${stubs.map(([k, v]) => `<span class="badge badge-muted">🗄️ ${escapeHtml(v.label)}</span>`).join('') || '<span style="color:var(--text-muted)">Connect to the backend to see adapters.</span>'}</div>`;
     return;
   }
   const isRest = type === 'rest';
@@ -2712,7 +2743,9 @@ function onSinkChange() {
   const meta = (connectorsCatalog.sinks || {})[sink] || { fields: [] };
   document.getElementById('wb-sink-config').innerHTML = (meta.fields || []).map(f => `<div class="field" style="grid-column:1/-1"><label>${escapeHtml(f.label)}</label><input id="wbc-${f.key}" value="${escapeHtml((wbConfig || {})[f.key] || '')}"/></div>`).join('');
   const notes = { echo: 'Captures rows in-app so you can see exactly what would be sent — perfect for demos.', webhook: 'POSTs {updates:[…]} to your URL — point it at your CRM/DB integration or an automation (Zapier / Make / n8n).', csv: 'Produces an enriched CSV you can download and re-import into your CRM.' };
-  document.getElementById('wb-sink-note').textContent = notes[sink] || 'This adapter is interface-ready; add credentials in connectors.js to go live.';
+  document.getElementById('wb-sink-note').textContent = notes[sink] || (iAmPlatformAdmin()
+    ? 'This adapter is interface-ready; add credentials in connectors.js to go live.'
+    : 'This destination is ready to connect. Ask your Streebo contact to switch it on for your account.');
   updateWbBadge();
 }
 function collectSinkConfig() { const sink = document.getElementById('wb-sink').value; const meta = (connectorsCatalog.sinks || {})[sink] || { fields: [] }; const cfg = {}; (meta.fields || []).forEach(f => { const el = document.getElementById('wbc-' + f.key); if (el) cfg[f.key] = el.value; }); return cfg; }
@@ -3571,11 +3604,12 @@ function renderOpenerPreview() {
 // Kept as a no-op-shaped function because several call sites invoke it during builder setup.
 // The provider is fixed, so all this does now is keep the voice note accurate.
 function onProviderChange() {
-  const p = 'elevenlabs';
-  document.getElementById('ab-provider-badge').textContent = 'ElevenLabs';
-  document.getElementById('ab-voice-note').innerHTML = p === 'retell'
-    ? 'Retell uses the voice configured on its own agent. Voice/accent picking here applies to ElevenLabs.'
-    : 'Voices load automatically (or click <strong>↻ load</strong>) — the list is every voice on your ElevenLabs account; accent &amp; gender come from each voice. Add your key in Settings if the list is empty.';
+  // voiceVendor() rather than the literal: for a partner the vendor's name is then absent from the
+  // page altogether, not merely hidden by a stylesheet they could turn off.
+  document.getElementById('ab-provider-badge').textContent = voiceVendor();
+  document.getElementById('ab-voice-note').innerHTML = iAmPlatformAdmin()
+    ? 'Voices load automatically (or click <strong>↻ load</strong>) — the list is every voice on your ElevenLabs account; accent &amp; gender come from each voice. Add your key in Settings if the list is empty.'
+    : 'Voices load automatically. Click the voice above to hear the options and pick the one that suits the market.';
 }
 // Which engine can actually speak a given language. Eleven v3 covers all 74; Flash and Turbo v2.5
 // cover 32; Multilingual v2 covers 29. Picking a language the engine cannot speak is a SILENT
@@ -3725,10 +3759,10 @@ function onOemChange(keepLlm) {
 let agentEngine = null;   // what the ElevenLabs agent is really running, read once per session
 let langCoverage = null;  // whether language coverage is self-updating, and why not if not
 async function loadAgentEngine() {
-  try { const d = await apiFetch('/api/elevenlabs/agent-engine'); agentEngine = d.model_id || null; }
+  try { const d = await apiFetch('/api/voice/engine'); agentEngine = d.model_id || null; }
   catch (e) { agentEngine = null; }
   try {
-    const d = await apiFetch('/api/elevenlabs/languages');
+    const d = await apiFetch('/api/voice/languages');
     langCoverage = d; liveModelLanguages = d.models || null;
   } catch (e) { langCoverage = null; }
   onModelChange();
@@ -3746,27 +3780,42 @@ function engineSpeaks(code, model) {
 function onModelChange() {
   const m = val('ab-model'), note = document.getElementById('ab-model-note'); if (!note) return;
   const code = val('ab-language') || 'en', l = langMeta(code);
-  const base = m === 'eleven_v3'
-    ? '⚡ <strong>v3</strong> is the most expressive and supports audio tags, and it is the only engine that speaks all 74 languages. The engine is chosen on your agent\'s <strong>Voice</strong> tab (there is no per-call override), so set it there to match.'
-    : 'The voice engine is set on your ElevenLabs agent\'s <strong>Voice</strong> tab (there is no per-call override for it) — pick the same one there. Audio tags apply only with v3.';
+  const streebo = iAmPlatformAdmin();
+  // Built only for Streebo. A partner never has the engine control, so the guidance about it would
+  // be meaningless to them, and computing it anyway would put the vendor's name in their page.
+  const base = !streebo ? ''
+    : (m === 'eleven_v3'
+      ? '⚡ <strong>v3</strong> is the most expressive and supports audio tags, and it is the only engine that speaks all 74 languages. The engine is chosen on your agent\'s <strong>Voice</strong> tab (there is no per-call override), so set it there to match.'
+      : 'The voice engine is set on your ElevenLabs agent\'s <strong>Voice</strong> tab (there is no per-call override for it) — pick the same one there. Audio tags apply only with v3.');
   // What matters is the engine on the AGENT, since that is what actually speaks. Report the real
   // one when we can read it; the dropdown here is only a note-to-self about what to set there.
   const live = agentEngine, liveOk = live ? engineSpeaks(code, live) : null;
   let blocked = '';
+  // A partner still needs to know a call would come out in the wrong language: that is their
+  // problem, not ours. What they do not get is the vendor's name or a fix on an account they cannot
+  // reach, so for them the same warning becomes a message to their Streebo contact.
   if (l && live && !liveOk) {
-    blocked = `<div style="margin-top:7px;color:var(--red);background:var(--red-dim);border:1px solid var(--red);border-radius:8px;padding:9px 11px">
+    blocked = streebo
+      ? `<div style="margin-top:7px;color:var(--red);background:var(--red-dim);border:1px solid var(--red);border-radius:8px;padding:9px 11px">
         <strong>⚠ Your ElevenLabs agent is on ${escapeHtml(ENGINE_LABEL[live] || live)}, which cannot speak ${escapeHtml(l.name)}.</strong>
-        This call would come out in the wrong language. Open the agent's <strong>Voice</strong> tab in ElevenLabs and switch it to <strong>v3 Conversational</strong>, then publish.</div>`;
+        This call would come out in the wrong language. Open the agent's <strong>Voice</strong> tab in ElevenLabs and switch it to <strong>v3 Conversational</strong>, then publish.</div>`
+      : `<div style="margin-top:7px;color:var(--red);background:var(--red-dim);border:1px solid var(--red);border-radius:8px;padding:9px 11px">
+        <strong>⚠ ${escapeHtml(l.name)} is not enabled on this account yet.</strong>
+        A call set to ${escapeHtml(l.name)} would come out in the wrong language. Choose another language, or ask your Streebo contact to turn it on.</div>`;
   } else if (l && !live && !engineSpeaks(code, m)) {
-    blocked = `<div style="margin-top:7px;color:var(--amber);background:var(--amber-dim);border:1px solid var(--amber);border-radius:8px;padding:9px 11px">
+    blocked = streebo
+      ? `<div style="margin-top:7px;color:var(--amber);background:var(--amber-dim);border:1px solid var(--amber);border-radius:8px;padding:9px 11px">
         <strong>⚠ ${escapeHtml(ENGINE_LABEL[m] || m)} cannot speak ${escapeHtml(l.name)}.</strong> It needs <strong>v3</strong>. Set that on your agent's <strong>Voice</strong> tab, or the call will not come out in ${escapeHtml(l.name)}.
-        <a onclick="setVal('ab-model','eleven_v3_conversational');onModelChange()" style="color:var(--brand);cursor:pointer;text-decoration:underline;font-weight:600">Use v3 Conversational</a></div>`;
-  } else if (l && live && liveOk) {
+        <a onclick="setVal('ab-model','eleven_v3_conversational');onModelChange()" style="color:var(--brand);cursor:pointer;text-decoration:underline;font-weight:600">Use v3 Conversational</a></div>`
+      : `<div style="margin-top:7px;color:var(--amber);background:var(--amber-dim);border:1px solid var(--amber);border-radius:8px;padding:9px 11px">
+        <strong>⚠ ${escapeHtml(l.name)} may not be enabled on this account.</strong> Ask your Streebo contact to confirm it before running a live call in ${escapeHtml(l.name)}.</div>`;
+  } else if (l && live && liveOk && streebo) {
     blocked = `<div style="margin-top:6px;color:var(--green)">✓ Your agent is on <strong>${escapeHtml(ENGINE_LABEL[live] || live)}</strong>, which speaks ${escapeHtml(l.name)}.</div>`;
   }
   const noOpener = (catalog.firstMessages && code && !catalog.firstMessages[baseLang(code)])
     ? `<div style="margin-top:6px;color:var(--text-muted)">The scripted opening line has no ${escapeHtml((l || {}).name || code)} translation, so it will be spoken in English. The rest of the conversation still runs in ${escapeHtml((l || {}).name || code)}.</div>` : '';
-  note.innerHTML = base + blocked + noOpener;
+  // The engine guidance is Streebo's business; the language warnings are everybody's.
+  note.innerHTML = (streebo ? base : '') + blocked + noOpener;
 }
 let voiceFacets = {};
 async function loadVoices(force) {
@@ -3778,9 +3827,15 @@ async function loadVoices(force) {
     document.getElementById('ab-accent').innerHTML = '<option value="">Any accent</option>' + accents.map(a => `<option>${escapeHtml(a)}</option>`).join('');
     cbxLabel('ab-accent');
     filterVoices();
-    note.innerHTML = `${allVoices.length} voices in your workspace · ${accents.length} accents. Click the voice above to search all ${VOICE_LIBRARY_HINT} in the ElevenLabs library.`;
+    note.innerHTML = iAmPlatformAdmin()
+      ? `${allVoices.length} voices in your workspace · ${accents.length} accents. Click the voice above to search all ${VOICE_LIBRARY_HINT} in the ElevenLabs library.`
+      : `${allVoices.length} voices available · ${accents.length} accents. Click the voice above to hear them and choose.`;
     if (force || !val('ab-voice')) autoPickVoiceForCountry(val('ab-country'));
-  } catch (e) { note.innerHTML = `<span style="color:var(--red)">Couldn't load voices: ${escapeHtml(e.message)}. Add your ElevenLabs key in Settings.</span>`; }
+  } catch (e) {
+    note.innerHTML = iAmPlatformAdmin()
+      ? `<span style="color:var(--red)">Couldn't load voices: ${escapeHtml(e.message)}. Add your ElevenLabs key in Settings.</span>`
+      : `<span style="color:var(--red)">Voices are not available right now. Your Streebo contact can put this right.</span>`;
+  }
 }
 const VOICE_LIBRARY_HINT = '15,000+ voices';
 // The <select> is now only the value holder — every voice on the account is an option so that
@@ -3792,9 +3847,15 @@ function filterVoices() {
     `<option value="${v.voice_id}">${escapeHtml(voiceOptionLabel(v))}</option>`).join('');
   if (cur && allVoices.some(v => v.voice_id === cur)) sel.value = cur;
   const cnt = document.getElementById('ab-voice-count');
-  if (cnt) cnt.textContent = allVoices.length ? `${allVoices.length} in your workspace` : '';
+  // "your workspace" is the shared account a partner has no part in, so for them it is just a count.
+  if (cnt) cnt.textContent = allVoices.length ? `${allVoices.length}${iAmPlatformAdmin() ? ' in your workspace' : ' available'}` : '';
   renderVoiceCard();
-  if (document.getElementById('voice-modal').classList.contains('open') && vp.tab === 'mine') vpLoad();
+  // The workspace tab builds its filter options FROM allVoices, so if the picker was opened before
+  // the voices arrived every dropdown was drawn empty and nothing ever redrew it: the list would
+  // fill while Gender, Age and the rest stayed stuck on "any". Rebuild the filter row here, not just
+  // the list, so any path that repopulates allVoices (first load, reload, adding a library voice)
+  // leaves the filters correct. The library tab does the same thing when its vocabularies land.
+  if (document.getElementById('voice-modal').classList.contains('open') && vp.tab === 'mine') { vpRenderFacets(); vpLoad(); }
 }
 function voiceOptionLabel(v) {
   return `${v.name}${v.accent ? ' — ' + v.accent : ''}${v.gender ? ', ' + v.gender : ''}${v.use_case ? ' · ' + v.use_case : ''}`;
@@ -3818,7 +3879,7 @@ function renderVoiceCard() {
   if (!v) {
     card.innerHTML = `<div class="vp-av" style="background:var(--border)"></div>
       <div class="vp-meta"><div class="vp-name" style="color:var(--text-muted)">Default agent voice</div>
-      <div class="vp-sub">Click to choose from your workspace or the ElevenLabs library</div></div>
+      <div class="vp-sub">${iAmPlatformAdmin() ? 'Click to choose from your workspace or the ElevenLabs library' : 'Click to hear the voices and choose one'}</div></div>
       <span class="cbx-caret">▼</span>`;
     return;
   }
@@ -3850,6 +3911,14 @@ function langName(code) {
   return l ? l.name : code;
 }
 
+/**
+ * What to call the thing underneath. Streebo sees the real vendor because they administer the
+ * account; a partner sees a product. Every user-visible string that would otherwise name it goes
+ * through here, so there is one place to change and one place to audit.
+ */
+function voiceVendor() { return iAmPlatformAdmin() ? 'ElevenLabs' : 'the voice platform'; }
+function voiceLibraryName() { return iAmPlatformAdmin() ? 'the ElevenLabs library' : 'the voice library'; }
+
 // ── voice picker ────────────────────────────────────────
 // Two sources behind one list: the workspace (instantly usable) and the public ElevenLabs library
 // (15,000+ voices, far too many to hold in the browser, so search and paging happen server-side).
@@ -3871,6 +3940,9 @@ function openVoicePicker() {
   if (!allVoices.length) loadVoices();
   // Open on a list that is already relevant: the agent's own language, rather than 15,000 voices in
   // no particular order. The chip shows it is applied and one click clears it.
+  // A partner has one list: their voices. The workspace/library split is an artefact of whose
+  // account this is, which is not their business and not a choice they can act on.
+  if (!iAmPlatformAdmin() && vp.tab !== 'mine') vpSetTab('mine');
   if (!vp.seeded) {
     vp.seeded = true;
     const lang = val('ab-language');
@@ -3893,10 +3965,20 @@ function vpSetTab(tab) {
 let vpSearchTimer = null;
 function vpOnSearch() { vpSyncClear(); clearTimeout(vpSearchTimer); vpSearchTimer = setTimeout(() => { vp.page = 0; vp.rows = []; vpLoad(); }, 320); }
 
+/** The voices the workspace list is actually drawn from, phone-ready toggle included. */
+function vpWorkspaceBase() {
+  const phoneOnly = (document.getElementById('ab-conv-only') || {}).checked;
+  return phoneOnly ? allVoices.filter(v => v.conversational) : allVoices;
+}
 function vpFacetValues(key) {
   if (vp.tab === 'mine') {
-    // Only what the workspace actually holds, so a filter never leads to an empty list.
-    const vals = [...new Set(allVoices.map(v => (v[key] || '').trim()).filter(Boolean))];
+    // Only what the list can actually show, so a filter never leads to an empty result. That has to
+    // account for the phone-ready toggle as well: Greek voices may exist while no CONVERSATIONAL
+    // Greek voice does, and offering Greek there is how a filter comes to look broken.
+    // Language is reduced to its base code, because the filter compares base codes: a voice tagged
+    // "en-US" against an option reading "en-US" would otherwise never match itself.
+    const raw = vpWorkspaceBase().map(v => (v[key] || '').trim()).filter(Boolean);
+    const vals = [...new Set(key === 'language' ? raw.map(v => v.split('-')[0]) : raw)];
     return vals.sort((a, b) => a.localeCompare(b));
   }
   const f = vpFacetData || {};
@@ -3943,7 +4025,7 @@ let vpAddBlocked = false;
 function vpHint(msg) {
   const el = document.getElementById('vp-hint'); if (!el) return;
   if (msg) { vpAddBlocked = true; }
-  if (vp.tab !== 'library') { el.innerHTML = 'Every voice on your ElevenLabs account, ready to use on a call right now.'; return; }
+  if (vp.tab !== 'library') { el.innerHTML = 'Every voice available to you, ready to use on a call right now.'; return; }
   el.innerHTML = vpAddBlocked
     ? `<span style="color:var(--amber)">⚠ Using a library voice copies it into your workspace, and this key may only <em>read</em> voices. In ElevenLabs open <strong>Settings → API Keys</strong>, edit the key, and set <strong>Voices</strong> to <strong>“Read and write”</strong>. Browsing and previewing work either way.</span>
        <br><span style="color:var(--text-muted)">Or add it from the ElevenLabs voice library yourself, then <a onclick="vpReloadVoices()" style="color:var(--brand);cursor:pointer;text-decoration:underline">reload voices</a> to pick it up here.</span>`
@@ -3980,6 +4062,9 @@ function vpTogglePhoneReady() {
   const cb = document.getElementById('ab-conv-only'); if (!cb) return;
   cb.checked = !cb.checked;
   document.getElementById('vp-phone').classList.toggle('on', cb.checked);
+  // Narrowing to phone-ready voices changes which languages, accents and styles are still on offer,
+  // so the filter row has to be redrawn with it rather than left describing the wider set.
+  vpRenderFacets();
   vpSyncClear();
   vpLoad();
 }
@@ -4024,7 +4109,7 @@ async function vpLoad() {
   } catch (e) {
     if (seq !== vp.seq) return;
     vp.rows = []; vp.hasMore = false; vp.total = null;
-    document.getElementById('vp-list').innerHTML = `<div class="cbx-empty" style="padding:34px 14px;color:var(--red)">Couldn't reach the ElevenLabs library: ${escapeHtml(e.message)}</div>`;
+    document.getElementById('vp-list').innerHTML = `<div class="cbx-empty" style="padding:34px 14px;color:var(--red)">Couldn't reach ${voiceLibraryName()}: ${escapeHtml(e.message)}</div>`;
     vp.loading = false; vpFoot(); return;
   }
   vp.loading = false;
@@ -4059,8 +4144,8 @@ function vpRow(v, cur) {
 }
 function vpFoot() {
   const c = document.getElementById('vp-count');
-  if (vp.tab === 'mine') c.textContent = `${vp.rows.length} of ${allVoices.length} in your workspace`;
-  else c.textContent = vp.total == null ? '' : `${vp.rows.length} shown of ${vp.total.toLocaleString()} in the ElevenLabs library`;
+  if (vp.tab === 'mine') c.textContent = `${vp.rows.length} of ${allVoices.length}${iAmPlatformAdmin() ? ' in your workspace' : ' available'}`;
+  else c.textContent = vp.total == null ? '' : `${vp.rows.length} shown of ${vp.total.toLocaleString()} in ${voiceLibraryName()}`;
   const more = document.getElementById('vp-more');
   more.style.display = vp.hasMore && !vp.loading ? '' : 'none';
 }
@@ -4069,7 +4154,7 @@ function vpFoot() {
 // preview_url is a plain public MP3 on ElevenLabs' CDN, so playback needs no key and no proxy.
 function vpPreview(id) {
   const v = vpFind(id);
-  if (!v || !v.preview_url) return toast('info', 'No sample', 'ElevenLabs has no preview clip for this voice.');
+  if (!v || !v.preview_url) return toast('info', 'No sample', 'There is no preview clip for this voice.');
   if (vpPlaying === id) return vpStop();
   vpStop();
   const a = new Audio(v.preview_url);
@@ -4685,7 +4770,7 @@ async function initDailyReport() {
   const last = s.lastResult;
   document.getElementById('dr-last').innerHTML = last
     ? '<div class="kv-grid">'
-      + '<div class="kv"><div class="kv-k">Last run</div><div class="kv-v" style="font-size:13px">' + new Date(last.at).toLocaleString() + '</div><div class="kv-note">covering ' + escapeHtml(last.dateKey) + '</div></div>'
+      + '<div class="kv"><div class="kv-k">Last run</div><div class="kv-v" style="font-size:13px">' + new Date(last.at).toLocaleString() + '</div><div class="kv-note">covering ' + escapeHtml(last.dateKey) + (last.manual ? ' · sent by hand' + (last.by ? ' by ' + escapeHtml(last.by) : '') : ' · on schedule') + '</div></div>'
       + '<div class="kv"><div class="kv-k">Result</div><div class="kv-v" style="font-size:13px;color:' + (last.ok ? 'var(--green)' : 'var(--red)') + '">' + (last.ok ? 'Delivered' : 'Failed') + '</div><div class="kv-note">' + escapeHtml(last.detail || '') + '</div></div>'
       + (last.calls != null ? '<div class="kv"><div class="kv-k">Calls reported</div><div class="kv-v">' + last.calls + '</div></div>' : '')
       + '<div class="kv"><div class="kv-k">Sent to</div><div class="kv-v" style="font-size:12px;font-weight:500">' + escapeHtml((last.recipients || []).join(', ')) + '</div></div>'
