@@ -2941,7 +2941,10 @@ function renderHistoryTable() {
     <td>${c.simulated ? '<span class="badge badge-muted" title="Simulated dry-run">🧪 SIM</span> ' : ''}${statusBadge(c)}${leakBadge(c)}${c.error ? `<div style="font-size:10.5px;color:var(--red);margin-top:2px">${escapeHtml(c.error)}</div>` : ''}</td>
     <td>${outcomeChips(c)}</td>
     <td style="font-family:'DM Mono',monospace;font-size:10.5px;color:var(--text-muted)">${c.timestamp ? new Date(c.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ' + new Date(c.timestamp).toLocaleDateString([], { day: '2-digit', month: 'short' }) : '—'}</td>
-    <td>${c.callId ? `<button class="btn btn-ghost btn-sm" onclick="openCallDetail('${c.callId}')">▶ Recording</button>` : '<span style="color:var(--text-muted);font-size:11px">—</span>'}</td></tr>`).join('')}
+    <td><div style="display:flex;gap:2px;align-items:center;justify-content:flex-end">
+      ${c.callId ? `<button class="btn btn-ghost btn-sm" onclick="openCallDetail('${c.callId}')">▶ Recording</button>` : '<span style="color:var(--text-muted);font-size:11px">—</span>'}
+      ${mayDeleteCall(c) ? `<button class="btn btn-ghost btn-sm" style="color:var(--red)" title="Delete this one record" onclick="deleteCall('${c.id}')">🗑</button>` : ''}
+    </div></td></tr>`).join('')}
   </tbody></table></div>`;
 }
 // Compact outcome chips (from the mid-call action tools) for the history row
@@ -3041,7 +3044,16 @@ function renderCallDetail(entry, call, loading, err) {
     ${summary ? `<div class="cd-section-label">Summary</div><div class="cd-summary">${escapeHtml(summary)}</div>` : ''}
     ${transcript ? `<div class="cd-section-label">Transcript</div><div class="cd-transcript">${escapeHtml(transcript)}</div>` : ''}
     ${entry.intelligenceReason ? `<div class="cd-section-label">Targeting reason</div><div style="font-size:12.5px;color:var(--text-dim);line-height:1.5">${escapeHtml(entry.intelligenceReason)}</div>` : ''}
-    <div style="margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap"><span style="font-family:'DM Mono',monospace;font-size:10.5px;color:var(--text-muted)">${entry.callId || ''}</span>${logUrl ? `<a href="${logUrl}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">Open full log ↗</a>` : ''}</div>`;
+    <div style="margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <!-- The conversation id and the provider's own log page are ours, not the partner's: the link
+           goes straight to the supplier's dashboard, which is the one click that would tell them
+           exactly what this runs on. -->
+      <span data-internal style="font-family:'DM Mono',monospace;font-size:10.5px;color:var(--text-muted)">${entry.callId || ''}</span>
+      <div style="display:flex;gap:8px;margin-left:auto">
+        ${logUrl ? `<a data-internal href="${logUrl}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">Open full log ↗</a>` : ''}
+        ${mayDeleteCall(entry) ? `<button class="btn btn-danger btn-sm" onclick="closeCallDetail();deleteCall('${entry.id}')">🗑 Delete this record</button>` : ''}
+      </div>
+    </div>`;
 }
 // Deleting is the narrowest permission here, narrower than reading: a call log is the record of a
 // real conversation, and may be the evidence in a dispute or a do-not-call complaint. Only a super
@@ -3057,6 +3069,25 @@ async function clearHistory() {
     toast('success', 'Your records deleted', r.message || '');
     await refreshHistory();
   } catch (e) { toast('error', 'Failed', e.message); }
+}
+/**
+ * Who may delete one record. The same rule as clearing them all, and the reason it is this narrow:
+ * a call log is the record of a real conversation with a customer, so nobody erases anybody else's.
+ * The button is only rendered where it would actually work — an action that always refuses reads as
+ * a bug rather than as a boundary.
+ */
+function mayDeleteCall(c) { return iAmSuper() && c && c.userId === (currentUser || {}).id; }
+async function deleteCall(id) {
+  const c = callHistory.find(x => x.id === id);
+  if (!c) return;
+  const who = c.customerName || c.toNumber || 'this call';
+  const when = c.timestamp ? new Date(c.timestamp).toLocaleString() : '';
+  if (!confirm(`Delete the call record for ${who}${when ? ' from ' + when : ''}?\n\nThis removes the transcript and the outcome as well, and cannot be undone.`)) return;
+  try {
+    const r = await apiFetch('/api/history/' + encodeURIComponent(id), 'DELETE');
+    toast('success', 'Record deleted', r.message || '');
+    await refreshHistory();
+  } catch (e) { toast('error', 'Could not delete', e.message); }
 }
 /** Hide the delete control from everyone it would only refuse. */
 function paintHistoryControls() {

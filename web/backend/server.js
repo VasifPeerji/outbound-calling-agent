@@ -2150,6 +2150,27 @@ app.delete('/api/history', (req, res) => {
   res.json({ success: true, removed, message: `Removed ${removed} of your own call record${removed === 1 ? '' : 's'}. Nobody else's were touched.` });
 });
 
+// One record at a time, under exactly the same rule as clearing them all: a super administrator may
+// delete THEIR OWN, and nobody else's. Deleting one is the common case (a test call, a wrong number
+// dialled during a demo) and having only "delete everything I have ever placed" made that
+// disproportionate — people either lived with the clutter or wiped far more than they meant to.
+// The three refusals are deliberately distinct, because "you may not" and "that is not yours" and
+// "it does not exist" are different situations and merging them makes the console lie about one.
+app.delete('/api/history/:id', (req, res) => {
+  if (!isSuper(req.user)) {
+    return res.status(403).json({ error: 'Call records cannot be deleted. They are the record of a real conversation with a customer, and may be needed for a dispute or a compliance question.' });
+  }
+  const entry = callHistory.find(c => c.id === req.params.id);
+  if (!entry) return res.status(404).json({ error: 'That call record no longer exists.' });
+  if (entry.userId !== req.user.id) {
+    return res.status(403).json({ error: `That call was placed by ${entry.userName || 'a colleague'}. You can only delete records you placed yourself.` });
+  }
+  callHistory = callHistory.filter(c => c.id !== req.params.id);
+  saveHistory();
+  console.log(`🗑️   ${req.user.email} deleted one of their own call records (${entry.customerName || entry.toNumber || entry.id}).`);
+  res.json({ success: true, removed: 1, message: `Deleted the call to ${entry.customerName || entry.toNumber || 'that number'}.` });
+});
+
 // Campaign analytics — aggregate outcomes across all calls
 //
 // Everything here is scoped by visibleCalls(), so a partner sees their own company and a platform
