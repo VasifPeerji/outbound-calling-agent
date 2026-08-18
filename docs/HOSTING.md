@@ -15,7 +15,7 @@ separate front end to deploy.
 | | |
 |---|---|
 | Runtime | Node.js 18+ |
-| Install | `npm install` inside `web/backend` |
+| Install | `npm ci --omit=dev` inside `web/backend` (a lockfile is committed, so this is reproducible) |
 | Start | `npm start` inside `web/backend` (runs `node server.js`) |
 | Listens on | `process.env.PORT`, falling back to 3002. Set `PORT` if the platform expects a specific one. |
 | Root directory | `web/backend` |
@@ -35,7 +35,7 @@ A process definition is committed at `ecosystem.config.js` in the repository roo
 
 ```bash
 git clone https://github.com/VasifPeerji/outbound-calling-agent.git
-cd outbound-calling-agent/web/backend && npm install --omit=dev && cd ../..
+cd outbound-calling-agent/web/backend && npm ci --omit=dev && cd ../..
 pm2 start ecosystem.config.js --env production
 pm2 save && pm2 startup        # bring it back after a server reboot
 ```
@@ -54,8 +54,10 @@ second copy would ring the same customers a second time, and the storage layer r
 on save, so copies would overwrite each other. Scale by giving the machine more resources, not by
 adding instances.
 
-**Secrets do not go in `ecosystem.config.js`.** It is committed to the repository. Put them in
-`web/backend/.env` on the server (permissions `600`), or export them in the shell PM2 starts from.
+**Secrets do not go in `ecosystem.config.js`.** It is committed to the repository. On a server you
+manage yourself, put them in `web/backend/.env` (owned by the service account, permissions `600`) or
+export them in the shell PM2 starts from. On a managed platform, use that platform's own environment
+settings instead — see the next section.
 
 `env_production` already sets `TRUST_PROXY=true`, which is correct for the usual PM2-behind-nginx
 arrangement.
@@ -70,8 +72,15 @@ Service, nginx, any managed platform): set `TRUST_PROXY=true`. Explained below.
 
 ## Environment variables
 
-Set these in the hosting platform's own environment settings, **not** in a `.env` file on the
-server. `.env` is gitignored and never leaves a developer machine.
+Where they go depends on how you are hosting:
+
+- **A managed platform** (Render, Railway, Azure App Service, Elastic Beanstalk): use the platform's
+  own environment settings. Nothing is written to disk.
+- **A server you manage, under PM2**: `web/backend/.env`, permissions `600`, owned by the service
+  account. The application reads it on start.
+
+Either way the file in this repository is `.env.example` and is a template only. A real `.env` is
+gitignored and never leaves the machine it was written on.
 
 ### Required
 
@@ -91,10 +100,29 @@ GRAPH_MAIL_FROM   notification@streebo.com
 ### Required once hosted
 
 ```
-PUBLIC_BASE       https://your-hosted-url            no trailing slash
-TRUST_PROXY       true                               if there is a proxy in front (there usually is)
-PLATFORM_ORG      streebo.com                        which organisation owns the platform
+PUBLIC_BASE               https://your-hosted-url    no trailing slash
+TRUST_PROXY               true                       if there is a proxy in front (there usually is)
+PLATFORM_ORG              streebo.com                which organisation owns the platform
+TOOL_WEBHOOK_SECRET       (32+ random bytes, hex)    see below — set this before the URL is public
+ELEVENLABS_WEBHOOK_SECRET (from the ElevenLabs UI)   see below
 ```
+
+**The last two are the ones easiest to skip, and the two that matter once the address is public.**
+
+Two routes answer without a login, on purpose: the voice agent calls back into this server during a
+call, and ElevenLabs pushes the finished conversation to it afterwards. Neither caller is a person,
+so neither can hold a session. Each has a shared secret instead — and **both default to not checking
+when the secret is blank**, which is right on a laptop and wrong on the internet.
+
+- `TOOL_WEBHOOK_SECRET` — any long random string; generate it the same way as `AUTH_SECRET`. Set it,
+  then open the console's Settings page and press **Create & attach all tools** so ElevenLabs starts
+  sending the matching header. Until it is set, anyone who finds the URL can write outcomes into real
+  call records or mark a customer do-not-call.
+- `ELEVENLABS_WEBHOOK_SECRET` — copy the signing secret ElevenLabs shows when the post-call webhook
+  is configured. Until it is set, an unsigned POST could overwrite a real conversation's transcript.
+
+The server checks both at start-up and prints a warning if `PUBLIC_BASE` is set while either is
+missing, so this cannot be forgotten quietly.
 
 `AUTH_SECRET` matters more than it looks. If it is blank, a random one is generated on each boot,
 which signs everybody out on every redeploy and makes two instances reject each other's logins.

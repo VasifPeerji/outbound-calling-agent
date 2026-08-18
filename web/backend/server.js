@@ -14,10 +14,14 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const multer = require('multer');
 const { parse } = require('csv-parse/sync');
-const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+// Ids are RFC 4122 v4 UUIDs straight from Node's own crypto rather than a dependency. Dropping the
+// uuid package also drops an npm-audit finding that never applied to us — the advisory concerns
+// v3/v5/v6 called with a caller-supplied buffer, and every id here is uuidv4() with no arguments —
+// so the infrastructure team's audit comes back clean instead of needing a footnote.
+const uuidv4 = () => crypto.randomUUID();
 const store = require('./store');
 const sched = require('./scheduler');
 const { getProvider, assemblePrompt, LIBRARY_FACETS } = require('./voice-providers');
@@ -744,6 +748,18 @@ function securityAudit() {
   const stillDefault = auth.loadUsers().filter(u => u.mustChangePassword);
   if (stillDefault.length) warn.push(`${stillDefault.length} account(s) still have their initial password and must change it at next sign-in.`);
   if ((process.env.ADMIN_PASSWORD || '') === 'ChangeMe123!') warn.push('ADMIN_PASSWORD is set to the old documented default "ChangeMe123!" — change it.');
+  // The two routes that answer without a session. They are open by design, because the caller is
+  // ElevenLabs' cloud rather than a person, but each has its own shared secret and BOTH default to
+  // not checking. Left unset on a public URL, anyone who finds the address can post fabricated
+  // outcomes into real call records or mark a customer do-not-call. Harmless on a laptop, which is
+  // why this is tied to PUBLIC_BASE being set rather than shouted at every developer.
+  const publicNow = !!(process.env.PUBLIC_BASE || '').trim();
+  if (publicNow && !(process.env.TOOL_WEBHOOK_SECRET || '').trim()) {
+    warn.push('TOOL_WEBHOOK_SECRET is not set, and PUBLIC_BASE is. /api/agent-tool/* answers WITHOUT a session by design (the voice agent calls it), so until this is set anyone who finds the URL can write outcomes into real call records. Set it, then re-sync the tools from Settings so ElevenLabs sends the header.');
+  }
+  if (publicNow && !(process.env.ELEVENLABS_WEBHOOK_SECRET || '').trim()) {
+    warn.push('ELEVENLABS_WEBHOOK_SECRET is not set, and PUBLIC_BASE is. The post-call webhook accepts unsigned payloads until it is, so a forged POST could overwrite a real conversation transcript and outcome. Copy the signing secret from the ElevenLabs webhook settings.');
+  }
   if (warn.length) { console.log('\n⚠️   Before exposing this on a public URL:'); warn.forEach(w => console.log('    • ' + w)); console.log(''); }
 }
 

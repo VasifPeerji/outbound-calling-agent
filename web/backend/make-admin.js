@@ -29,7 +29,8 @@
  * directly, so this hands them nothing they did not already have.
  */
 require('dotenv').config();
-const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
+const uuidv4 = () => crypto.randomUUID();   // Node's own, no dependency
 const store = require('./store');
 const auth = require('./auth');
 
