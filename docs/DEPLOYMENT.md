@@ -1,5 +1,16 @@
 # OmniReach — Going live (HTTPS, database, partner accounts)
 
+> **Infrastructure team: you want [HOSTING.md](HOSTING.md), not this file.**
+> That one is the deployment brief — runtime, install and start commands, environment variables,
+> PM2, health check, and what has to be set before the URL is public.
+>
+> This file is for whoever OWNS the application: choosing and migrating a database, and the
+> decisions that come after it is running. The two do not conflict; they are addressed to different
+> people. In particular, `npm run migrate` below is a one-time move of local JSON files into a new
+> empty database — **it is not part of deploying, and it must never be pointed at the live database,
+> which already holds the real accounts and call history.**
+
+
 Everything below is optional for local use. It matters once the console is on a public URL that
 partners log in to.
 

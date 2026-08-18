@@ -26,7 +26,10 @@ npm start                 # console + API on http://localhost:3002
 
 One process serves both the API and the web console, so there is nothing else to start.
 
-**Hosted** — see [docs/HOSTING.md](docs/HOSTING.md). It covers what the infrastructure team needs,
+**Hosted** — hand [docs/HOSTING.md](docs/HOSTING.md) to whoever is deploying it. That is the only
+document they need. ([docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) is a different audience: it is for
+whoever owns the application, and covers choosing and migrating a database.)
+HOSTING.md covers what the infrastructure team needs,
 every environment variable, and plain explanations of `PUBLIC_BASE` and `TRUST_PROXY`, the two that
 are easiest to get wrong.
 
@@ -112,7 +115,7 @@ Generic Outbound Voice Agent/
 │   ├── catalog/                     ← industries.json + countries.json (power the Agent Builder)
 │   └── presets/                      ← 23 ready-to-load industry profiles (banking → pharmacy),
 │                                        globally diverse; the dashboard auto-discovers them
-├── docs/                             ← SETUP · PLATFORM · TOOLS · DATA_INTEGRATION · SIMULATION_AND_ANALYTICS
+├── docs/                             ← HOSTING (deploy) · DEPLOYMENT (own it) · SETUP · PLATFORM · TOOLS · DATA_INTEGRATION
 ├── prompts/                          ← agent prompts (global + 7 use-case nodes + end-call rules)
 │   ├── global_prompt.txt             ← agent identity (variable-driven, world-ready)
 │   ├── payment_reminder.txt          ← 1  Payment / Due Reminder
