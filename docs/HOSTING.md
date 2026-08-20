@@ -162,6 +162,95 @@ restarts are a no-op, and after a redeploy it re-points every tool by itself.
 
 ---
 
+## Putting it behind HTTPS
+
+**The application does not need to change, and its port does not need to change.**
+
+It speaks plain HTTP on `PORT` (3002 by default) and is designed to sit behind something that
+terminates TLS. That is the normal arrangement and it is the one to use here:
+
+```
+browser ──HTTPS:443──▶ nginx / load balancer ──HTTP──▶ 127.0.0.1:3002 (this app)
+         certificate lives here                        no certificate, no change
+```
+
+**Please do not make the application listen on 443 directly.** Three reasons:
+
+1. Ports below 1024 need root on Linux, and this process should not run as root.
+2. The certificate would then live inside the application, so every renewal means an application
+   restart. In front of it, renewals never touch the app at all.
+3. Redirecting HTTP to HTTPS, security headers and connection limits are all things the proxy
+   already does well.
+
+### What the proxy needs to send
+
+Two headers, or things break in ways that are not obvious:
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name omnireach.smartcogs.ai;
+
+    ssl_certificate     /path/to/fullchain.pem;
+    ssl_certificate_key /path/to/privkey.pem;
+
+    # Recordings can be several minutes of audio, and a call detail waits on the provider.
+    proxy_read_timeout 300s;
+    client_max_body_size 12m;          # CSV uploads
+
+    location / {
+        proxy_pass http://127.0.0.1:3002;
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;   # REQUIRED, see below
+    }
+}
+
+server {                                # send plain HTTP to HTTPS
+    listen 80;
+    server_name omnireach.smartcogs.ai;
+    return 301 https://$host$request_uri;
+}
+```
+
+`X-Forwarded-Proto` is the one that is easy to leave out. The application builds the URL for a call
+recording from the incoming request, so without that header it produces an `http://` link on an
+`https://` page and the browser silently blocks it as mixed content: **everything works except
+playing a recording.** With the header, and with `TRUST_PROXY=true` set on the application, the link
+comes out as `https://` and plays.
+
+`X-Forwarded-For` matters for a different reason: without it every request appears to come from the
+proxy, so the per-IP sign-in rate limits would treat the whole internet as one client.
+
+### On the application side
+
+Exactly two environment variables, then one restart:
+
+```
+TRUST_PROXY=true
+PUBLIC_BASE=https://omnireach.smartcogs.ai
+```
+
+`TRUST_PROXY` tells it to believe those two headers. `PUBLIC_BASE` is the address ElevenLabs calls
+back on during a call; set it to the final public name, not the IP.
+
+### A note on `https://10.0.103.50`
+
+Reaching the app over HTTPS on the private IP works, but the browser will warn about the
+certificate, and that is not a misconfiguration. Public certificate authorities do not issue
+certificates for private IP addresses, so that step can only ever use a self-signed or internal-CA
+certificate. The warning goes away once the real name, `omnireach.smartcogs.ai`, is in front of it
+with its own certificate.
+
+One side effect worth knowing about: the application sends an HSTS header, so a browser that has
+once loaded `https://10.0.103.50` will refuse to load `http://10.0.103.50` afterwards. If somebody
+needs to go back to plain HTTP on the IP for a test, clear the HSTS entry for that host
+(`chrome://net-internals/#hsts`) rather than assuming the server broke.
+
+---
+
 ## About TRUST_PROXY
 
 **What it is:** a switch telling the application that something sits in front of it.

@@ -1366,7 +1366,25 @@
 
 <script>
 // ══════ STATE ══════
-let backendUrl = localStorage.getItem('omni_backend_url') || window.location.origin;
+/**
+ * Where the API lives.
+ *
+ * The backend serves this console itself, so on anything hosted the answer is always "the address
+ * this page came from". A saved override only ever meant something when index.html was opened from
+ * disk, and it becomes actively harmful the day the address changes: everyone who used the platform
+ * at http://10.0.103.50:3002 has that string in localStorage, and on a new HTTPS address their
+ * browser would go on calling the old one -- blocked as mixed content, and unreachable without the
+ * VPN. The console would read "Backend not connected" for exactly the people who had used it
+ * before, which is the worst possible set to break.
+ */
+let backendUrl = (function () {
+  const saved = localStorage.getItem('omni_backend_url') || '';
+  if (location.protocol === 'http:' || location.protocol === 'https:') {
+    if (saved && saved !== location.origin) localStorage.setItem('omni_backend_url', location.origin);
+    return location.origin;
+  }
+  return saved || 'http://localhost:3002';   // opened straight from disk
+})();
 let authToken = localStorage.getItem('omni_token') || '';
 let currentUser = null;
 let backendConnected = false;
