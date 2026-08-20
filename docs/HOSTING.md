@@ -215,6 +215,41 @@ server {                                # send plain HTTP to HTTPS
 }
 ```
 
+### The same thing in Apache
+
+Apache is what answers on `smartcogs.ai`, so this is probably the one you want. It needs
+`mod_ssl`, `mod_proxy`, `mod_proxy_http` and `mod_headers`
+(`a2enmod ssl proxy proxy_http headers && systemctl reload apache2`).
+
+```apache
+<VirtualHost *:443>
+    ServerName omnireach.smartcogs.ai
+
+    SSLEngine on
+    SSLCertificateFile      /path/to/fullchain.pem
+    SSLCertificateKeyFile   /path/to/privkey.pem
+
+    ProxyPreserveHost On
+    ProxyTimeout 300
+    LimitRequestBody 12582912
+
+    # mod_proxy sets X-Forwarded-For by itself; this one has to be set by hand.
+    RequestHeader set X-Forwarded-Proto "https"
+
+    ProxyPass        / http://127.0.0.1:3002/
+    ProxyPassReverse / http://127.0.0.1:3002/
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName omnireach.smartcogs.ai
+    Redirect permanent / https://omnireach.smartcogs.ai/
+</VirtualHost>
+```
+
+If the machine terminating TLS is **not** the machine running the application, replace
+`127.0.0.1:3002` with the application server's address, and make sure that hop is reachable and
+firewalled to the proxy alone. The application should never be reachable on 3002 from outside.
+
 `X-Forwarded-Proto` is the one that is easy to leave out. The application builds the URL for a call
 recording from the incoming request, so without that header it produces an `http://` link on an
 `https://` page and the browser silently blocks it as mixed content: **everything works except
