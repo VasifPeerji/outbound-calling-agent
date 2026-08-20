@@ -2446,7 +2446,8 @@ function adminResetPw(id) { const v = prompt('New password for this user:'); if 
 function viewUserCalls(id) { const u = adminUsers.find(x => x.id === id); adminUserFilter = { id, name: u ? (u.name || u.email) : id }; showPage('history', [...document.querySelectorAll('.nav-item')].find(n => /Call History/i.test(n.textContent))); }
 
 window.onload = async () => {
-  document.getElementById('s-backend-url').value = backendUrl;
+  const backendField = document.getElementById('s-backend-url');
+  if (backendField) backendField.value = backendUrl;
   initSimMode();
   if (authToken) {
     try { const r = await apiFetch('/api/auth/me'); currentUser = r.user; applyUser(); hideLogin(); await connectBackend(true); return; }
@@ -2478,7 +2479,13 @@ function showPage(id, el) {
 
 // ══════ BACKEND ══════
 async function connectBackend(silent = false) {
-  backendUrl = (document.getElementById('s-backend-url').value || backendUrl).trim();
+  // This field lives on the Settings page, which is removed from the DOM for anyone who is not a
+  // platform admin. Reading .value off null threw here, BEFORE the try block below, so nothing
+  // caught it: the API was working and the person was signed in, while the banner sat on "Backend
+  // not connected" forever. It is an optional override in any case — on a hosted instance the
+  // console is served BY the backend, so the address is always its own origin.
+  const field = document.getElementById('s-backend-url');
+  if (field && field.value.trim()) backendUrl = field.value.trim();
   localStorage.setItem('omni_backend_url', backendUrl);
   try {
     await apiFetch('/api/health');
@@ -2496,8 +2503,11 @@ function setBackendStatus(c) {
   document.getElementById('backend-dot').className = 'backend-dot ' + (c ? 'connected' : 'error');
   const t = document.getElementById('backend-status-text'); t.textContent = c ? 'connected' : 'disconnected'; t.style.color = c ? 'var(--green)' : 'var(--red)';
   document.getElementById('backend-banner').className = 'status-banner ' + (c ? 'connected hidden' : '');
-  document.getElementById('cfg-url').textContent = backendUrl;
-  document.getElementById('cfg-status').innerHTML = c ? '<span class="badge badge-green">✓ Connected</span>' : '<span class="badge badge-red">Disconnected</span>';
+  // cfg-* are on the Settings page too, so they are absent for a partner. The banner and the dot
+  // above are what everyone sees; these two are the readout only Streebo has.
+  const cfgUrl = document.getElementById('cfg-url'); if (cfgUrl) cfgUrl.textContent = backendUrl;
+  const cfgStatus = document.getElementById('cfg-status');
+  if (cfgStatus) cfgStatus.innerHTML = c ? '<span class="badge badge-green">✓ Connected</span>' : '<span class="badge badge-red">Disconnected</span>';
 }
 
 // ══════ PROFILE ══════
@@ -2516,7 +2526,7 @@ async function loadPresets() {
 function applyBranding() {
   const c = activeProfile.company || {};
   document.getElementById('op-company').textContent = c.name || '—';
-  document.getElementById('cfg-company').textContent = c.name || '—';
+  const cfgCompany = document.getElementById('cfg-company'); if (cfgCompany) cfgCompany.textContent = c.name || '—';
   document.getElementById('bc-company').textContent = (c.short_name || c.name || '—');
   const a = activeProfile.agent || {};
   document.getElementById('single-sub').innerHTML = `Choose a use case, fill in the customer details, and launch a live call as <strong>${a.name || 'the agent'}</strong> from <strong>${c.name || 'your company'}</strong>.`;
