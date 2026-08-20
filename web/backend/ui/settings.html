@@ -1,0 +1,51 @@
+<div class="page" id="page-settings">
+      <div class="page-header"><div class="page-title">Settings</div><div class="page-subtitle">Backend connection and voice-platform credentials.</div></div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div><div class="card-title">🚀 Go-Live Readiness</div><div class="card-subtitle">What's ready for real ElevenLabs calls, and what still needs a step</div></div><button class="btn btn-ghost btn-sm" onclick="loadPreflight()">↻ Check</button></div>
+        <div id="preflight-body"><div class="cd-note">Connect to the backend to run the readiness check.</div></div>
+        <div style="font-size:11.5px;color:var(--text-muted);margin-top:10px">Full step-by-step: see <code>docs/SETUP.md</code>.</div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Backend &amp; Providers</div></div>
+        <div class="settings-section"><div class="settings-label">Backend Server</div>
+          <div class="form-grid"><div class="field"><label>Backend URL <span class="required">*</span></label><input type="text" id="s-backend-url" placeholder="http://localhost:3002" oninput="backendUrl=this.value"/></div><input type="hidden" id="s-default-provider" value="elevenlabs"/></div>
+          <div class="btn-group" style="margin-top:12px"><button class="btn btn-secondary btn-sm" onclick="connectBackend()">🔌 Connect</button></div>
+        </div>
+        <div class="settings-section"><div class="settings-label">ElevenLabs · primary · credentials stay on the backend</div>
+          <div class="form-grid three">
+            <div class="field"><label>API Key</label><div class="api-key-field"><input type="password" id="s-el-key" placeholder="xi-… (leave blank to keep)"/><button class="api-key-toggle" onclick="toggleVis('s-el-key')">👁</button></div></div>
+            <div class="field"><label>Agent ID</label><input type="text" id="s-el-agent" placeholder="agent_…"/></div>
+            <div class="field"><label>Agent Phone Number ID</label><input type="text" id="s-el-phone" placeholder="phnum_…"/></div>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;font-weight:500;cursor:pointer"><input type="checkbox" id="s-el-tuning" style="width:auto"/> Send voice tuning (stability / speed / similarity) as per-call overrides</label>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Sends stability / speed / similarity when your agent allows them (auto-detected, so it never fails). Turn <strong>off</strong> to always use the agent's own voice settings.</div>
+          <div class="btn-group" style="margin-top:10px"><button class="btn btn-secondary btn-sm" onclick="testConnection('elevenlabs')">🔌 Test ElevenLabs</button></div>
+        </div>
+        <!-- Retell credentials removed from the UI: the platform runs on ElevenLabs. The ids remain
+     as hidden inputs so the settings save path is unchanged. -->
+<input type="hidden" id="s-rt-key" value=""/><input type="hidden" id="s-rt-agent" value=""/><input type="hidden" id="s-rt-from" value=""/>
+<div class="settings-section"><div class="settings-label">Public URL · for live action-tools &amp; write-back webhooks</div>
+          <div class="form-grid"><div class="field" style="grid-column:1/-1"><label>Public base URL <span class="hint">tunnel or deploy — no trailing slash</span></label><input type="text" id="s-public-base" placeholder="https://abc123.ngrok.app"/></div></div>
+          <div class="btn-group" style="margin-top:10px"><button class="btn btn-secondary btn-sm" onclick="downloadToolManifest()">⬇ Tool registration manifest</button><button class="btn btn-ghost btn-sm" onclick="viewToolManifest()">👁 Preview</button></div>
+          <div id="manifest-note" style="font-size:11.5px;color:var(--text-muted);margin-top:8px">The action tools to register on the agent. The manifest fills each tool's webhook URL from the base above.</div>
+        </div>
+        <div class="settings-section"><div class="settings-label">Action tools · what the agent can actually DO</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-bottom:10px">These are what turn a conversation into a record: logging the outcome, booking a callback, honouring a do-not-call request. If they are not attached, the agent still <em>says</em> it has done these things and nothing happens.</div>
+          <div id="tools-status"><div class="cd-note">Open Settings to check.</div></div>
+          <div class="btn-group" style="margin-top:10px">
+            <button class="btn btn-primary btn-sm" id="tools-sync-btn" onclick="syncAgentTools()">🔧 Create &amp; attach all tools</button>
+            <button class="btn btn-ghost btn-sm" onclick="loadToolsStatus()">↻ Re-check</button>
+          </div>
+        </div>
+        <div class="settings-section"><div class="settings-label">Call Behaviour</div><div class="field" style="max-width:200px"><label>Bulk call delay <span class="hint">seconds</span></label><input type="number" id="s-delay" value="3" min="1" max="60"/></div></div>
+        <div class="btn-group" style="margin-top:0"><button class="btn btn-primary" onclick="saveSettingsPage()">💾 Save to Backend</button></div>
+      </div>
+      <div class="card"><div class="card-header"><div class="card-title">Current Configuration</div></div><div id="config-display">
+        <div class="info-row"><span class="info-key">Backend URL</span><span class="info-val" id="cfg-url">—</span></div>
+        <div class="info-row"><span class="info-key">Active Company</span><span class="info-val" id="cfg-company">—</span></div>
+        <div class="info-row"><span class="info-key">Default provider</span><span class="info-val" id="cfg-provider">—</span></div>
+        <div class="info-row"><span class="info-key">ElevenLabs</span><span class="info-val" id="cfg-el">—</span></div>
+        <span id="cfg-rt" style="display:none"></span>
+        <div class="info-row"><span class="info-key">Status</span><span id="cfg-status"><span class="badge badge-muted">Not Connected</span></span></div>
+      </div></div>
+    

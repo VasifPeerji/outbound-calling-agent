@@ -158,6 +158,55 @@ function visibleCalls(req) {
   if (!req.user) return [];
   return isPlatformAdmin(req.user) ? callHistory : callHistory.filter(inMyOrg(req));
 }
+/**
+ * Which slice of the calls this request may see is being asked for.
+ *
+ *   personal    the calls I placed myself
+ *   colleagues  my organisation's calls, minus my own
+ *   company     my whole organisation, mine included
+ *   all         every organisation — platform administrators only, and it falls back to `company`
+ *               for anybody else rather than erroring, because a scope is a view, not a permission
+ *
+ * The permission boundary is still visibleCalls(); this only narrows what is already allowed, so no
+ * scope can widen anything. The API default stays `company`, which is what every existing caller
+ * expects; it is the console that asks for `personal` first, because your own work is what you came
+ * to look at.
+ */
+function scopedCalls(req, scope) {
+  const base = visibleCalls(req);
+  const uid = req.user.id, org = orgIdOf(req.user);
+  const mine = c => c.userId === uid;
+  const ourCompany = c => (c.orgId && c.orgId === org) || mine(c);
+  if (scope === 'personal') return base.filter(mine);
+  if (scope === 'colleagues') return base.filter(c => !mine(c) && ourCompany(c));
+  if (scope === 'all') return isPlatformAdmin(req.user) ? base : base.filter(ourCompany);
+  return base.filter(ourCompany);
+}
+/** Simulated calls are practice, not activity. Kept, labelled, and countable separately. */
+function applySimFilter(calls, includeSimulated) {
+  return includeSimulated ? calls : calls.filter(c => !c.simulated);
+}
+
+/**
+ * May this request open ONE call: its detail, its transcript, its recording?
+ *
+ * Two bugs lived in the old inline check, `if (entry && req.user.role !== 'admin' && ...)`:
+ *
+ *   1. `role !== 'admin'` is not the org boundary. A PARTNER admin has role 'admin', so the check
+ *      passed for them on any call at all, including another customer's. Everywhere else in this
+ *      file the boundary is isPlatformAdmin + organisation, and these two routes quietly were not.
+ *   2. `entry &&` meant that when the id was NOT in our history the check was skipped ENTIRELY and
+ *      the request went straight to the provider. Any signed-in user could therefore probe arbitrary
+ *      conversation ids belonging to anyone on the whole ElevenLabs workspace.
+ *
+ * An unknown id is now a refusal rather than a lookup, which is what stops this server being a proxy
+ * for someone else's conversations.
+ */
+function mayViewCall(req, entry) {
+  if (!entry) return false;
+  if (isPlatformAdmin(req.user)) return true;
+  return inMyOrg(req)(entry);
+}
 /** Drilling into one person: platform admins may look at anyone, everyone else at colleagues only. */
 function mayViewUser(req, targetId) {
   if (!req.user || !targetId) return false;
@@ -1479,6 +1528,29 @@ app.get('/api/usage', (req, res) => {
   });
 });
 
+// ── RESTRICTED UI ───────────────────────────────────────
+// The Admin and Settings panels are not in the file every visitor downloads. They live here, and
+// they are handed over only after the same role check that guards the endpoints behind them.
+//
+// The reason is not that hiding them leaked data — the API refused every privileged action whatever
+// the DOM said — but that "delete an attribute in devtools and the Admin panel appears" is an
+// alarming thing for a customer's tester to be able to do, and there is no reason for a browser that
+// cannot use those controls to be given them at all.
+const UI_DIR = path.join(__dirname, 'ui');
+const uiCache = {};
+function restrictedUi(name) {
+  if (!uiCache[name]) uiCache[name] = fs.readFileSync(path.join(UI_DIR, name + '.html'), 'utf8');
+  return uiCache[name];
+}
+function sendUi(name) {
+  return (req, res) => {
+    try { res.type('html').send(restrictedUi(name)); }
+    catch (e) { console.warn(`Could not read ui/${name}.html:`, e.message); res.status(500).json({ error: 'Panel unavailable.' }); }
+  };
+}
+app.get('/api/ui/admin', requireAdmin, sendUi('admin'));
+app.get('/api/ui/settings', requirePlatformAdmin, sendUi('settings'));
+
 // ── ADMIN · user management ─────────────────────────────
 app.get('/api/admin/users', requireAdmin, (req, res) => {
   // A partner admin manages their own colleagues. Listing every account would leak the whole
@@ -2139,12 +2211,19 @@ app.post('/api/campaign/stop', (req, res) => { const c = userCampaigns[req.user.
 // to one person, which an admin may do for anyone and a partner only for a colleague.
 app.get('/api/history', (req, res) => {
   const limit = parseInt(req.query.limit) || 500;
-  let mine = visibleCalls(req);
+  // 'all' is the default so every existing caller keeps the behaviour it had: a platform admin
+  // still sees the estate, everyone else still sees their own organisation. It is the CONSOLE that
+  // asks for 'personal' first, not the API.
+  const scope = String(req.query.scope || 'all');
+  let mine = scopedCalls(req, scope);
   if (req.query.userId) {
     if (!mayViewUser(req, req.query.userId)) return res.status(403).json({ error: 'That user is not in your organisation.' });
-    mine = mine.filter(c => c.userId === req.query.userId);
+    mine = visibleCalls(req).filter(c => c.userId === req.query.userId);
   }
-  res.json({ calls: mine.slice(0, limit), total: mine.length });
+  const simulated = mine.filter(c => c.simulated).length;
+  const includeSimulated = req.query.includeSimulated !== 'false';
+  mine = applySimFilter(mine, includeSimulated);
+  res.json({ calls: mine.slice(0, limit), total: mine.length, scope, simulated, includeSimulated });
 });
 // Deliberately narrower than the read scope: clearing history wipes your OWN calls, never a
 // colleague's. Seeing the team's work and being able to delete it are different privileges.
@@ -2195,8 +2274,17 @@ app.delete('/api/history/:id', (req, res) => {
 // bucketing both on the server's clock would quietly mis-state one of them.
 app.get('/api/analytics', (req, res) => {
   if (req.query.userId && !mayViewUser(req, req.query.userId)) return res.status(403).json({ error: 'That user is not in your organisation.' });
-  const scope = visibleCalls(req);
-  let calls = req.query.userId ? scope.filter(c => c.userId === req.query.userId) : scope;
+  const scopeName = String(req.query.scope || 'all');
+  const scope = req.query.userId ? visibleCalls(req).filter(c => c.userId === req.query.userId) : scopedCalls(req, scopeName);
+  // Simulated calls are a rehearsal: same machinery, no telephony, nobody on the other end. Counting
+  // them as activity flatters every figure on the page, so they are OUT by default and the console
+  // says how many were set aside rather than hiding that they exist.
+  const includeSimulated = req.query.includeSimulated === 'true';
+  const simulatedInScope = scope.filter(c => c.simulated).length;
+  let calls = applySimFilter(scope, includeSimulated);
+  // Counted here, AFTER the simulated filter and BEFORE the range filter, so that
+  // scopeTotal - total is exactly "calls outside the chosen range" and nothing else.
+  const inScopeBeforeRange = calls.length;
   const tz = String(req.query.tz || dailyReport.timezone || 'Asia/Kolkata');
   // One range control governs the whole page. "all" still draws a 30-day trend, because a trend
   // needs a bounded axis to mean anything.
@@ -2290,7 +2378,14 @@ app.get('/api/analytics', (req, res) => {
 
   res.json({
     total: n, failed, noReach, connected, pending, resolved,
-    timezone: tz, days, range, scopeTotal: scope.length,
+    timezone: tz, days, range, scopeTotal: inScopeBeforeRange,
+    scope: scopeName, includeSimulated, simulatedInScope,
+    scopeCounts: {
+      personal: applySimFilter(scopedCalls(req, 'personal'), includeSimulated).length,
+      colleagues: applySimFilter(scopedCalls(req, 'colleagues'), includeSimulated).length,
+      company: applySimFilter(scopedCalls(req, 'company'), includeSimulated).length,
+      all: isPlatformAdmin(req.user) ? applySimFilter(scopedCalls(req, 'all'), includeSimulated).length : null
+    },
     talkSeconds, longestMs: durations.length ? Math.max(...durations) : null,
     live: calls.filter(c => !c.simulated).length,
     byCountry, byIndustry, byDestination, byAgentBrand, talkBuckets, trend, byHour,
@@ -2851,7 +2946,7 @@ app.get('/api/writeback/log', (req, res) => res.json({ log: connectors.getEchoLo
 // Call details (status + recording + transcript) via the entry's provider
 app.get('/api/call/:callId', async (req, res) => {
   const entry = callHistory.find(c => c.callId === req.params.callId);
-  if (entry && req.user.role !== 'admin' && entry.userId !== req.user.id) return res.status(403).json({ error: 'Not authorized for this call.' });
+  if (!mayViewCall(req, entry)) return res.status(403).json({ error: 'That call is not one of yours.' });
   const adapter = adapterForEntry(entry);
   if (!adapter.isConfigured(config)) return res.status(400).json({ error: 'Voice provider not configured.' });
   try {
@@ -2866,7 +2961,7 @@ app.get('/api/call/:callId', async (req, res) => {
 // Recording audio proxy (ElevenLabs) / redirect (Retell)
 app.get('/api/call/:callId/audio', async (req, res) => {
   const entry = callHistory.find(c => c.callId === req.params.callId);
-  if (entry && req.user.role !== 'admin' && entry.userId !== req.user.id) return res.status(403).json({ error: 'Not authorized for this call.' });
+  if (!mayViewCall(req, entry)) return res.status(403).json({ error: 'That recording is not one of yours.' });
   const adapter = adapterForEntry(entry);
   try {
     if (adapter.name === 'retell') {

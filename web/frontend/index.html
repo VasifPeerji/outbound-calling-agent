@@ -327,6 +327,33 @@
      these set an inline display when they are shown. */
   body.partner-view [data-internal] { display: none !important; }
 
+  /* ── the account menu ──────────────────────────────────────────────────
+     A bare power icon sat one careless click from signing somebody out, and more than one person
+     read it as a hamburger. An avatar that opens a menu is both harder to hit by accident and the
+     place people already look for "who am I signed in as". */
+  .acct { position: relative; }
+  .acct-btn { display: flex; align-items: center; gap: 9px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 24px; padding: 4px 12px 4px 4px; cursor: pointer; font-family: 'Inter', sans-serif; transition: border-color .15s, background .15s; }
+  .acct-btn:hover { border-color: var(--brand-300); background: var(--brand-50); }
+  .acct-av { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(150deg, #6D66F0, var(--brand-700)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 700; letter-spacing: -0.02em; flex-shrink: 0; }
+  .acct-name { font-size: 12.5px; font-weight: 600; color: var(--text); max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .acct-caret { font-size: 9px; color: var(--text-muted); }
+  .acct-menu { position: absolute; right: 0; top: calc(100% + 8px); width: 258px; background: var(--surface); border: 1px solid var(--border); border-radius: 13px; box-shadow: var(--shadow-lg); padding: 6px; opacity: 0; transform: translateY(-6px); pointer-events: none; transition: opacity .15s, transform .15s; z-index: 300; }
+  .acct-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+  .acct-head { padding: 11px 12px 12px; border-bottom: 1px solid var(--border-light); margin-bottom: 6px; }
+  .acct-head .n { font-size: 13.5px; font-weight: 700; }
+  .acct-head .e { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; overflow-wrap: anywhere; }
+  .acct-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 12px; border: none; background: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text-dim); cursor: pointer; text-align: left; }
+  .acct-item:hover { background: var(--surface-2); color: var(--text); }
+  .acct-item.danger:hover { background: var(--red-dim); color: var(--red); }
+  .acct-sep { height: 1px; background: var(--border-light); margin: 6px 4px; }
+
+  /* ── whose calls am I looking at ── */
+  .scope-tabs { display: inline-flex; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 3px; gap: 2px; }
+  .scope-tab { padding: 7px 14px; border: none; background: none; border-radius: 7px; font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+  .scope-tab:hover { color: var(--text); }
+  .scope-tab.on { background: var(--surface); color: var(--brand-700); box-shadow: var(--shadow-xs); }
+  .scope-tab .n { font-family: 'DM Mono', monospace; font-size: 10.5px; opacity: .75; }
+
   .empty-state { text-align: center; padding: 44px 22px; color: var(--text-muted); }
   .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.5; }
   .empty-title { font-size: 14.5px; font-weight: 700; color: var(--text-dim); margin-bottom: 5px; }
@@ -649,10 +676,24 @@
     <label id="sim-toggle" title="Simulation mode: realistic dry-run calls, no telephony or credentials" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--text-dim);cursor:pointer;padding:5px 10px;border:1px solid var(--border);border-radius:8px;user-select:none"><input type="checkbox" id="sim-mode" onchange="toggleSimMode()" style="width:auto;cursor:pointer"/> 🧪 Simulation</label>
     <div class="backend-pill" id="oem-pill" style="display:none;border-width:1.5px;font-weight:700;letter-spacing:.02em" title=""></div>
     <div class="backend-pill"><span class="backend-dot" id="backend-dot"></span><span id="backend-status-text" style="color:var(--text-dim)">connecting…</span></div>
-    <div id="user-chip" style="font-size:12px;color:var(--text-dim);display:flex;align-items:center;gap:6px"></div>
-    <button class="btn btn-ghost btn-sm" id="btn-gear" onclick="showPage('settings', document.getElementById('nav-settings'))" title="Settings">⚙️</button>
-    <button class="btn btn-ghost btn-sm" onclick="openPasswordModal()" title="Change password">🔑</button>
-    <button class="btn btn-ghost btn-sm" onclick="logout()" title="Sign out">⏻</button>
+    <div class="acct" id="acct">
+      <button class="acct-btn" onclick="toggleAcctMenu(event)" aria-haspopup="true" aria-expanded="false" id="acct-btn">
+        <span class="acct-av" id="acct-av">?</span>
+        <span class="acct-name" id="acct-name"></span>
+        <span class="acct-caret">▼</span>
+      </button>
+      <div class="acct-menu" id="acct-menu" role="menu">
+        <div class="acct-head">
+          <div class="n" id="acct-menu-name"></div>
+          <div class="e" id="acct-menu-email"></div>
+          <div style="margin-top:7px;display:flex;gap:4px;flex-wrap:wrap" id="acct-menu-badges"></div>
+        </div>
+        <button class="acct-item" id="acct-settings" onclick="closeAcctMenu();showPage('settings', document.getElementById('nav-settings'))" role="menuitem">⚙️ Settings</button>
+        <button class="acct-item" onclick="closeAcctMenu();openPasswordModal()" role="menuitem">🔑 Change password</button>
+        <div class="acct-sep"></div>
+        <button class="acct-item danger" onclick="closeAcctMenu();confirmLogout()" role="menuitem">⏻ Sign out</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -772,7 +813,13 @@
 
     <!-- HISTORY -->
     <div class="page" id="page-history">
-      <div class="page-header"><div class="page-title">Call History</div><div class="page-subtitle">All calls initiated from this console, fetched live from the backend.</div></div>
+      <div class="page-header"><div class="page-title">Call History</div><div class="page-subtitle" id="hist-sub">Your calls, with the transcript and recording of each one.</div></div>
+      <div class="toolbar">
+        <div class="scope-tabs" id="hist-scope"></div>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:500;color:var(--text-dim);cursor:pointer;text-transform:none;letter-spacing:0">
+          <input type="checkbox" id="hist-sim" style="width:auto" checked onchange="refreshHistory()"/> Include 🧪 practice calls
+        </label>
+      </div>
       <div class="card">
         <div class="card-header"><div class="card-title">Recent Calls</div><div style="display:flex;gap:8px">
           <button class="btn btn-secondary btn-sm" id="sync-btn" onclick="syncHistory()" title="Pull latest status & recordings">↻ Sync</button>
@@ -785,161 +832,17 @@
     </div>
 
     <!-- ADMIN -->
-    <div class="page" id="page-admin">
-      <div class="page-header"><div class="page-title">Administration</div><div class="page-subtitle" id="ad-subtitle">Everyone on the platform, what they are allowed to do, and what they have done with it.</div></div>
-
-      <div class="stats-row six tight">
-        <div class="stat-card"><div class="stat-label">People</div><div class="stat-value" id="ad-users">0</div><div class="stat-icon">👥</div></div>
-        <div class="stat-card green"><div class="stat-label">Active</div><div class="stat-value" style="color:var(--green)" id="ad-active">0</div><div class="stat-icon">✅</div></div>
-        <div class="stat-card amber"><div class="stat-label">Companies</div><div class="stat-value" style="color:var(--amber)" id="ad-partners">0</div><div class="stat-icon">🤝</div></div>
-        <div class="stat-card blue"><div class="stat-label">Calls placed</div><div class="stat-value" style="color:var(--blue)" id="ad-calls">0</div><div class="stat-icon">📞</div></div>
-        <div class="stat-card" id="ad-kpi-pending"><div class="stat-label">Awaiting approval</div><div class="stat-value" id="ad-pending">0</div><div class="stat-icon">⏳</div></div>
-        <!-- The access-request queue belongs to the platform operator; a partner admin has none, so
-             the card is hidden for them rather than sitting there permanently reading zero. -->
-        <div class="stat-card amber" id="ad-kpi-requests"><div class="stat-label">Access requests</div><div class="stat-value" style="color:var(--amber)" id="ad-requests">0</div><div class="stat-icon">📮</div></div>
-      </div>
-
-      <div class="subtabs" id="ad-subtabs">
-        <button class="subtab active" onclick="showSubtab('ad','people',this)">👥 People <span class="count" id="ad-tab-people">0</span></button>
-        <button class="subtab" id="ad-tab-requests-btn" onclick="showSubtab('ad','requests',this)">📮 Access requests <span class="count" id="ad-tab-requests">0</span></button>
-        <button class="subtab" id="ad-tab-allow-btn" onclick="showSubtab('ad','allowances',this)">📶 Allowances</button>
-        <button class="subtab" id="ad-tab-access-btn" onclick="showSubtab('ad','access',this)">🔐 Sign-up &amp; limits</button>
-        <button class="subtab" id="ad-tab-report-btn" onclick="showSubtab('ad','report',this)">📊 Daily report</button>
-      </div>
-
-      <!-- ══ PEOPLE ══ -->
-      <div class="subpage active" id="ad-sub-people">
-        <div class="card">
-          <div class="card-header">
-            <div><div class="card-title">People</div><div class="card-subtitle" id="ad-people-sub">Click anyone to see everything they have done.</div></div>
-            <button class="btn btn-primary btn-sm" onclick="openAddUser()">＋ Add a person</button>
-          </div>
-          <div class="toolbar">
-            <input class="grow" id="ad-search" placeholder="Search name, email or company…" oninput="renderAdminUsers()"/>
-            <select id="ad-filter-role" onchange="renderAdminUsers()">
-              <option value="">Every role</option>
-              <option value="admin">Administrators</option>
-              <option value="user">Users</option>
-            </select>
-            <select id="ad-filter-status" onchange="renderAdminUsers()">
-              <option value="">Any status</option>
-              <option value="active">Active</option>
-              <option value="pending">Awaiting approval</option>
-              <option value="disabled">Disabled</option>
-              <option value="boosted">Has a boost</option>
-              <option value="quiet">Never called</option>
-            </select>
-            <select id="ad-filter-org" onchange="renderAdminUsers()"><option value="">Every company</option></select>
-            <label style="display:flex;align-items:center;gap:7px;font-size:12px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--text-dim);cursor:pointer"><input type="checkbox" id="ad-group" style="width:auto" checked onchange="renderAdminUsers()"/> Group by company</label>
-          </div>
-          <div id="ad-users-table"></div>
-          <div id="ad-users-count" style="font-size:11.5px;color:var(--text-muted);margin-top:10px"></div>
-        </div>
-      </div>
-
-      <!-- ══ ACCESS REQUESTS ══
-           People refused at the door because their domain is not whitelisted. Nobody reaches the
-           platform this way without an explicit decision here. -->
-      <div class="subpage" id="ad-sub-requests">
-        <div class="card" id="ar-card">
-          <div class="card-header">
-            <div><div class="card-title">Access requests</div><div class="card-subtitle">Someone tried to sign in from a domain you have not approved. Approving lets them request a sign-in code; they still have to prove they hold the mailbox.</div></div>
-            <div style="display:flex;gap:6px;align-items:center">
-              <select id="ar-filter" onchange="loadAccessRequests()" style="width:auto;font-size:12px;padding:5px 8px">
-                <option value="pending">Pending</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
-                <option value="">All</option>
-              </select>
-              <button class="btn btn-ghost btn-sm" onclick="loadAccessRequests()">↻</button>
-            </div>
-          </div>
-          <div id="ar-table"><div class="cd-note">Loading…</div></div>
-        </div>
-      </div>
-
-      <!-- ══ ALLOWANCES ══ -->
-      <div class="subpage" id="ad-sub-allowances">
-        <div class="card" id="oq-card">
-          <div class="card-header">
-            <div><div class="card-title">Company allowances</div><div class="card-subtitle">Raise the daily limit for a whole partner company, for a day, a week, or until you revoke it. A boost on one person overrides the company one.</div></div>
-            <button class="btn btn-primary btn-sm" onclick="promptOrgBoost()">＋ Boost a company</button>
-          </div>
-          <div id="oq-table"><div class="cd-note">Loading…</div></div>
-        </div>
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">Personal boosts</div><div class="card-subtitle">Individual exceptions, newest first. Every one carries an expiry unless it was granted permanently.</div></div></div>
-          <div id="ad-boosts"></div>
-        </div>
-      </div>
-
-      <!-- ══ SIGN-UP & LIMITS ══ -->
-      <div class="subpage" id="ad-sub-access">
-        <div class="card" style="margin-bottom:16px" id="gr-card">
-          <div class="card-header"><div><div class="card-title">Guardrails</div><div class="card-subtitle">Set the limits here; they stay OFF until you switch them on. Nothing is enforced by default — real calls flow freely until you decide otherwise.</div></div><span class="badge badge-muted" id="gr-status">enforcement off</span></div>
-          <div class="form-grid three">
-            <div class="field"><label>Enforce daily limits</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="gr-enforceQuota" style="width:auto"/> Stop a user's real calls once they reach their daily limit</label></div>
-            <div class="field"><label>Calls per day <span class="hint">blank = unlimited</span></label><input id="gr-defaultCallsPerDay" type="number" min="0" placeholder="e.g. 3"/></div>
-            <div class="field"><label>Talk time per day <span class="hint">minutes, blank = unlimited</span></label><input id="gr-defaultMinutesPerDay" type="number" min="0" placeholder="e.g. 10"/></div>
-            <div class="field"><label>Rate limit <span class="hint">calls/min per user, blank = off</span></label><input id="gr-rateLimitPerMin" type="number" min="0" placeholder="e.g. 10"/></div>
-            <div class="field" style="grid-column:span 2"><label>Bulk campaigns for partners</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="gr-allowBulkForPartners" style="width:auto"/> Let every partner use bulk calling, CSV imports and CRM pulls</label></div>
-            <div class="field" style="grid-column:span 3;padding-top:2px"><div style="font-size:11.5px;color:var(--text-muted);line-height:1.6">Whichever runs out first stops them. Each call is also capped at the talk time they have left, so a single long call cannot overspend the day's allowance. Bulk stays off for partners unless you tick the box above or boost an individual account, because someone on a three-call allowance who uploads five hundred contacts gets a queue of refusals rather than a demo.</div></div>
-            <div class="field" style="grid-column:span 3"><label>Simulation-only mode</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="gr-simulationOnly" style="width:auto"/> Force everyone into Simulation mode — no real telephony spend (ideal for wide-open partner demos)</label></div>
-          </div>
-          <div class="btn-group" style="margin-top:12px"><button class="btn btn-primary btn-sm" onclick="adminSaveGuardrails()">💾 Save guardrails</button></div>
-        </div>
-        <div class="card">
-          <div class="card-header" id="su-card-header"><div><div class="card-title">Sign-up &amp; access</div><div class="card-subtitle">Let partners create their own accounts. Anyone on a trusted company domain is approved automatically; everyone else waits for you to approve them here.</div></div><span class="badge badge-muted" id="su-status">sign-up off</span></div>
-          <div class="form-grid three">
-            <div class="field"><label>Self sign-up</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="su-enabled" style="width:auto"/> Allow people to register themselves</label></div>
-            <div class="field"><label>Unknown domains</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="su-allowOthersPending" style="width:auto"/> Accept, but hold for your approval</label></div>
-            <div class="field"><label>Daily limit for auto-approved <span class="hint">blank = unlimited</span></label><input id="su-autoApproveCallsPerDay" type="number" min="0" placeholder="e.g. 25"/></div>
-            <div class="field" style="grid-column:span 3"><label>Trusted email domains <span class="hint">comma or line separated, e.g. acmepartner.com, prospect.co</span></label><textarea id="su-allowedDomains" rows="2" placeholder="acmepartner.com&#10;prospect.co"></textarea></div>
-            <div class="field" style="grid-column:span 3"><label>Individually approved addresses <span class="hint">for one person at a company you don't want to open wholesale</span></label><textarea id="su-allowedEmails" rows="2" placeholder="one.person@bigcorp.com"></textarea></div>
-          </div>
-          <div class="btn-group" style="margin-top:12px"><button class="btn btn-primary btn-sm" onclick="adminSaveSignup()">💾 Save sign-up settings</button></div>
-          <div style="font-size:11.5px;color:var(--text-muted);margin-top:10px">Anyone on a trusted domain signs in by receiving a six-digit code, so the mailbox is proven before they get in. Everyone else is refused and appears under Access requests for you to decide on.</div>
-        </div>
-      </div>
-
-      <!-- ══ DAILY REPORT ══
-           The one thing that leaves the platform carrying every partner's activity side by side.
-           Reading it is open to any platform admin; changing where it goes is the super
-           administrator's alone. -->
-      <div class="subpage" id="ad-sub-report">
-        <div class="card" style="margin-bottom:16px">
-          <div class="card-header">
-            <div><div class="card-title">Daily activity report</div><div class="card-subtitle">One email covering every partner: calls placed, who they called and where, talk time, industries, and any allowance boosts in force. It is a whole-estate view, so it goes to Streebo and never to a partner.</div></div>
-            <span class="badge badge-muted" id="dr-status">loading…</span>
-          </div>
-          <div class="form-grid three">
-            <div class="field"><label>Send the report</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="dr-enabled" style="width:auto"/> On, once a day</label></div>
-            <div class="field"><label>Send at <span class="hint">24-hour clock</span></label><input id="dr-sendAt" placeholder="00:15"/></div>
-            <div class="field"><label>Day boundary <span class="hint">the report's timezone</span></label><select id="dr-timezone"></select></div>
-            <div class="field" style="grid-column:span 3"><label>Recipients <span class="hint">one per line — Streebo addresses only</span></label><textarea id="dr-recipients" rows="3" placeholder="vasif.peerji@streebo.com&#10;presales@streebo.com"></textarea></div>
-            <div class="field"><label>Simulated calls</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="dr-includeSimulated" style="width:auto"/> Count them, marked as simulated</label></div>
-            <div class="field"><label>Quiet partners</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="dr-includeQuietPartners" style="width:auto"/> Name the ones who called nobody</label></div>
-            <div class="field"><label>Calls listed per company <span class="hint">5–300</span></label><input id="dr-maxCallRowsPerCompany" type="number" min="5" max="300" placeholder="40"/></div>
-          </div>
-          <div id="dr-note" style="font-size:11.5px;color:var(--text-muted);margin-top:12px;line-height:1.65"></div>
-          <div class="btn-group">
-            <button class="btn btn-primary btn-sm" onclick="saveDailyReportSettings()" id="dr-save">💾 Save</button>
-            <button class="btn btn-secondary btn-sm" onclick="previewDailyReport()">👁 Preview</button>
-            <button class="btn btn-secondary btn-sm" onclick="sendDailyReportNow(true)" id="dr-test">✉ Send a test to me</button>
-            <button class="btn btn-ghost btn-sm" onclick="sendDailyReportNow(false)" id="dr-sendall">Send to everyone now</button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">Delivery</div><div class="card-subtitle">What happened the last time it ran.</div></div></div>
-          <div id="dr-last"></div>
-        </div>
-      </div>
-    </div>
+    <!-- The Admin page is not here. It is delivered by GET /api/ui/admin, which requires an
+     administrator. Hiding it client-side was never a control: anyone can delete an attribute in
+     devtools. Not sending it is. -->
 
     <!-- ANALYTICS -->
     <div class="page" id="page-analytics">
       <div class="page-header"><div class="page-title">Analytics</div><div class="page-subtitle" id="an-subtitle">Everything the platform knows about the calls you can see: how many, to where, how long, how they ended, and who placed them.</div></div>
 
+      <div class="toolbar">
+        <div class="scope-tabs" id="an-scope-tabs"></div>
+      </div>
       <div class="toolbar">
         <select id="an-range" onchange="initAnalytics()" title="Every figure on this page respects this range">
           <option value="all">All time</option>
@@ -949,6 +852,9 @@
         </select>
         <span id="an-scope"></span>
         <span class="spacer"></span>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:500;color:var(--text-dim);cursor:pointer;text-transform:none;letter-spacing:0">
+          <input type="checkbox" id="an-sim" style="width:auto" onchange="initAnalytics()"/> Count 🧪 practice calls
+        </label>
         <button class="btn btn-secondary btn-sm" onclick="exportAnalyticsCsv()" title="Download the figures on this page as a spreadsheet">⇩ Export CSV</button>
         <button class="btn btn-ghost btn-sm" onclick="initAnalytics()">↻ Refresh</button>
       </div>
@@ -1310,56 +1216,9 @@
     </div>
 
     <!-- SETTINGS -->
-    <div class="page" id="page-settings">
-      <div class="page-header"><div class="page-title">Settings</div><div class="page-subtitle">Backend connection and voice-platform credentials.</div></div>
-      <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><div><div class="card-title">🚀 Go-Live Readiness</div><div class="card-subtitle">What's ready for real ElevenLabs calls, and what still needs a step</div></div><button class="btn btn-ghost btn-sm" onclick="loadPreflight()">↻ Check</button></div>
-        <div id="preflight-body"><div class="cd-note">Connect to the backend to run the readiness check.</div></div>
-        <div style="font-size:11.5px;color:var(--text-muted);margin-top:10px">Full step-by-step: see <code>docs/SETUP.md</code>.</div>
-      </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title">Backend &amp; Providers</div></div>
-        <div class="settings-section"><div class="settings-label">Backend Server</div>
-          <div class="form-grid"><div class="field"><label>Backend URL <span class="required">*</span></label><input type="text" id="s-backend-url" placeholder="http://localhost:3002" oninput="backendUrl=this.value"/></div><input type="hidden" id="s-default-provider" value="elevenlabs"/></div>
-          <div class="btn-group" style="margin-top:12px"><button class="btn btn-secondary btn-sm" onclick="connectBackend()">🔌 Connect</button></div>
-        </div>
-        <div class="settings-section"><div class="settings-label">ElevenLabs · primary · credentials stay on the backend</div>
-          <div class="form-grid three">
-            <div class="field"><label>API Key</label><div class="api-key-field"><input type="password" id="s-el-key" placeholder="xi-… (leave blank to keep)"/><button class="api-key-toggle" onclick="toggleVis('s-el-key')">👁</button></div></div>
-            <div class="field"><label>Agent ID</label><input type="text" id="s-el-agent" placeholder="agent_…"/></div>
-            <div class="field"><label>Agent Phone Number ID</label><input type="text" id="s-el-phone" placeholder="phnum_…"/></div>
-          </div>
-          <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;font-weight:500;cursor:pointer"><input type="checkbox" id="s-el-tuning" style="width:auto"/> Send voice tuning (stability / speed / similarity) as per-call overrides</label>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Sends stability / speed / similarity when your agent allows them (auto-detected, so it never fails). Turn <strong>off</strong> to always use the agent's own voice settings.</div>
-          <div class="btn-group" style="margin-top:10px"><button class="btn btn-secondary btn-sm" onclick="testConnection('elevenlabs')">🔌 Test ElevenLabs</button></div>
-        </div>
-        <!-- Retell credentials removed from the UI: the platform runs on ElevenLabs. The ids remain
-     as hidden inputs so the settings save path is unchanged. -->
-<input type="hidden" id="s-rt-key" value=""/><input type="hidden" id="s-rt-agent" value=""/><input type="hidden" id="s-rt-from" value=""/>
-<div class="settings-section"><div class="settings-label">Public URL · for live action-tools &amp; write-back webhooks</div>
-          <div class="form-grid"><div class="field" style="grid-column:1/-1"><label>Public base URL <span class="hint">tunnel or deploy — no trailing slash</span></label><input type="text" id="s-public-base" placeholder="https://abc123.ngrok.app"/></div></div>
-          <div class="btn-group" style="margin-top:10px"><button class="btn btn-secondary btn-sm" onclick="downloadToolManifest()">⬇ Tool registration manifest</button><button class="btn btn-ghost btn-sm" onclick="viewToolManifest()">👁 Preview</button></div>
-          <div id="manifest-note" style="font-size:11.5px;color:var(--text-muted);margin-top:8px">The action tools to register on the agent. The manifest fills each tool's webhook URL from the base above.</div>
-        </div>
-        <div class="settings-section"><div class="settings-label">Action tools · what the agent can actually DO</div>
-          <div style="font-size:12px;color:var(--text-dim);margin-bottom:10px">These are what turn a conversation into a record: logging the outcome, booking a callback, honouring a do-not-call request. If they are not attached, the agent still <em>says</em> it has done these things and nothing happens.</div>
-          <div id="tools-status"><div class="cd-note">Open Settings to check.</div></div>
-          <div class="btn-group" style="margin-top:10px">
-            <button class="btn btn-primary btn-sm" id="tools-sync-btn" onclick="syncAgentTools()">🔧 Create &amp; attach all tools</button>
-            <button class="btn btn-ghost btn-sm" onclick="loadToolsStatus()">↻ Re-check</button>
-          </div>
-        </div>
-        <div class="settings-section"><div class="settings-label">Call Behaviour</div><div class="field" style="max-width:200px"><label>Bulk call delay <span class="hint">seconds</span></label><input type="number" id="s-delay" value="3" min="1" max="60"/></div></div>
-        <div class="btn-group" style="margin-top:0"><button class="btn btn-primary" onclick="saveSettingsPage()">💾 Save to Backend</button></div>
-      </div>
-      <div class="card"><div class="card-header"><div class="card-title">Current Configuration</div></div><div id="config-display">
-        <div class="info-row"><span class="info-key">Backend URL</span><span class="info-val" id="cfg-url">—</span></div>
-        <div class="info-row"><span class="info-key">Active Company</span><span class="info-val" id="cfg-company">—</span></div>
-        <div class="info-row"><span class="info-key">Default provider</span><span class="info-val" id="cfg-provider">—</span></div>
-        <div class="info-row"><span class="info-key">ElevenLabs</span><span class="info-val" id="cfg-el">—</span></div>
-        <span id="cfg-rt" style="display:none"></span>
-        <div class="info-row"><span class="info-key">Status</span><span id="cfg-status"><span class="badge badge-muted">Not Connected</span></span></div>
-      </div></div>
+    <!-- The Settings page is not here. It holds the provider credentials, the readiness checks and
+     the tool manifest, so it is delivered by GET /api/ui/settings, which requires a platform
+     administrator. A browser that is not entitled to it never receives the markup at all. -->
     </div>
   </main>
 </div>
@@ -1617,7 +1476,7 @@ async function finishSignIn(r) {
   localStorage.setItem('omni_token', authToken);
   // Remembering the device is what stops every sign-in depending on email arriving in time.
   if (r.deviceToken) localStorage.setItem(DEVICE_KEY, r.deviceToken);
-  applyUser(); hideLogin();
+  await applyUser(); hideLogin();
   await connectBackend(true);
 }
 
@@ -1632,31 +1491,24 @@ async function tryDeviceSignIn() {
   localStorage.removeItem(DEVICE_KEY);
   return false;
 }
-function applyUser() {
-  const el = document.getElementById('user-chip');
-  if (el) el.innerHTML = currentUser ? `${escapeHtml(currentUser.name || currentUser.email)}${currentUser.role === 'admin' ? ' <span class="badge badge-brand">admin</span>' : (currentUser.org ? ' <span class="badge badge-muted">' + escapeHtml(currentUser.org) + '</span>' : '')}` : '';
+async function applyUser() {
+  paintAccountMenu();
   const isAdmin = currentUser && currentUser.role === 'admin';
   // Admin page: any admin, since a partner admin manages their own colleagues there.
   const adminNav = document.getElementById('nav-admin'); if (adminNav) adminNav.style.display = isAdmin ? '' : 'none';
   // Settings holds the SHARED provider credentials and the go-live checks, so it belongs to the
   // platform operator alone. A partner admin administers their company, not Streebo's account.
   const setNav = document.getElementById('nav-settings'); if (setNav) setNav.style.display = iAmPlatformAdmin() ? '' : 'none';
-  const gear = document.getElementById('btn-gear'); if (gear) gear.style.display = iAmPlatformAdmin() ? '' : 'none';
+  const gear = document.getElementById('acct-settings'); if (gear) gear.style.display = iAmPlatformAdmin() ? '' : 'none';
   // PARTNER VIEW. A partner is a prospect or a customer sitting in front of the product: they should
   // see a voice agent that works, not the vendor underneath it, the credentials it holds, the model
   // roster it calls, or the files it is configured from. One class on <body> hides everything marked
   // data-internal, wherever it sits and whenever it is rendered.
   const partner = !iAmPlatformAdmin();
   document.body.classList.toggle('partner-view', partner);
-  // The Settings page is DELETED rather than hidden. It is the one screen that is internal from top
-  // to bottom — credential fields, readiness checks, the tool manifest — and hiding it leaves the
-  // whole thing sitting in the DOM for anyone who opens devtools. Nothing else on the page needs to
-  // be removed this way; the rest is a badge and a couple of fields.
-  const settingsPage = document.getElementById('page-settings');
-  if (partner && settingsPage) settingsPage.remove();
-  // Removal is one-way, so if a Streebo account signs in afterwards in the same tab, reload once to
-  // get it back rather than leaving them a console with no Settings and no explanation.
-  if (!partner && !settingsPage) return location.reload();
+  // Ask the server for whichever panels this account is entitled to. Nothing arrives for an
+  // ordinary user, so there is nothing in their page to un-hide.
+  await loadRestrictedUi();
   paintHistoryControls();
   refreshBulkAvailability();
   // Still on the password the account was created with? Make them set their own before anything else.
@@ -1672,16 +1524,51 @@ async function doLogin(e) {
   try {
     const r = await apiFetch('/api/auth/login', 'POST', { email, password });
     authToken = r.token; currentUser = r.user; localStorage.setItem('omni_token', authToken);
-    applyUser(); hideLogin(); document.getElementById('login-password').value = '';
+    await applyUser(); hideLogin(); document.getElementById('login-password').value = '';
     await connectBackend(true);
   } catch (ex) { err.textContent = ex.message || 'Login failed.'; }
   finally { btn.disabled = false; btn.textContent = 'Sign in'; }
 }
 // Signing out deliberately forgets the device too. "Sign out" on a shared machine has to mean it,
 // and a trusted-device token left behind would let the next person straight back in.
+/** Who is signed in, shown where people look for it. */
+function paintAccountMenu() {
+  if (!currentUser) return;
+  const name = currentUser.name || currentUser.email;
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('acct-av', initials(currentUser.name, currentUser.email));
+  set('acct-name', String(name).split(' ')[0]);
+  set('acct-menu-name', name);
+  set('acct-menu-email', currentUser.email || '');
+  const badges = document.getElementById('acct-menu-badges');
+  if (badges) badges.innerHTML = [
+    currentUser.superAdmin ? '<span class="badge badge-brand">★ super admin</span>'
+      : (currentUser.role === 'admin' ? '<span class="badge badge-brand">administrator</span>' : '<span class="badge badge-muted">user</span>'),
+    currentUser.org ? '<span class="badge badge-muted">' + escapeHtml(currentUser.org) + '</span>' : ''
+  ].filter(Boolean).join(' ');
+}
+function toggleAcctMenu(e) {
+  if (e) e.stopPropagation();
+  const m = document.getElementById('acct-menu'), b = document.getElementById('acct-btn');
+  const open = m.classList.toggle('open');
+  if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function closeAcctMenu() {
+  const m = document.getElementById('acct-menu'), b = document.getElementById('acct-btn');
+  if (m) m.classList.remove('open');
+  if (b) b.setAttribute('aria-expanded', 'false');
+}
+document.addEventListener('click', e => { const a = document.getElementById('acct'); if (a && !a.contains(e.target)) closeAcctMenu(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAcctMenu(); });
+/** Signing out is now two deliberate steps, because it used to be one stray click. */
+function confirmLogout() {
+  if (confirm('Sign out of OmniReach?')) logout();
+}
+
 function logout() {
   authToken = ''; currentUser = null;
   localStorage.removeItem('omni_token'); localStorage.removeItem(DEVICE_KEY);
+  dropRestrictedUi();
   setBackendStatus(false); showLogin();
 }
 
@@ -1940,7 +1827,7 @@ async function submitPasswordChange(e) {
   const btn = document.getElementById('pw-btn'); btn.disabled = true; btn.textContent = 'Updating…';
   try {
     const r = await apiFetch('/api/auth/password', 'POST', { currentPassword: cur, newPassword: nw });
-    currentUser = r.user; applyUser();
+    currentUser = r.user; await applyUser();
     // Changing a password now ends every OTHER session, which necessarily invalidates this one too.
     // The server hands back a replacement token, so take it or the next request 401s and the person
     // is bounced to the login screen seconds after successfully changing their password.
@@ -2450,7 +2337,7 @@ window.onload = async () => {
   if (backendField) backendField.value = backendUrl;
   initSimMode();
   if (authToken) {
-    try { const r = await apiFetch('/api/auth/me'); currentUser = r.user; applyUser(); hideLogin(); await connectBackend(true); return; }
+    try { const r = await apiFetch('/api/auth/me'); currentUser = r.user; await applyUser(); hideLogin(); await connectBackend(true); return; }
     catch (e) { authToken = ''; localStorage.removeItem('omni_token'); }
   }
   // The session may have lapsed while the device is still trusted, which is the common case after a
@@ -2460,9 +2347,13 @@ window.onload = async () => {
 };
 
 function showPage(id, el) {
+  // A restricted panel is only in the page if the server handed it over. Asking for one that was
+  // never delivered is not an error to throw, it is simply somewhere this account cannot go.
+  const target = document.getElementById('page-' + id);
+  if (!target) return;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
+  target.classList.add('active');
   if (el) el.classList.add('active');
   if (id === 'history') refreshHistory();
   if (id === 'builder') initBuilder();
@@ -2827,6 +2718,9 @@ async function initAnalytics() {
   const isAdmin = currentUser && currentUser.role === 'admin';
   const params = new URLSearchParams();
   params.set('range', val('an-range') || 'all');
+  params.set('scope', anScope);
+  const anSim = document.getElementById('an-sim');
+  params.set('includeSimulated', anSim && anSim.checked ? 'true' : 'false');
   // The viewer's own timezone, so an Australian partner's "yesterday" is their yesterday.
   try { params.set('tz', Intl.DateTimeFormat().resolvedOptions().timeZone || ''); } catch (e) {}
   if (isAdmin && adminUserFilter) params.set('userId', adminUserFilter.id);
@@ -2840,7 +2734,16 @@ async function initAnalytics() {
   if (isAdmin && adminUserFilter) bits.push('<span class="badge badge-brand">Just ' + escapeHtml(adminUserFilter.name) + '</span> <button class="btn btn-ghost btn-sm" onclick="adminUserFilter=null;initAnalytics()">✕ Show everyone</button>');
   else bits.push('<span class="badge badge-muted">' + escapeHtml(a.scopeLabel || 'your calls') + '</span>');
   if (a.range !== 'all' && a.scopeTotal > a.total) bits.push('<span style="font-size:11.5px;color:var(--text-muted)">' + (a.scopeTotal - a.total) + ' older call' + (a.scopeTotal - a.total === 1 ? '' : 's') + ' outside this range</span>');
+  // Practice calls are excluded by default. Never silently: a figure that quietly drops records is
+  // worse than one that explains itself.
+  if (!a.includeSimulated && a.simulatedInScope) {
+    bits.push('<span style="font-size:11.5px;color:var(--text-muted)">' + a.simulatedInScope + ' 🧪 practice call'
+      + (a.simulatedInScope === 1 ? '' : 's') + ' not counted</span>');
+  }
   document.getElementById('an-scope').innerHTML = '<span style="display:inline-flex;align-items:center;gap:9px;flex-wrap:wrap">' + bits.join('') + '</span>';
+  renderScopeTabs('an-scope-tabs', anScope, a.scopeCounts, 'setAnScope');
+  const tabsBox = document.getElementById('an-scope-tabs');
+  if (tabsBox) tabsBox.parentElement.style.display = (isAdmin && adminUserFilter) ? 'none' : '';
 
   if (!a.total) { empty.style.display = 'block'; body.style.display = 'none'; return; }
   empty.style.display = 'none'; body.style.display = 'block';
@@ -2932,11 +2835,51 @@ function actionCards(a) {
   return items.map(([label, v, icon]) => `<div class="stat-card"><div class="stat-label">${label}</div><div class="stat-value">${v}</div><div class="stat-icon">${icon}</div></div>`).join('');
 }
 
+// ══════ WHOSE CALLS ══════
+// Personal first, deliberately. Your own work is what you came to look at, and a list that opens on
+// everyone's calls mixed together is the thing that made this page feel messy. The scope only ever
+// NARROWS what the server was already willing to show, so it can hide but never reveal.
+const SCOPES = [
+  { id: 'personal', label: 'Personal', hint: 'Calls you placed yourself' },
+  { id: 'colleagues', label: 'Colleagues', hint: 'Your team, excluding you' },
+  { id: 'company', label: 'Company', hint: 'Everyone at your company' },
+  { id: 'all', label: 'All partners', hint: 'Every organisation on the platform', platformOnly: true }
+];
+let histScope = localStorage.getItem('omni_hist_scope') || 'personal';
+let anScope = localStorage.getItem('omni_an_scope') || 'personal';
+
+function renderScopeTabs(boxId, current, counts, onPick) {
+  const box = document.getElementById(boxId);
+  if (!box) return;
+  box.innerHTML = SCOPES.filter(sc => !sc.platformOnly || iAmPlatformAdmin()).map(sc => {
+    const c = counts && counts[sc.id];
+    return `<button class="scope-tab${sc.id === current ? ' on' : ''}" title="${escapeHtml(sc.hint)}" onclick="${onPick}('${sc.id}')">`
+      + escapeHtml(sc.label) + (c == null ? '' : `<span class="n">${c}</span>`) + '</button>';
+  }).join('');
+}
+function setHistScope(id) { histScope = id; localStorage.setItem('omni_hist_scope', id); refreshHistory(); }
+function setAnScope(id) { anScope = id; localStorage.setItem('omni_an_scope', id); initAnalytics(); }
+function scopeHint(id) { const sc = SCOPES.find(x => x.id === id); return sc ? sc.hint : ''; }
+
 // ══════ HISTORY + RECORDINGS ══════
 async function refreshHistory() {
   if (!backendConnected) return;
-  const q = (adminUserFilter && currentUser && currentUser.role === 'admin') ? ('&userId=' + encodeURIComponent(adminUserFilter.id)) : '';
-  try { const d = await apiFetch('/api/history?limit=200' + q); callHistory = d.calls || []; document.getElementById('history-count').textContent = callHistory.length; renderHistoryTable(); } catch (e) {}
+  const drill = (adminUserFilter && currentUser && currentUser.role === 'admin');
+  const simBox = document.getElementById('hist-sim');
+  const includeSim = simBox ? simBox.checked : true;
+  const q = drill
+    ? '&userId=' + encodeURIComponent(adminUserFilter.id)
+    : '&scope=' + encodeURIComponent(histScope);
+  try {
+    const d = await apiFetch('/api/history?limit=200&includeSimulated=' + includeSim + q);
+    callHistory = d.calls || [];
+    document.getElementById('history-count').textContent = callHistory.length;
+    const sub = document.getElementById('hist-sub');
+    if (sub) sub.textContent = drill ? 'One person\'s calls.' : scopeHint(histScope) + '.';
+    renderScopeTabs('hist-scope', histScope, null, 'setHistScope');
+    const box = document.getElementById('hist-scope'); if (box) box.style.display = drill ? 'none' : '';
+    renderHistoryTable();
+  } catch (e) {}
   scheduleHistoryPoll();
 }
 // A call in flight changes state on the provider's clock, not ours. The backend chases the outcome
@@ -4482,7 +4425,38 @@ async function apiFetch(path, method = 'GET', body = null) {
   if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
   return data;
 }
-function handleAuthExpired() { authToken = ''; currentUser = null; localStorage.removeItem('omni_token'); showLogin(); }
+/**
+ * Fetch a panel this account is entitled to. Returns markup, not JSON, and a refusal is not an
+ * error worth surfacing: it simply means this account does not get that panel.
+ */
+async function apiFetchHtml(path) {
+  const res = await fetch(backendUrl + path, { headers: authToken ? { Authorization: 'Bearer ' + authToken } : {} });
+  if (res.status === 401) { handleAuthExpired(); throw new Error('Session expired'); }
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.text();
+}
+// Panels the server has agreed to hand over, injected into the page for this session only.
+const RESTRICTED_UI = [
+  { page: 'admin', url: '/api/ui/admin', wanted: () => !!(currentUser && currentUser.role === 'admin') },
+  { page: 'settings', url: '/api/ui/settings', wanted: () => iAmPlatformAdmin() }
+];
+async function loadRestrictedUi() {
+  const main = document.querySelector('main');
+  if (!main) return;
+  for (const item of RESTRICTED_UI) {
+    const already = document.getElementById('page-' + item.page);
+    if (!item.wanted()) { if (already) already.remove(); continue; }
+    if (already) continue;
+    try { main.insertAdjacentHTML('beforeend', await apiFetchHtml(item.url)); }
+    catch (e) { /* refused or unreachable: the panel simply does not appear */ }
+  }
+}
+/** Signing out has to take the panels with it, or the next person on this browser inherits them. */
+function dropRestrictedUi() {
+  RESTRICTED_UI.forEach(i => { const el = document.getElementById('page-' + i.page); if (el) el.remove(); });
+}
+
+function handleAuthExpired() { authToken = ''; currentUser = null; localStorage.removeItem('omni_token'); dropRestrictedUi(); showLogin(); }
 document.getElementById('call-detail-modal').addEventListener('click', e => { if (e.target === document.getElementById('call-detail-modal')) closeCallDetail(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCallDetail(); });
 function toggleVis(id) { const el = document.getElementById(id); el.type = el.type === 'password' ? 'text' : 'password'; }

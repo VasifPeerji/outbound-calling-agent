@@ -1,0 +1,152 @@
+<div class="page" id="page-admin">
+      <div class="page-header"><div class="page-title">Administration</div><div class="page-subtitle" id="ad-subtitle">Everyone on the platform, what they are allowed to do, and what they have done with it.</div></div>
+
+      <div class="stats-row six tight">
+        <div class="stat-card"><div class="stat-label">People</div><div class="stat-value" id="ad-users">0</div><div class="stat-icon">👥</div></div>
+        <div class="stat-card green"><div class="stat-label">Active</div><div class="stat-value" style="color:var(--green)" id="ad-active">0</div><div class="stat-icon">✅</div></div>
+        <div class="stat-card amber"><div class="stat-label">Companies</div><div class="stat-value" style="color:var(--amber)" id="ad-partners">0</div><div class="stat-icon">🤝</div></div>
+        <div class="stat-card blue"><div class="stat-label">Calls placed</div><div class="stat-value" style="color:var(--blue)" id="ad-calls">0</div><div class="stat-icon">📞</div></div>
+        <div class="stat-card" id="ad-kpi-pending"><div class="stat-label">Awaiting approval</div><div class="stat-value" id="ad-pending">0</div><div class="stat-icon">⏳</div></div>
+        <!-- The access-request queue belongs to the platform operator; a partner admin has none, so
+             the card is hidden for them rather than sitting there permanently reading zero. -->
+        <div class="stat-card amber" id="ad-kpi-requests"><div class="stat-label">Access requests</div><div class="stat-value" style="color:var(--amber)" id="ad-requests">0</div><div class="stat-icon">📮</div></div>
+      </div>
+
+      <div class="subtabs" id="ad-subtabs">
+        <button class="subtab active" onclick="showSubtab('ad','people',this)">👥 People <span class="count" id="ad-tab-people">0</span></button>
+        <button class="subtab" id="ad-tab-requests-btn" onclick="showSubtab('ad','requests',this)">📮 Access requests <span class="count" id="ad-tab-requests">0</span></button>
+        <button class="subtab" id="ad-tab-allow-btn" onclick="showSubtab('ad','allowances',this)">📶 Allowances</button>
+        <button class="subtab" id="ad-tab-access-btn" onclick="showSubtab('ad','access',this)">🔐 Sign-up &amp; limits</button>
+        <button class="subtab" id="ad-tab-report-btn" onclick="showSubtab('ad','report',this)">📊 Daily report</button>
+      </div>
+
+      <!-- ══ PEOPLE ══ -->
+      <div class="subpage active" id="ad-sub-people">
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">People</div><div class="card-subtitle" id="ad-people-sub">Click anyone to see everything they have done.</div></div>
+            <button class="btn btn-primary btn-sm" onclick="openAddUser()">＋ Add a person</button>
+          </div>
+          <div class="toolbar">
+            <input class="grow" id="ad-search" placeholder="Search name, email or company…" oninput="renderAdminUsers()"/>
+            <select id="ad-filter-role" onchange="renderAdminUsers()">
+              <option value="">Every role</option>
+              <option value="admin">Administrators</option>
+              <option value="user">Users</option>
+            </select>
+            <select id="ad-filter-status" onchange="renderAdminUsers()">
+              <option value="">Any status</option>
+              <option value="active">Active</option>
+              <option value="pending">Awaiting approval</option>
+              <option value="disabled">Disabled</option>
+              <option value="boosted">Has a boost</option>
+              <option value="quiet">Never called</option>
+            </select>
+            <select id="ad-filter-org" onchange="renderAdminUsers()"><option value="">Every company</option></select>
+            <label style="display:flex;align-items:center;gap:7px;font-size:12px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--text-dim);cursor:pointer"><input type="checkbox" id="ad-group" style="width:auto" checked onchange="renderAdminUsers()"/> Group by company</label>
+          </div>
+          <div id="ad-users-table"></div>
+          <div id="ad-users-count" style="font-size:11.5px;color:var(--text-muted);margin-top:10px"></div>
+        </div>
+      </div>
+
+      <!-- ══ ACCESS REQUESTS ══
+           People refused at the door because their domain is not whitelisted. Nobody reaches the
+           platform this way without an explicit decision here. -->
+      <div class="subpage" id="ad-sub-requests">
+        <div class="card" id="ar-card">
+          <div class="card-header">
+            <div><div class="card-title">Access requests</div><div class="card-subtitle">Someone tried to sign in from a domain you have not approved. Approving lets them request a sign-in code; they still have to prove they hold the mailbox.</div></div>
+            <div style="display:flex;gap:6px;align-items:center">
+              <select id="ar-filter" onchange="loadAccessRequests()" style="width:auto;font-size:12px;padding:5px 8px">
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+                <option value="">All</option>
+              </select>
+              <button class="btn btn-ghost btn-sm" onclick="loadAccessRequests()">↻</button>
+            </div>
+          </div>
+          <div id="ar-table"><div class="cd-note">Loading…</div></div>
+        </div>
+      </div>
+
+      <!-- ══ ALLOWANCES ══ -->
+      <div class="subpage" id="ad-sub-allowances">
+        <div class="card" id="oq-card">
+          <div class="card-header">
+            <div><div class="card-title">Company allowances</div><div class="card-subtitle">Raise the daily limit for a whole partner company, for a day, a week, or until you revoke it. A boost on one person overrides the company one.</div></div>
+            <button class="btn btn-primary btn-sm" onclick="promptOrgBoost()">＋ Boost a company</button>
+          </div>
+          <div id="oq-table"><div class="cd-note">Loading…</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Personal boosts</div><div class="card-subtitle">Individual exceptions, newest first. Every one carries an expiry unless it was granted permanently.</div></div></div>
+          <div id="ad-boosts"></div>
+        </div>
+      </div>
+
+      <!-- ══ SIGN-UP & LIMITS ══ -->
+      <div class="subpage" id="ad-sub-access">
+        <div class="card" style="margin-bottom:16px" id="gr-card">
+          <div class="card-header"><div><div class="card-title">Guardrails</div><div class="card-subtitle">Set the limits here; they stay OFF until you switch them on. Nothing is enforced by default — real calls flow freely until you decide otherwise.</div></div><span class="badge badge-muted" id="gr-status">enforcement off</span></div>
+          <div class="form-grid three">
+            <div class="field"><label>Enforce daily limits</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="gr-enforceQuota" style="width:auto"/> Stop a user's real calls once they reach their daily limit</label></div>
+            <div class="field"><label>Calls per day <span class="hint">blank = unlimited</span></label><input id="gr-defaultCallsPerDay" type="number" min="0" placeholder="e.g. 3"/></div>
+            <div class="field"><label>Talk time per day <span class="hint">minutes, blank = unlimited</span></label><input id="gr-defaultMinutesPerDay" type="number" min="0" placeholder="e.g. 10"/></div>
+            <div class="field"><label>Rate limit <span class="hint">calls/min per user, blank = off</span></label><input id="gr-rateLimitPerMin" type="number" min="0" placeholder="e.g. 10"/></div>
+            <div class="field" style="grid-column:span 2"><label>Bulk campaigns for partners</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="gr-allowBulkForPartners" style="width:auto"/> Let every partner use bulk calling, CSV imports and CRM pulls</label></div>
+            <div class="field" style="grid-column:span 3;padding-top:2px"><div style="font-size:11.5px;color:var(--text-muted);line-height:1.6">Whichever runs out first stops them. Each call is also capped at the talk time they have left, so a single long call cannot overspend the day's allowance. Bulk stays off for partners unless you tick the box above or boost an individual account, because someone on a three-call allowance who uploads five hundred contacts gets a queue of refusals rather than a demo.</div></div>
+            <div class="field" style="grid-column:span 3"><label>Simulation-only mode</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="gr-simulationOnly" style="width:auto"/> Force everyone into Simulation mode — no real telephony spend (ideal for wide-open partner demos)</label></div>
+          </div>
+          <div class="btn-group" style="margin-top:12px"><button class="btn btn-primary btn-sm" onclick="adminSaveGuardrails()">💾 Save guardrails</button></div>
+        </div>
+        <div class="card">
+          <div class="card-header" id="su-card-header"><div><div class="card-title">Sign-up &amp; access</div><div class="card-subtitle">Let partners create their own accounts. Anyone on a trusted company domain is approved automatically; everyone else waits for you to approve them here.</div></div><span class="badge badge-muted" id="su-status">sign-up off</span></div>
+          <div class="form-grid three">
+            <div class="field"><label>Self sign-up</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="su-enabled" style="width:auto"/> Allow people to register themselves</label></div>
+            <div class="field"><label>Unknown domains</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="su-allowOthersPending" style="width:auto"/> Accept, but hold for your approval</label></div>
+            <div class="field"><label>Daily limit for auto-approved <span class="hint">blank = unlimited</span></label><input id="su-autoApproveCallsPerDay" type="number" min="0" placeholder="e.g. 25"/></div>
+            <div class="field" style="grid-column:span 3"><label>Trusted email domains <span class="hint">comma or line separated, e.g. acmepartner.com, prospect.co</span></label><textarea id="su-allowedDomains" rows="2" placeholder="acmepartner.com&#10;prospect.co"></textarea></div>
+            <div class="field" style="grid-column:span 3"><label>Individually approved addresses <span class="hint">for one person at a company you don't want to open wholesale</span></label><textarea id="su-allowedEmails" rows="2" placeholder="one.person@bigcorp.com"></textarea></div>
+          </div>
+          <div class="btn-group" style="margin-top:12px"><button class="btn btn-primary btn-sm" onclick="adminSaveSignup()">💾 Save sign-up settings</button></div>
+          <div style="font-size:11.5px;color:var(--text-muted);margin-top:10px">Anyone on a trusted domain signs in by receiving a six-digit code, so the mailbox is proven before they get in. Everyone else is refused and appears under Access requests for you to decide on.</div>
+        </div>
+      </div>
+
+      <!-- ══ DAILY REPORT ══
+           The one thing that leaves the platform carrying every partner's activity side by side.
+           Reading it is open to any platform admin; changing where it goes is the super
+           administrator's alone. -->
+      <div class="subpage" id="ad-sub-report">
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header">
+            <div><div class="card-title">Daily activity report</div><div class="card-subtitle">One email covering every partner: calls placed, who they called and where, talk time, industries, and any allowance boosts in force. It is a whole-estate view, so it goes to Streebo and never to a partner.</div></div>
+            <span class="badge badge-muted" id="dr-status">loading…</span>
+          </div>
+          <div class="form-grid three">
+            <div class="field"><label>Send the report</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="dr-enabled" style="width:auto"/> On, once a day</label></div>
+            <div class="field"><label>Send at <span class="hint">24-hour clock</span></label><input id="dr-sendAt" placeholder="00:15"/></div>
+            <div class="field"><label>Day boundary <span class="hint">the report's timezone</span></label><select id="dr-timezone"></select></div>
+            <div class="field" style="grid-column:span 3"><label>Recipients <span class="hint">one per line — Streebo addresses only</span></label><textarea id="dr-recipients" rows="3" placeholder="vasif.peerji@streebo.com&#10;presales@streebo.com"></textarea></div>
+            <div class="field"><label>Simulated calls</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="dr-includeSimulated" style="width:auto"/> Count them, marked as simulated</label></div>
+            <div class="field"><label>Quiet partners</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="dr-includeQuietPartners" style="width:auto"/> Name the ones who called nobody</label></div>
+            <div class="field"><label>Calls listed per company <span class="hint">5–300</span></label><input id="dr-maxCallRowsPerCompany" type="number" min="5" max="300" placeholder="40"/></div>
+          </div>
+          <div id="dr-note" style="font-size:11.5px;color:var(--text-muted);margin-top:12px;line-height:1.65"></div>
+          <div class="btn-group">
+            <button class="btn btn-primary btn-sm" onclick="saveDailyReportSettings()" id="dr-save">💾 Save</button>
+            <button class="btn btn-secondary btn-sm" onclick="previewDailyReport()">👁 Preview</button>
+            <button class="btn btn-secondary btn-sm" onclick="sendDailyReportNow(true)" id="dr-test">✉ Send a test to me</button>
+            <button class="btn btn-ghost btn-sm" onclick="sendDailyReportNow(false)" id="dr-sendall">Send to everyone now</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Delivery</div><div class="card-subtitle">What happened the last time it ran.</div></div></div>
+          <div id="dr-last"></div>
+        </div>
+      </div>
+    </div>
+
+    
