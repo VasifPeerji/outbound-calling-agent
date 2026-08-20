@@ -259,6 +259,50 @@ comes out as `https://` and plays.
 `X-Forwarded-For` matters for a different reason: without it every request appears to come from the
 proxy, so the per-IP sign-in rate limits would treat the whole internet as one client.
 
+### The same thing on Windows, in IIS
+
+If the server is Windows, IIS is the front end. It needs two free Microsoft add-ons, neither of
+which ships by default: **URL Rewrite** and **Application Request Routing (ARR)**.
+
+1. Install both, then in IIS Manager open the **server** node (not the site) → *Application Request
+   Routing Cache* → *Server Proxy Settings* → tick **Enable proxy**.
+2. Create a site bound to `https` on port 443 for `omnireach.smartcogs.ai`, and select the
+   certificate in the binding.
+3. Put this `web.config` in that site's folder. The site serves nothing itself; every request is
+   handed to the application.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <system.webServer>
+    <rewrite>
+      <rules>
+        <rule name="OmniReach" stopProcessing="true">
+          <match url="(.*)" />
+          <action type="Rewrite" url="http://127.0.0.1:3002/{R:1}" />
+          <serverVariables>
+            <!-- Without this the app builds recording links as http:// on an https:// page. -->
+            <set name="HTTP_X_FORWARDED_PROTO" value="https" />
+          </serverVariables>
+        </rule>
+      </rules>
+    </rewrite>
+    <security>
+      <requestFiltering>
+        <!-- CSV uploads: 12 MB. IIS default is 30 MB but the rewrite module is stricter. -->
+        <requestLimits maxAllowedContentLength="12582912" />
+      </requestFiltering>
+    </security>
+  </system.webServer>
+</configuration>
+```
+
+`HTTP_X_FORWARDED_PROTO` has to be allowed before a rule may set it: IIS Manager → the site → *URL
+Rewrite* → *View Server Variables* → **Add** `HTTP_X_FORWARDED_PROTO`. Skipping that step makes the
+rule fail with a 500 rather than silently, which is at least honest.
+
+ARR adds `X-Forwarded-For` by itself, so nothing further is needed for the rate limits.
+
 ### On the application side
 
 Exactly two environment variables, then one restart:
