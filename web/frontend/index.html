@@ -1,9 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="booting">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>OmniReach — AI Voice Outreach</title>
+<meta name="robots" content="noindex, nofollow, noarchive" />
+<!-- smar Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GERTRM88QY"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-GERTRM88QY');
+</script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='12' cy='20' r='3.4' fill='%234F46E5'/%3E%3Cpath d='M19 13 a10 10 0 0 1 0 14' fill='none' stroke='%234F46E5' stroke-width='3.2' stroke-linecap='round'/%3E%3Cpath d='M24.5 8 a17 17 0 0 1 0 24' fill='none' stroke='%234F46E5' stroke-width='3.2' stroke-linecap='round' opacity='0.5'/%3E%3C/svg%3E"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
@@ -354,6 +363,16 @@
   .scope-tab.on { background: var(--surface); color: var(--brand-700); box-shadow: var(--shadow-xs); }
   .scope-tab .n { font-family: 'DM Mono', monospace; font-size: 10.5px; opacity: .75; }
 
+  /* ── the first half-second ──────────────────────────────────────────────
+     Until window.onload has established whether this browser holds a session, neither the
+     dashboard nor the sign-in form is the right answer, so neither is shown. visibility rather than
+     display, so the layout is already settled when it appears and nothing jumps. */
+  html.booting header, html.booting .app { visibility: hidden; }
+  html.booting #boot { opacity: 1; }
+  #boot { position: fixed; inset: 0; z-index: 10001; background: var(--bg); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .18s ease; }
+  #boot .mark { width: 46px; height: 46px; border-radius: 13px; background: linear-gradient(150deg, #6D66F0, var(--brand) 55%, var(--brand-700)); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 18px rgba(79,70,229,0.3); animation: bootPulse 1.1s ease-in-out infinite; }
+  @keyframes bootPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.93); opacity: 0.72; } }
+
   .empty-state { text-align: center; padding: 44px 22px; color: var(--text-muted); }
   .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.5; }
   .empty-title { font-size: 14.5px; font-weight: 700; color: var(--text-dim); margin-bottom: 5px; }
@@ -455,6 +474,7 @@
 </style>
 </head>
 <body>
+<div id="boot"><div class="mark"><svg width="24" height="24" viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="12" cy="20" r="3.4" fill="#fff"/><path d="M19 13 a10 10 0 0 1 0 14" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><path d="M24.5 8 a17 17 0 0 1 0 24" stroke="#fff" stroke-width="3.2" stroke-linecap="round" opacity="0.55"/></svg></div></div>
 <div id="toast-container"></div>
 
 <!-- ADD A PERSON -->
@@ -716,7 +736,7 @@
   </nav>
 
   <main>
-    <div id="backend-banner" class="status-banner">⚠️ <strong>Backend not connected.</strong>&nbsp; Start the Node.js server (port 3002) or set the URL in Settings.<button class="btn btn-sm btn-secondary" onclick="connectBackend()" style="margin-left:auto">Retry</button></div>
+    <div id="backend-banner" class="status-banner connected hidden">⚠️ <strong>Backend not connected.</strong>&nbsp; Start the Node.js server (port 3002) or set the URL in Settings.<button class="btn btn-sm btn-secondary" onclick="connectBackend()" style="margin-left:auto">Retry</button></div>
 
     <!-- SINGLE CALL -->
     <div class="page active" id="page-single">
@@ -1967,13 +1987,51 @@ async function decideAccessRequest(id, action) {
 // Self sign-up settings.
 async function initSignup() {
   if (!currentUser || currentUser.role !== 'admin') return;
-  let s; try { s = (await apiFetch('/api/admin/signup')).signup || {}; } catch (e) { return; }
+  let d, s;
+  try { d = await apiFetch('/api/admin/signup'); s = d.signup || {}; } catch (e) { return; }
   document.getElementById('su-enabled').checked = !!s.enabled;
   document.getElementById('su-allowOthersPending').checked = !!s.allowOthersPending;
   document.getElementById('su-autoApproveCallsPerDay').value = s.autoApproveCallsPerDay != null ? s.autoApproveCallsPerDay : '';
   document.getElementById('su-allowedDomains').value = (s.allowedDomains || []).join('\n');
   document.getElementById('su-allowedEmails').value = (s.allowedEmails || []).join('\n');
   paintSignupStatus(s);
+  signupEffect = (d && d.effect) || null;
+  paintSignupEffect();
+}
+/**
+ * Two checkboxes and two lists do not read as a policy, and the last time these were misread the
+ * conclusion was "self sign-up is off, so nobody can get in" when in fact two whole domains could.
+ * So the panel states the consequence in plain words, from the server's own description of it.
+ */
+let signupEffect = null;
+function paintSignupEffect() {
+  const box = document.getElementById('su-effect');
+  if (!box) return;
+  const on = id => { const el = document.getElementById(id); return el ? el.checked : false; };
+  // Reflect the boxes as they are NOW, not as they were last saved, so ticking one explains itself
+  // before you press Save.
+  const selfServe = on('su-enabled'), hold = on('su-allowOthersPending');
+  const domains = (val('su-allowedDomains') || '').split(/[\n,]+/).map(x => x.trim()).filter(Boolean);
+  const emails = (val('su-allowedEmails') || '').split(/[\n,]+/).map(x => x.trim()).filter(Boolean);
+  const row = (colour, head, body) => `<div style="display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--border-light)">
+      <span style="color:${colour};font-weight:700;flex-shrink:0">${colour === 'var(--green)' ? '✓' : '✕'}</span>
+      <div><div style="font-size:12.5px;font-weight:600">${head}</div>
+      <div style="font-size:11.5px;color:var(--text-muted);margin-top:2px;line-height:1.5">${body}</div></div></div>`;
+  box.innerHTML = '<div style="background:var(--surface-2);border:1px solid var(--border-light);border-radius:10px;padding:12px 14px">'
+    + '<div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px">What happens right now</div>'
+    + row(selfServe ? 'var(--green)' : 'var(--red)',
+        domains.length ? escapeHtml(domains.join(', ')) : 'Trusted domains (none listed yet)',
+        selfServe
+          ? 'They register themselves, receive a six-digit code, and are in. Nothing needed from you.'
+          : 'They CANNOT create an account. Existing accounts still sign in; a new colleague has to be created by you.')
+    + row('var(--green)',
+        emails.length ? escapeHtml(emails.join(', ')) : 'Individually approved addresses (none yet)',
+        'Always allowed in, whatever the switch above says, because approving them was already your decision.')
+    + row(hold ? 'var(--amber)' : 'var(--red)', 'Every other address',
+        hold
+          ? 'Refused for now, and listed under Access requests for you to approve or reject. Nothing of the platform is reachable until you do.'
+          : 'Refused outright, and NOT recorded, so you will never know they tried.')
+    + '</div>';
 }
 function paintSignupStatus(s) { const el = document.getElementById('su-status'); if (!el) return; const n = (s.allowedDomains || []).length; el.textContent = s.enabled ? (n ? `sign-up ON · ${n} trusted domain${n > 1 ? 's' : ''}` : 'sign-up ON · approval for all') : 'sign-up off'; el.className = 'badge ' + (s.enabled ? 'badge-green' : 'badge-muted'); }
 async function adminSaveSignup() {
@@ -2332,18 +2390,27 @@ function adminRevokeSessions(id) {
 function adminResetPw(id) { const v = prompt('New password for this user:'); if (!v) return; adminUpdate(id, { password: v }).then(ok => { if (ok) toast('success', 'Password reset', ''); }); }
 function viewUserCalls(id) { const u = adminUsers.find(x => x.id === id); adminUserFilter = { id, name: u ? (u.name || u.email) : id }; showPage('history', [...document.querySelectorAll('.nav-item')].find(n => /Call History/i.test(n.textContent))); }
 
+/** The page is showing the right thing now, so let it be seen. */
+function bootDone() { document.documentElement.classList.remove('booting'); }
+
 window.onload = async () => {
-  const backendField = document.getElementById('s-backend-url');
-  if (backendField) backendField.value = backendUrl;
-  initSimMode();
-  if (authToken) {
-    try { const r = await apiFetch('/api/auth/me'); currentUser = r.user; await applyUser(); hideLogin(); await connectBackend(true); return; }
-    catch (e) { authToken = ''; localStorage.removeItem('omni_token'); }
+  try {
+    const backendField = document.getElementById('s-backend-url');
+    if (backendField) backendField.value = backendUrl;
+    initSimMode();
+    if (authToken) {
+      try { const r = await apiFetch('/api/auth/me'); currentUser = r.user; await applyUser(); hideLogin(); await connectBackend(true); return; }
+      catch (e) { authToken = ''; localStorage.removeItem('omni_token'); }
+    }
+    // The session may have lapsed while the device is still trusted, which is the common case after
+    // a redeploy. Try that before showing anyone a form.
+    if (await tryDeviceSignIn()) return;
+    showLogin();
+  } finally {
+    // In a finally because the paths above return early, and a console that never becomes visible
+    // is a worse failure than any of the ones this is hiding.
+    bootDone();
   }
-  // The session may have lapsed while the device is still trusted, which is the common case after a
-  // redeploy. Try that before showing anyone a form.
-  if (await tryDeviceSignIn()) return;
-  showLogin();
 };
 
 function showPage(id, el) {

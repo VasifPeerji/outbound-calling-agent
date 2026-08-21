@@ -104,14 +104,14 @@
         <div class="card">
           <div class="card-header" id="su-card-header"><div><div class="card-title">Sign-up &amp; access</div><div class="card-subtitle">Let partners create their own accounts. Anyone on a trusted company domain is approved automatically; everyone else waits for you to approve them here.</div></div><span class="badge badge-muted" id="su-status">sign-up off</span></div>
           <div class="form-grid three">
-            <div class="field"><label>Self sign-up</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="su-enabled" style="width:auto"/> Allow people to register themselves</label></div>
-            <div class="field"><label>Unknown domains</label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="su-allowOthersPending" style="width:auto"/> Accept, but hold for your approval</label></div>
+            <div class="field"><label>Self sign-up <span class="hint">trusted domains only</span></label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="su-enabled" style="width:auto" onchange="paintSignupEffect()"/> Anyone on a trusted domain can create their own account</label></div>
+            <div class="field"><label>Everybody else <span class="hint">every other address</span></label><label style="display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;cursor:pointer;padding-top:8px"><input type="checkbox" id="su-allowOthersPending" style="width:auto" onchange="paintSignupEffect()"/> Hold them in Access requests for you to decide</label></div>
             <div class="field"><label>Daily limit for auto-approved <span class="hint">blank = unlimited</span></label><input id="su-autoApproveCallsPerDay" type="number" min="0" placeholder="e.g. 25"/></div>
-            <div class="field" style="grid-column:span 3"><label>Trusted email domains <span class="hint">comma or line separated, e.g. acmepartner.com, prospect.co</span></label><textarea id="su-allowedDomains" rows="2" placeholder="acmepartner.com&#10;prospect.co"></textarea></div>
-            <div class="field" style="grid-column:span 3"><label>Individually approved addresses <span class="hint">for one person at a company you don't want to open wholesale</span></label><textarea id="su-allowedEmails" rows="2" placeholder="one.person@bigcorp.com"></textarea></div>
+            <div class="field" style="grid-column:span 3"><label>Trusted email domains <span class="hint">comma or line separated, e.g. acmepartner.com, prospect.co</span></label><textarea id="su-allowedDomains" oninput="paintSignupEffect()" rows="2" placeholder="acmepartner.com&#10;prospect.co"></textarea></div>
+            <div class="field" style="grid-column:span 3"><label>Individually approved addresses <span class="hint">for one person at a company you don't want to open wholesale</span></label><textarea id="su-allowedEmails" oninput="paintSignupEffect()" rows="2" placeholder="one.person@bigcorp.com"></textarea></div>
           </div>
           <div class="btn-group" style="margin-top:12px"><button class="btn btn-primary btn-sm" onclick="adminSaveSignup()">💾 Save sign-up settings</button></div>
-          <div style="font-size:11.5px;color:var(--text-muted);margin-top:10px">Anyone on a trusted domain signs in by receiving a six-digit code, so the mailbox is proven before they get in. Everyone else is refused and appears under Access requests for you to decide on.</div>
+          <div id="su-effect" style="margin-top:12px"></div>
         </div>
       </div>
 

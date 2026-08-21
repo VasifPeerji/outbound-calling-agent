@@ -1358,13 +1358,31 @@ app.post('/api/auth/request-code', codeLimiter, async (req, res) => {
   }
 
   // An existing active account keeps working even if its domain later leaves the whitelist: it was
-  // approved once, and silently locking somebody out because a list changed is its own outage.
-  if (!existing && !signin.isWhitelisted(email, signup)) {
-    recordAccessRequest(req, email, b);
-    // Told plainly rather than left waiting for a code that will never arrive. This does reveal
-    // whether a DOMAIN is approved, which is a deliberate trade: knowing "streebo.com is allowed"
-    // is worth little without the mailbox, whereas the account list stays private either way.
-    return res.json({ ok: true, pending: true, message: 'That email is not on an approved company domain. Your request has been sent to an administrator for review.' });
+  // approved once, and silently locking somebody out because a list changed is its own outage. So
+  // everything below applies ONLY to an address we have never seen.
+  if (!existing) {
+    const kind = signin.whitelistKind(email, signup);   // 'email' | 'domain' | null
+
+    // Approved by name, from the access-request queue. An administrator has already said yes to
+    // this person, so the self-registration switch does not get to overrule them.
+    if (kind !== 'email') {
+      // A trusted DOMAIN is self-service, and this is the switch that governs self-service. With it
+      // off, an existing account still signs in; a new colleague has to be created by an admin.
+      if (kind === 'domain' && !signup.enabled) {
+        return res.json({ ok: true, pending: true, message: 'New accounts are not open at the moment. Please ask your Streebo contact to set one up for you.' });
+      }
+      if (!kind) {
+        // Nothing about this address is trusted. Either hold them for a decision, or turn them away.
+        if (!signup.allowOthersPending) {
+          return res.json({ ok: true, pending: true, message: 'This console is limited to approved company email addresses. Please ask your Streebo contact for access.' });
+        }
+        recordAccessRequest(req, email, b);
+        // Told plainly rather than left waiting for a code that will never arrive. This does reveal
+        // whether a DOMAIN is approved, which is a deliberate trade: knowing "streebo.com is allowed"
+        // is worth little without the mailbox, whereas the account list stays private either way.
+        return res.json({ ok: true, pending: true, message: 'That email is not on an approved company domain. Your request has been sent to an administrator for review.' });
+      }
+    }
   }
 
   const sends = signin.sendsInWindow(otpSendLog, email);
@@ -1582,7 +1600,20 @@ app.post('/api/admin/guardrails', requirePlatformAdmin, (req, res) => {
   res.json({ success: true, guardrails });
 });
 // Self-signup config (admin): enable, whitelist domains, cap auto-approved accounts.
-app.get('/api/admin/signup', requirePlatformAdmin, (req, res) => res.json({ signup }));
+app.get('/api/admin/signup', requirePlatformAdmin, (req, res) => res.json({
+  signup,
+  // Spelled out, because two booleans and two lists do not read as a policy. The panel shows this
+  // back verbatim so nobody has to infer what the combination does.
+  effect: {
+    trustedDomains: signup.enabled
+      ? 'Anyone on a trusted domain can register themselves, receive a code and sign in. No action from you.'
+      : 'SELF SIGN-UP IS OFF: even a trusted domain cannot create a new account. Existing accounts still sign in.',
+    everybodyElse: signup.allowOthersPending
+      ? 'Everyone else is refused and appears under Access requests for you to approve or reject.'
+      : 'Everyone else is refused outright, and no request is recorded for you to see.',
+    approvedIndividuals: 'An address you approve from the queue can always sign in, whatever the switch above says.'
+  }
+}));
 app.post('/api/admin/signup', requirePlatformAdmin, (req, res) => {
   const b = req.body || {};
   if (b.enabled !== undefined) signup.enabled = !!b.enabled;

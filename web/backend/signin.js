@@ -100,6 +100,23 @@ function normaliseDomain(d) {
  * A whitelisted domain covers everyone at that company; a whitelisted individual address covers
  * exactly one person at a company we do not want to open wholesale.
  */
+/**
+ * HOW this address is trusted, not merely whether. The two answers are governed differently:
+ *
+ *   'email'   an administrator approved this person by name, from the access-request queue. That is
+ *             a decision already taken, so the self-registration switch must never override it.
+ *   'domain'  they happen to work somewhere we trust. That is self-service, and self-service is
+ *             exactly what the switch is for.
+ */
+function whitelistKind(email, signup) {
+  const e = String(email || '').toLowerCase().trim();
+  const emails = (signup.allowedEmails || []).map(x => String(x).trim().toLowerCase()).filter(Boolean);
+  if (emails.includes(e)) return 'email';
+  const d = domainOf(e);
+  if (!d) return null;
+  const domains = (signup.allowedDomains || []).map(normaliseDomain).filter(Boolean);
+  return domains.includes(d) ? 'domain' : null;
+}
 function isWhitelisted(email, signup) {
   const e = String(email || '').toLowerCase().trim();
   const d = domainOf(e);
@@ -152,6 +169,7 @@ function clientIp(req) {
 }
 
 module.exports = {
+  whitelistKind,
   CODE_TTL_MS, MAX_ATTEMPTS, MAX_SENDS_PER_WINDOW, RESEND_WINDOW_MS, DEVICE_TTL_DAYS,
   generateCode, hashCode, newRecord, checkCode, sendsInWindow,
   classifyDomain, normaliseDomain, isWhitelisted, domainOf,
