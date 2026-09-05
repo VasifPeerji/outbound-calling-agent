@@ -10,7 +10,66 @@ const fetch = require('node-fetch');
 const { parse } = require('csv-parse/sync');
 
 // ── helpers ──
-function parseCsv(text) { return parse(text || '', { columns: true, skip_empty_lines: true, trim: true }); }
+/**
+ * Read a delimited file the way it was actually written, not the way we would have written it.
+ *
+ * Excel on a machine whose locale uses the comma as a decimal separator writes CSV with semicolons,
+ * which is most of Europe and Latin America; exports out of reporting tools are often tab
+ * separated; and a report saved from a dashboard frequently carries its own title on line one. Each
+ * of those parsed as a single column or took the title as the header, and the partner saw a file
+ * they consider perfectly ordinary come back with nothing in it.
+ */
+function sniffDelimiter(firstLines) {
+  const counts = [',', ';', '\t', '|'].map(d => {
+    // Count only separators OUTSIDE quotes, or a quoted "Smith, John" votes for the comma.
+    const per = firstLines.map(line => {
+      let n = 0, inQ = false;
+      for (const ch of line) {
+        if (ch === '"') inQ = !inQ;
+        else if (ch === d && !inQ) n++;
+      }
+      return n;
+    });
+    // A real delimiter appears the SAME number of times on every line. Consistency beats frequency:
+    // prose in one cell can out-count the true separator on a single row.
+    const consistent = per.length > 1 && per.every(x => x === per[0]) && per[0] > 0;
+    return { d, min: Math.min(...per), consistent };
+  });
+  const best = counts.filter(c => c.min > 0).sort((a, b) => (Number(b.consistent) - Number(a.consistent)) || (b.min - a.min))[0];
+  return best ? best.d : ',';
+}
+
+/**
+ * Skip anything above the real header row. A header row is the first line whose cells are mostly
+ * non-empty and mostly not numbers: a title line has one cell and a run of empties, and a data row
+ * that slipped to the top has figures in it.
+ */
+function findHeaderLine(lines, delimiter) {
+  for (let i = 0; i < Math.min(lines.length, 8); i++) {
+    const cells = lines[i].split(delimiter).map(c => c.replace(/^"|"$/g, '').trim());
+    const filled = cells.filter(Boolean);
+    if (filled.length < 2) continue;                                   // a title, or a stray note
+    if (filled.length / cells.length < 0.6) continue;                  // mostly empty padding cells
+    if (filled.filter(c => /^[\d.,%+-]+$/.test(c)).length > filled.length / 2) continue;   // data
+    return i;
+  }
+  return 0;
+}
+
+function parseCsv(text) {
+  let body = String(text || '').replace(/^\uFEFF/, '');
+  if (!body.trim()) return [];
+  const lines = body.split(/\r?\n/).filter(l => l.trim() !== '');
+  const delimiter = sniffDelimiter(lines.slice(0, 5));
+  const start = findHeaderLine(lines, delimiter);
+  if (start > 0) body = lines.slice(start).join('\n');
+  return parse(body, {
+    columns: true, skip_empty_lines: true, trim: true, delimiter,
+    relax_column_count: true,      // a stray trailing separator must not abort the whole upload
+    relax_quotes: true,            // nor an unescaped quote inside a free-text note
+    bom: true
+  });
+}
 function flattenRow(o) { const out = {}; for (const [k, v] of Object.entries(o || {})) out[k] = (v && typeof v === 'object') ? JSON.stringify(v) : v; return out; }
 function parseHeaders(h) { if (!h) return {}; if (typeof h === 'object') return h; try { return JSON.parse(h); } catch (e) { return {}; } }
 function pickArray(j, path) {
@@ -95,4 +154,5 @@ function buildWritebackRow(entry, mapping) {
 }
 function meta(map) { const out = {}; for (const [k, v] of Object.entries(map)) out[k] = { label: v.label, live: v.live, fields: v.fields || [] }; return out; }
 
-module.exports = { sources, sinks, getEchoLog, clearEchoLog, DEFAULT_MAPPING, buildWritebackRow, SOURCE_META: meta(sources), SINK_META: meta(sinks) };
+module.exports = {
+  parseCsv, sources, sinks, getEchoLog, clearEchoLog, DEFAULT_MAPPING, buildWritebackRow, SOURCE_META: meta(sources), SINK_META: meta(sinks) };

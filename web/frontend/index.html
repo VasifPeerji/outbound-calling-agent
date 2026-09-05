@@ -251,6 +251,9 @@ gtag('config', 'G-GERTRM88QY');
   .colmap-pair em { font-style: normal; color: var(--text-muted); font-size: 10.5px; }
   .colmap-arrow { color: var(--text-muted); }
   .colmap-rest { margin-top: 8px; font-size: 11px; color: var(--text-muted); }
+  .colmap-warn { border-color: var(--amber, #d97706); }
+  .colmap-note { margin-top: 10px; font-size: 11.5px; line-height: 1.55; padding: 8px 10px; border-radius: 8px; background: var(--amber-50, #fffbeb); border: 1px solid var(--amber-200, #fde68a); color: var(--text-dim); }
+  .colmap-note code { font-family: 'DM Mono', monospace; background: none; }
   .colmap-rest code { font-family: 'DM Mono', monospace; background: none; }
   .conf-alt { display: block; font-size: 10.5px; color: var(--text-muted); margin-top: 3px; }
   .var-preview { display: flex; flex-direction: column; gap: 2px; font-size: 11px; max-width: 230px; }
@@ -2643,14 +2646,20 @@ function applyAnalysis(data) {
 function renderColumnMap(columns, unmapped) {
   if (!columns.length) return '';
   const HOW = { exact: '', alias: '', similar: 'matched by name', 'from the values': 'recognised from the data', 'control column': 'controls the run' };
+  const ORDER = { dmy: 'day first', mdy: 'month first', ambiguous: 'day first — unconfirmed' };
   const chips = columns.map(c => {
-    const note = HOW[c.how] || '';
-    return `<span class="colmap-pair" title="${escapeHtml(c.how)}"><code>${escapeHtml(c.header)}</code><span class="colmap-arrow">→</span><b>${escapeHtml(c.label)}</b>${note ? `<em>${escapeHtml(note)}</em>` : ''}</span>`;
+    const note = c.dateOrder ? ORDER[c.dateOrder] : (HOW[c.how] || '');
+    const warn = c.dateOrder === 'ambiguous' ? ' colmap-warn' : '';
+    return `<span class="colmap-pair${warn}" title="${escapeHtml(c.dateOrder === 'ambiguous' ? 'No date in this column is past the 12th, so nothing in the file says whether it is day-first or month-first. Read as day-first.' : c.how)}"><code>${escapeHtml(c.header)}</code><span class="colmap-arrow">→</span><b>${escapeHtml(c.label)}</b>${note ? `<em>${escapeHtml(note)}</em>` : ''}</span>`;
   }).join('');
+  const ambiguous = columns.filter(c => c.dateOrder === 'ambiguous');
   const rest = unmapped.length
     ? `<div class="colmap-rest">Not used: ${unmapped.map(h => `<code>${escapeHtml(h)}</code>`).join(' ')}</div>` : '';
+  // The only place the agent could state a wrong date and sound certain about it.
+  const dateWarn = ambiguous.length
+    ? `<div class="colmap-note">⚠ Every date in ${ambiguous.map(c => '<code>' + escapeHtml(c.header) + '</code>').join(' and ')} falls on or before the 12th, so the file does not say whether it is written day-first or month-first. Read as <b>day first</b>, so 09/11 is read as the 9th of November. If this file came out of an American system it means the 11th of September instead, and every date on these rows is wrong.</div>` : '';
   return `<div class="card colmap"><div class="ps-label" style="margin-bottom:8px">How your file was read</div>
-    <div class="colmap-grid">${chips}</div>${rest}</div>`;
+    <div class="colmap-grid">${chips}</div>${dateWarn}${rest}</div>`;
 }
 function renderIntelResults(customers, summary, columns, unmapped) {
   columns = columns || []; unmapped = unmapped || [];

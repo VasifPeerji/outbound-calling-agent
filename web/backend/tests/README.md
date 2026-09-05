@@ -14,6 +14,7 @@ without further wiring.
 | Suite | What it holds the line on |
 |---|---|
 | `t-router.js` | Row routing. Round-trips all 198 catalogue use cases across 31 industries, then checks the awkward parts: partner headers we have never seen, values recognised from the data when the header says nothing, missing values derived or omitted but never invented, and an industry that simply does not make the call the data is asking for. Pure module, runs in about a second. |
+| `t-realworld.js` | Files as they actually arrive, rather than as we would write them: semicolon and tab delimiters, a byte-order mark, a title row above the headers, headers with units in them, a name split across two columns, a Spanish export, phone numbers Excel turned into scientific notation, Excel serial dates, and the day-first/month-first question. First run scored 15/21; three of the six failures were silently wrong values rather than visible errors. |
 | `t-bulk-e2e.js` | The same path through a real server: CSV upload, the reported column mapping, queue ordering, do-not-call and duplicate pruning, and a simulated campaign placing exactly the calls the analysis promised. Builds an isolated instance under the OS temp folder with its own port, a blank `DATABASE_URL` and `MAIL_PROVIDER=dev`, so it touches neither live data nor a real mailbox. |
 
 ## Writing another

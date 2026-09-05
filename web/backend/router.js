@@ -35,12 +35,16 @@
 // `type` drives both value sniffing and output formatting. `aliases` are whole-header synonyms;
 // `tokens` are the words that, appearing together in a longer header, still mean this field.
 const FIELD = {
-  customer_name: { type: 'name', aliases: ['customer_name', 'name', 'full_name', 'customer', 'client_name', 'contact_name', 'patient_name', 'student_name', 'subscriber_name', 'member_name', 'guest_name', 'passenger_name', 'consignee', 'consignee_name', 'account_name', 'lead_name', 'first_name', 'given_name', 'borrower_name', 'policyholder', 'policy_holder', 'tenant_name', 'donor_name', 'employee_name', 'candidate_name', 'owner_name', 'debtor_name', 'recipient_name', 'payer_name', 'applicant_name', 'contact_person', 'account_holder', 'holder', 'holder_name', 'primary_contact', 'bill_to', 'insured_name', 'insured', 'party_name', 'end_customer', 'attendee', 'resident_name'], tokens: ['name', 'customer', 'client', 'patient', 'student', 'subscriber', 'consignee', 'guest', 'passenger', 'member', 'applicant', 'donor', 'candidate', 'holder', 'insured', 'attendee', 'resident'] },
-  to_number: { type: 'phone', aliases: ['to_number', 'phone', 'phone_number', 'mobile', 'mobile_number', 'contact_no', 'contact_number', 'msisdn', 'cell', 'cellphone', 'telephone', 'tel', 'primary_phone', 'guardian_phone', 'whatsapp', 'whatsapp_number', 'contact', 'number', 'mob', 'mobile_no', 'phone_no', 'alternate_number', 'home_phone', 'work_phone'], tokens: ['phone', 'mobile', 'msisdn', 'contact', 'tel', 'number', 'cell', 'whatsapp'] },
+  customer_name: { type: 'name', aliases: ['customer_name', 'name', 'full_name', 'customer', 'client_name', 'contact_name', 'patient_name', 'student_name', 'subscriber_name', 'member_name', 'guest_name', 'passenger_name', 'consignee', 'consignee_name', 'account_name', 'lead_name', 'first_name', 'given_name', 'borrower_name', 'policyholder', 'policy_holder', 'tenant_name', 'donor_name', 'employee_name', 'candidate_name', 'owner_name', 'debtor_name', 'recipient_name', 'payer_name', 'applicant_name', 'contact_person', 'account_holder', 'holder', 'holder_name', 'primary_contact', 'bill_to', 'insured_name', 'insured', 'party_name', 'end_customer', 'attendee', 'resident_name',
+    'nombre', 'nombre_completo', 'cliente', 'nom', 'nom_complet', 'client', 'nome', 'kunde', 'naam', 'titular'], tokens: ['name', 'customer', 'client', 'patient', 'student', 'subscriber', 'consignee', 'guest', 'passenger', 'member', 'applicant', 'donor', 'candidate', 'holder', 'insured', 'attendee', 'resident'] },
+  to_number: { type: 'phone', aliases: ['to_number', 'phone', 'phone_number', 'mobile', 'mobile_number', 'contact_no', 'contact_number', 'msisdn', 'cell', 'cellphone', 'telephone', 'tel', 'primary_phone', 'guardian_phone', 'whatsapp', 'whatsapp_number', 'contact', 'number', 'mob', 'mobile_no', 'phone_no', 'alternate_number', 'home_phone', 'work_phone',
+    'telefono', 'telefone', 'telefon', 'movil', 'movil_number', 'celular', 'telemovel', 'numero', 'numero_telefono', 'portable'], tokens: ['phone', 'mobile', 'msisdn', 'contact', 'tel', 'number', 'cell', 'whatsapp'] },
 
   product_name: { type: 'text', aliases: ['product_name', 'product', 'service', 'service_name', 'plan', 'plan_name', 'account_type', 'loan_type', 'policy_type', 'item', 'subscription', 'programme', 'program', 'course', 'course_name', 'utility', 'connection_type', 'bill_type', 'invoice_type', 'scheme', 'package'], tokens: ['product', 'service', 'plan', 'policy', 'loan', 'course', 'programme', 'program', 'subscription', 'package', 'scheme'] },
-  amount_due: { type: 'money', aliases: ['amount_due', 'amount', 'due_amount', 'bill_amount', 'invoice_amount', 'premium_amount', 'emi_amount', 'emi', 'fee_amount', 'fees', 'payable', 'amount_payable', 'total_due', 'installment', 'instalment', 'rent', 'rent_amount', 'charge', 'total_amount', 'bill_value', 'net_payable'], tokens: ['amount', 'due', 'bill', 'invoice', 'premium', 'emi', 'fee', 'payable', 'instalment', 'installment', 'rent'] },
-  due_date: { type: 'date', aliases: ['due_date', 'payment_due_date', 'bill_due_date', 'invoice_due_date', 'due_on', 'due', 'payment_date', 'fee_due_date', 'premium_due_date', 'last_date', 'pay_by', 'payable_by', 'due_dt'], tokens: ['due', 'date', 'pay', 'payable', 'last'] },
+  amount_due: { type: 'money', aliases: ['amount_due', 'amount', 'due_amount', 'bill_amount', 'invoice_amount', 'premium_amount', 'emi_amount', 'emi', 'fee_amount', 'fees', 'payable', 'amount_payable', 'total_due', 'installment', 'instalment', 'rent', 'rent_amount', 'charge', 'total_amount', 'bill_value', 'net_payable',
+    'importe', 'monto', 'valor', 'montant', 'betrag', 'importo'], tokens: ['amount', 'due', 'bill', 'invoice', 'premium', 'emi', 'fee', 'payable', 'instalment', 'installment', 'rent'] },
+  due_date: { type: 'date', aliases: ['due_date', 'payment_due_date', 'bill_due_date', 'invoice_due_date', 'due_on', 'due', 'payment_date', 'fee_due_date', 'premium_due_date', 'last_date', 'pay_by', 'payable_by', 'due_dt',
+    'fecha_vencimiento', 'vencimiento', 'fecha_de_pago', 'date_echeance', 'echeance', 'faelligkeit', 'scadenza', 'data_vencimento'], tokens: ['due', 'date', 'pay', 'payable', 'last'] },
   days_overdue: { type: 'int', aliases: ['days_overdue', 'overdue_days', 'days_past_due', 'dpd', 'days_late', 'aging_days', 'ageing_days', 'delinquency_days', 'arrears_days'], tokens: ['overdue', 'days', 'past', 'dpd', 'late', 'aging', 'ageing', 'arrears'] },
   amount_overdue: { type: 'money', aliases: ['amount_overdue', 'overdue_amount', 'arrears', 'arrears_amount', 'past_due_amount', 'outstanding_due', 'unpaid_amount', 'balance_overdue', 'delinquent_amount'], tokens: ['overdue', 'arrears', 'unpaid', 'delinquent'] },
   outstanding_balance: { type: 'money', aliases: ['outstanding_balance', 'balance', 'outstanding', 'total_outstanding', 'principal_outstanding', 'loan_balance', 'account_balance', 'remaining_balance', 'ledger_balance'], tokens: ['outstanding', 'balance', 'principal', 'remaining'] },
@@ -180,17 +184,52 @@ const URGENCY = { service_notification: 1, overdue_followup: 2, payment_reminder
 
 // ── small helpers ───────────────────────────────────────
 const norm = h => String(h == null ? '' : h).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+const isoOf = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const tokensOf = h => norm(h).split('_').filter(Boolean);
 const isBlank = v => v === null || v === undefined || String(v).trim() === '';
 const digitsOf = s => String(s).replace(/\D/g, '');
 
-function parseDate(str) {
+/**
+ * Excel writes a long number in scientific notation the moment it decides the column is numeric,
+ * which is what happens to a phone number saved from a spreadsheet. Put the digits back.
+ */
+function expandExponential(v) {
+  const s = String(v == null ? '' : v).trim();
+  if (!/^\d(?:\.\d+)?[eE][+]?\d+$/.test(s)) return s;
+  const n = Number(s);
+  return Number.isFinite(n) && Math.abs(n) < 1e18 ? BigInt(Math.round(n)).toString() : s;
+}
+/**
+ * A date column holding 46272 is Excel's serial count from the 1900 epoch, not a year and not a
+ * reference number. Read as a date literal it became "the 1st of January", which is a confident
+ * wrong answer rather than a visible failure. The window is deliberately narrow: 1990 to 2070.
+ */
+const EXCEL_EPOCH_OFFSET = 25569;   // days between 1899-12-30 and 1970-01-01
+function excelSerialToDate(v) {
+  const s = String(v == null ? '' : v).trim();
+  if (!/^\d{5}$/.test(s)) return null;
+  const n = parseInt(s, 10);
+  if (n < 32874 || n > 62092) return null;
+  const d = new Date((n - EXCEL_EPOCH_OFFSET) * 86400000);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function parseDate(str, order) {
   if (isBlank(str)) return null;
   const s = String(str).trim();
-  // Day-first is the norm everywhere we sell except the United States, and an ISO string parses
-  // correctly either way, so only the ambiguous slashed form needs the explicit branch.
+  const serial = excelSerialToDate(s);
+  if (serial) return serial;
+  // The slashed form is genuinely ambiguous, so `order` carries what the whole column said. Day
+  // first is the fallback because it is the norm everywhere we sell except the United States.
   let m = s.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})/);
-  if (m) { const d = new Date(`${m[3]}-${String(m[2]).padStart(2, '0')}-${String(m[1]).padStart(2, '0')}T00:00:00`); return isNaN(d.getTime()) ? null : d; }
+  if (m) {
+    const a = parseInt(m[1], 10), b = parseInt(m[2], 10);
+    // The value can settle it on its own whatever the column decided: there is no 13th month.
+    const monthFirst = a > 12 ? false : b > 12 ? true : order === 'mdy';
+    const day = monthFirst ? b : a, mon = monthFirst ? a : b;
+    const d = new Date(`${m[3]}-${String(mon).padStart(2, '0')}-${String(day).padStart(2, '0')}T00:00:00`);
+    return isNaN(d.getTime()) ? null : d;
+  }
   m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
   if (m) { const d = new Date(`${m[1]}-${String(m[2]).padStart(2, '0')}-${String(m[3]).padStart(2, '0')}T00:00:00`); return isNaN(d.getTime()) ? null : d; }
   const d = new Date(s);
@@ -219,7 +258,7 @@ function looksLikeDate(v) {
 }
 function looksLikePhone(v) {
   if (isBlank(v)) return false;
-  const s = String(v).trim();
+  const s = expandExponential(v);
   if (!/^[+(]?[\d][\d\s\-().]*$/.test(s)) return false;
   const d = digitsOf(s);
   return d.length >= 8 && d.length <= 15;
@@ -345,18 +384,54 @@ function resolveColumns(rows) {
   for (const c of cands) {
     if (map[c.field] || usedHeader.has(c.header)) continue;
     map[c.field] = { header: c.header, how: c.how, score: Math.round(c.score) };
+    if ((FIELD[c.field] || {}).type === 'date') {
+      const order = detectDateOrder(valuesOf(c.header));
+      if (order) map[c.field].dateOrder = order;
+    }
     usedHeader.add(c.header);
   }
   const unmapped = headers.filter(h => !usedHeader.has(h) && !claimed.has(h));
   return { map, control, unmapped, headers };
 }
 
+/**
+ * Which way round a column writes its slashed dates, decided by the column rather than the cell.
+ *
+ * One value cannot tell 09/11 apart, but a column usually can: a single day past the 12th settles
+ * it for every other value in the same column. Only when no value in the whole column exceeds 12 is
+ * it truly ambiguous, and then we say so rather than quietly picking.
+ */
+function detectDateOrder(values) {
+  let dmy = 0, mdy = 0, slashed = 0;
+  for (const v of values) {
+    const m = String(v).trim().match(/^(\d{1,2})[-/.](\d{1,2})[-/.]\d{4}/);
+    if (!m) continue;
+    slashed++;
+    const a = parseInt(m[1], 10), b = parseInt(m[2], 10);
+    if (a > 12) dmy++; else if (b > 12) mdy++;
+  }
+  if (!slashed) return null;
+  if (dmy && !mdy) return 'dmy';
+  if (mdy && !dmy) return 'mdy';
+  if (dmy && mdy) return 'dmy';        // contradictory; fall back to the norm
+  return 'ambiguous';                  // nothing above the 12th either way
+}
+
 /** Pull one row through the map into canonical fields, plus the raw lowercased row as a fallback. */
 function resolveRow(row, resolved) {
-  const out = {};
+  const out = {}, meta = {};
   for (const [field, m] of Object.entries(resolved.map)) {
     const v = row[m.header];
-    if (!isBlank(v)) out[field] = String(v).trim();
+    if (isBlank(v)) continue;
+    // Normalise a date to ISO here, using what the whole column said about its order, so every
+    // later reader of this row gets the same unambiguous answer.
+    if ((FIELD[field] || {}).type === 'date') {
+      const d = parseDate(v, m.dateOrder);
+      out[field] = d ? isoOf(d) : String(v).trim();
+    } else if ((FIELD[field] || {}).type === 'phone') {
+      out[field] = expandExponential(v);
+    } else out[field] = String(v).trim();
+    if (m.dateOrder) meta[field] = m.dateOrder;
   }
   // A header that matched nothing is still worth honouring when it happens to be named exactly like
   // a canonical field we did not map (an empty column, say).
@@ -366,7 +441,7 @@ function resolveRow(row, resolved) {
   }
   const ctl = {};
   for (const [key, header] of Object.entries(resolved.control)) { const v = row[header]; if (!isBlank(v)) ctl[key] = String(v).trim(); }
-  return { data: out, control: ctl };
+  return { data: out, control: ctl, meta };
 }
 
 // ── stage 2: score every use case this profile actually has ──
@@ -783,6 +858,7 @@ module.exports = {
   FIELD, CONTROL, ARCHETYPES, LEGACY_FIELDS, URGENCY,
   resolveColumns, resolveRow, routeRow, scoreUseCases, fillVariables,
   parseDate, formatDateSpoken, formatMoney, formatTimeSpoken, formatValue,
+  detectDateOrder, expandExponential, excelSerialToDate,
   isTruthy, norm, timeSignals, fieldsFor, archetypeOf, enabledUseCases, normaliseArchetype, autoTimeOfDay,
   looksLikePersonName, looksLikePhone, looksLikeDate
 };

@@ -942,7 +942,12 @@ function analyseRows(rows, profile) {
     lowConfidence: queued.filter(r => !r.skip && r.confidence === 'low').length
   };
   // Shown back to the partner so they can see what we read their file as, and correct us.
-  const columns = Object.entries(resolved.map).map(([field, m]) => ({ field, label: fieldLabel(field, profile), header: m.header, how: m.how }));
+  const columns = Object.entries(resolved.map).map(([field, m]) => ({
+    field, label: fieldLabel(field, profile), header: m.header, how: m.how,
+    // How this date column was read, and whether the file actually said so. An ambiguous column is
+    // the one place the agent could state a wrong date confidently, so it is worth showing.
+    ...(m.dateOrder ? { dateOrder: m.dateOrder } : {})
+  }));
   Object.entries(resolved.control).forEach(([field, header]) => columns.push({ field, label: field.replace(/_/g, ' '), header, how: 'control column' }));
   return { customers: queued, summary, columns, unmapped: resolved.unmapped };
 }
@@ -2120,7 +2125,9 @@ app.post('/api/analyse-csv', requireBulk, upload.single('file'), (req, res) => {
   if (!req.file && !req.body.csvText) return res.status(400).json({ error: 'No file uploaded.' });
   try {
     const text = req.file ? req.file.buffer.toString('utf-8') : req.body.csvText;
-    const records = parse(text, { columns: true, skip_empty_lines: true, trim: true });
+    // Shared with every URL and Sheet source, so a semicolon file or a title row behaves the same
+    // whichever door it comes in by.
+    const records = connectors.parseCsv(text);
     res.json({ success: true, ...analyseRows(records, getProfile(req)) });
   } catch (err) { res.status(400).json({ error: 'CSV parse error: ' + err.message }); }
 });
