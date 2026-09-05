@@ -371,6 +371,64 @@ there is a real proxy to trust — and it trusts exactly one hop, not the whole 
 
 ---
 
+## Deploying an update
+
+Every deploy after the first one is this. Nothing here needs the database touched.
+
+```bash
+cd outbound-calling-agent
+git pull
+cd web/backend && npm ci --omit=dev
+pm2 reload omnireach
+pm2 logs omnireach --lines 40      # confirm it came up clean
+```
+
+`npm ci` is worth running even when no dependency changed: it is fast when the lockfile is
+unchanged, and it is the only thing that keeps the installed tree honest if one ever does.
+
+**The runtime data is not in the repository.** Accounts, call history, profiles and settings live in
+Postgres (`DATABASE_URL`), so a deploy never disturbs them. If `DATABASE_URL` is unset the same data
+sits in `web/backend/data/`, which most hosts wipe on deploy — that is why the boot log warns about
+it.
+
+### Checking it before you trust it
+
+```bash
+cd web/backend && npm test
+```
+
+Plain Node, no framework, no network, and it neither reads nor writes the live database: each suite
+builds a throwaway copy of the app under the system temp folder with its own port, a blank
+`DATABASE_URL` and `MAIL_PROVIDER=dev`. Safe to run on the server. It prints `all N suites passed`.
+
+### Does this release need anything else?
+
+Check these three before assuming not:
+
+| Question | Where to look |
+|---|---|
+| New dependency? | `git diff <old>..<new> -- web/backend/package.json` |
+| New environment variable? | `git diff <old>..<new> -- web/backend/ \| grep 'process.env'` |
+| Database change? | `git diff --stat <old>..<new> -- web/backend/store.js web/backend/migrate-to-postgres.js` — empty means nothing to migrate |
+
+### One-off: refreshing the post-call scoring
+
+The criteria the agent scores finished calls against live **on the ElevenLabs agent**, not in this
+repository, so a deploy does not update them. They used to be generated from whichever profile the
+administrator had open, which meant one partner's industry could end up scoring another partner's
+calls. They are now generic — the nine call archetypes, identical for every partner — but the old
+ones stay on the agent until someone replaces them:
+
+```bash
+curl -X POST https://omnireach.smartcogs.ai/api/elevenlabs/analysis/sync \
+  -H "Authorization: Bearer <a platform admin's token>"
+```
+
+Run it once after this release. It only changes how calls are SCORED afterwards; it has no effect on
+what any customer hears, because everything spoken is sent per call rather than stored on the agent.
+
+---
+
 ## The daily activity report
 
 Once a day the server emails Streebo one message covering **every partner**: calls placed, who they

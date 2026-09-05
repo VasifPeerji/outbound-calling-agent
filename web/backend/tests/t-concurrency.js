@@ -16,6 +16,7 @@
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
+const { linkModules, unlinkModules } = require('./harness.js');
 
 const SRC = path.resolve(__dirname, '../../..');
 const ISO = path.join(require('os').tmpdir(), 'omnireach-test-concurrency');
@@ -76,13 +77,8 @@ function build() {
   fs.cpSync(path.join(SRC, 'web/backend/ui'), path.join(BE, 'ui'), { recursive: true });
   fs.cpSync(path.join(SRC, 'config'), path.join(ISO, 'config'), { recursive: true });
   fs.cpSync(path.join(SRC, 'prompts'), path.join(ISO, 'prompts'), { recursive: true });
-  // Junction the real install rather than copying it, the same way the other suites do.
-  const { execSync } = require('child_process');
-  const link = path.join(BE, 'node_modules').replace(/\//g, '\\');
-  const target = path.join(SRC, 'web/backend/node_modules').replace(/\//g, '\\');
-  try { execSync('cmd /c rmdir "' + link + '"', { stdio: 'ignore' }); } catch (e) {}
-  try { execSync('cmd /c mklink /J "' + link + '" "' + target + '"', { stdio: 'ignore' }); }
-  catch (e) { fs.symlinkSync(target, link, 'junction'); }
+  // Link the real install rather than copying it, however this platform spells a directory link.
+  linkModules(path.join(BE, 'node_modules'), path.join(SRC, 'web/backend/node_modules'));
 
   const auth = require(path.join(SRC, 'web/backend/auth.js'));
   const mk = (id, email, org) => ({
@@ -271,7 +267,7 @@ const day = d => { const x = new Date(); x.setDate(x.getDate() + d); return isoL
   console.log('\n' + pass + ' passed, ' + fail + ' failed');
 })().catch(e => { console.error('ERROR', e); fail++; }).finally(async () => {
   await wait(200);
-  try { require('child_process').execSync('cmd /c rmdir "' + path.join(BE, 'node_modules').replace(/\//g, '\\') + '"', { stdio: 'ignore' }); } catch (e) {}
+  unlinkModules(path.join(BE, 'node_modules'));
   try { fs.rmSync(ISO, { recursive: true, force: true }); } catch (e) {}
   process.exit(fail ? 1 : 0);
 });

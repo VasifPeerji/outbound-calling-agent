@@ -1,6 +1,10 @@
 # Tests
 
-Plain Node scripts, no framework. Anyone who can run the app can run these.
+Plain Node scripts, no framework. Anyone who can run the app can run these, on Windows or Linux.
+
+They touch no network and no live data: each isolated-instance suite builds a throwaway copy of the app
+under the system temp folder with its own port, a blank `DATABASE_URL` and `MAIL_PROVIDER=dev`. Safe to
+run on the server.
 
 ```bash
 cd web/backend
@@ -17,6 +21,10 @@ without further wiring.
 | `t-realworld.js` | Files as they actually arrive, rather than as we would write them: semicolon and tab delimiters, a byte-order mark, a title row above the headers, headers with units in them, a name split across two columns, a Spanish export, phone numbers Excel turned into scientific notation, Excel serial dates, and the day-first/month-first question. First run scored 15/21; three of the six failures were silently wrong values rather than visible errors. |
 | `t-concurrency.js` | One ElevenLabs agent, two partners dialling at the same moment. Runs the server in-process with `node-fetch` replaced, so every request the platform makes of ElevenLabs is captured and inspected. Proves each call carries its own prompt, voice, language and variables in `conversation_config_override`, that the campaigns genuinely interleave, and that nothing writes to the shared agent while they run. |
 | `t-bulk-e2e.js` | The same path through a real server: CSV upload, the reported column mapping, queue ordering, do-not-call and duplicate pruning, and a simulated campaign placing exactly the calls the analysis promised. Builds an isolated instance under the OS temp folder with its own port, a blank `DATABASE_URL` and `MAIL_PROVIDER=dev`, so it touches neither live data nor a real mailbox. |
+
+| `harness.js` | Shared helper for the isolated-instance suites: links the throwaway copy at the real
+`node_modules` the way each platform spells a directory link. The suites used `cmd /c mklink` directly,
+so `npm test` was Windows-only without saying so. |
 
 ## Writing another
 

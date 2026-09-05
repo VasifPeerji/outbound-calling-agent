@@ -8,7 +8,8 @@
  */
 const fs = require('fs');
 const path = require('path');
-const { execSync, spawn } = require('child_process');
+const { spawn } = require('child_process');
+const { linkModules, unlinkModules } = require('./harness.js');
 const http = require('http');
 
 const SRC = path.resolve(__dirname, '../../..');
@@ -19,7 +20,7 @@ let pass = 0, fail = 0, srv = null, log = '';
 const ok = (c, m) => { c ? pass++ : fail++; console.log((c ? '  OK   ' : '  FAIL ') + m); };
 
 function build() {
-  try { execSync('cmd /c rmdir "' + path.join(BE, 'node_modules').replace(/\//g, '\\') + '"', { stdio: 'ignore' }); } catch (e) {}
+  unlinkModules(path.join(BE, 'node_modules'));
   fs.rmSync(ISO, { recursive: true, force: true });
   fs.mkdirSync(path.join(BE, 'data'), { recursive: true });
   for (const f of fs.readdirSync(path.join(SRC, 'web/backend'))) {
@@ -29,7 +30,7 @@ function build() {
   fs.cpSync(path.join(SRC, 'web/backend/ui'), path.join(BE, 'ui'), { recursive: true });
   fs.cpSync(path.join(SRC, 'config'), path.join(ISO, 'config'), { recursive: true });
   fs.cpSync(path.join(SRC, 'prompts'), path.join(ISO, 'prompts'), { recursive: true });
-  execSync('cmd /c mklink /J "' + path.join(BE, 'node_modules').replace(/\//g, '\\') + '" "' + path.join(SRC, 'web/backend/node_modules').replace(/\//g, '\\') + '"', { stdio: 'ignore' });
+  linkModules(path.join(BE, 'node_modules'), path.join(SRC, 'web/backend/node_modules'));
 
   const auth = require(path.join(BE, 'auth.js'));
   fs.writeFileSync(path.join(BE, 'data/users.json'), JSON.stringify([
@@ -141,7 +142,7 @@ const day = d => { const x = new Date(); x.setDate(x.getDate() + d); return isoL
 })().catch(e => { console.error('ERROR', e); fail++; }).finally(async () => {
   if (srv) srv.kill();
   await wait(400);
-  try { execSync('cmd /c rmdir "' + path.join(BE, 'node_modules').replace(/\//g, '\\') + '"', { stdio: 'ignore' }); } catch (e) {}
+  unlinkModules(path.join(BE, 'node_modules'));
   fs.rmSync(ISO, { recursive: true, force: true });
   process.exit(fail ? 1 : 0);
 });
