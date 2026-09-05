@@ -59,7 +59,10 @@ function useCasesFor(industry) {
   for (const u of CATALOG[industry] || []) out[u.key] = { enabled: true, label: u.label, emoji: u.emoji || '\u2022', archetype: u.archetype || u.key, desc: u.desc || '', playbook: u.playbook || '', fields: u.fields || [] };
   return out;
 }
-const day = d => { const x = new Date(); x.setDate(x.getDate() + d); return x.toISOString().slice(0, 10); };
+// Local, not UTC. toISOString() is UTC, and the router counts days in local time, so the two
+// disagree between midnight and the UTC offset -- which made this suite fail only at night.
+const isoLocal = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const day = d => { const x = new Date(); x.setDate(x.getDate() + d); return isoLocal(x); };
 
 (async () => {
   build();

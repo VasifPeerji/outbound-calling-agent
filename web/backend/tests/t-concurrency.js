@@ -130,7 +130,10 @@ function profileFor(company, industry, voiceId, language) {
     contact: {}, compliance: {}, offerings: {}, use_cases
   };
 }
-const day = d => { const x = new Date(); x.setDate(x.getDate() + d); return x.toISOString().slice(0, 10); };
+// Local, not UTC. toISOString() is UTC, and the router counts days in local time, so the two
+// disagree between midnight and the UTC offset -- which made this suite fail only at night.
+const isoLocal = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const day = d => { const x = new Date(); x.setDate(x.getDate() + d); return isoLocal(x); };
 
 (async () => {
   build();
@@ -216,6 +219,47 @@ const day = d => { const x = new Date(); x.setDate(x.getDate() + d); return x.to
   const writes = other.filter(o => o.method !== 'GET');
   ok(writes.length === 0, 'no request other than the calls themselves modified the agent' + (writes.length ? ': ' + writes.map(w => w.method + ' ' + w.url).join(', ') : ''));
   ok(other.every(o => o.method === 'GET'), `the ${other.length} other requests were all reads`);
+
+  console.log('\nWHAT IS WRITTEN TO THE SHARED AGENT BELONGS TO NOBODY IN PARTICULAR:');
+  {
+    // Post-call scoring lives on the agent, and the agent is shared. It used to be built from
+    // whichever profile the administrator had open, so syncing on a banking profile scored the
+    // clinic's appointment calls on whether the customer acknowledged an amount due.
+    // Both partners are made platform admins for this section only, so each can read the spec the
+    // platform would write, from their own very different profile.
+    const store = require(path.join(BE, 'auth.js'));
+    for (const id of ['u-alpha', 'u-beta']) {
+      const u = store.findById(id);
+      u.role = 'admin'; u.superAdmin = true; u.orgId = 'streebo.test'; u.org = 'streebo.test';
+    }
+    const a = await req('GET', '/api/elevenlabs/analysis', alpha);
+    const b = await req('GET', '/api/elevenlabs/analysis', beta);
+    ok(a.status === 200 && b.status === 200, 'both administrators can read the proposed analysis spec');
+
+    const pa = a.body.proposed, pb = b.body.proposed;
+    ok(!!pa && Array.isArray(pa.criteria) && pa.criteria.length === 9, `it is the nine archetypes, not one profile's use cases (${(pa.criteria || []).length})`);
+    ok(JSON.stringify(pa) === JSON.stringify(pb), 'and it is IDENTICAL for a bank and a clinic \u2014 nothing of either tenant reaches it');
+
+    const text = JSON.stringify(pa);
+    ok(!/Alpha Bank|Beta Clinic/.test(text), 'no company name appears in what would be written to the agent');
+    ok(!/emi_reminder|appointment_confirm/.test(text), 'nor any industry-specific use-case key');
+    ok(pa.criteria.every(c => /^arch_/.test(c.id)), 'every criterion is named for an archetype: ' + pa.criteria.map(c => c.id).join(', '));
+
+    // The second half of the fix: a criterion must not fail a call it does not apply to. The
+    // webhook counts only success and failure toward goalsMet, so "unknown" is how a criterion
+    // says "not my kind of call".
+    ok(pa.criteria.every(c => /unknown/i.test(c.conversation_goal_prompt)), 'each criterion returns unknown for a call of a different kind');
+    ok(pa.criteria.every(c => /applies ONLY to/i.test(c.conversation_goal_prompt)), 'and each one states the kind of call it covers');
+    const pay = pa.criteria.find(c => c.id === 'arch_payment_reminder');
+    ok(/amount due/i.test(pay.conversation_goal_prompt), 'the payment criterion still judges payment calls properly');
+    ok(/not.*mark it\s*\n?\s*unsuccessful merely because it was a different kind of call/is.test(pay.conversation_goal_prompt.replace(/\s+/g, ' ')) || /do not mark it unsuccessful merely because/i.test(pay.conversation_goal_prompt.replace(/\s+/g, ' ')), 'and says plainly not to fail a call for being a different kind');
+    // Put them back. A platform admin sees every organisation by design, which would quietly
+    // invalidate the tenancy checks below and make them look like a leak.
+    for (const [id, org] of [['u-alpha', 'alphabank.test'], ['u-beta', 'betaclinic.test']]) {
+      const u = store.findById(id);
+      u.role = 'user'; u.superAdmin = false; u.orgId = org; u.org = org;
+    }
+  }
 
   console.log('\nAND THE RECORDS STAY APART:');
   const ah = (await req('GET', '/api/history?limit=50', alpha)).body.calls || [];

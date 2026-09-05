@@ -18,7 +18,10 @@ let pass = 0, fail = 0;
 const ok = (c, m) => { c ? pass++ : fail++; console.log((c ? '  OK   ' : '  FAIL ') + m); };
 
 const NOW = new Date('2026-09-06T10:00:00');
-const iso = d => { const x = new Date(NOW); x.setDate(x.getDate() + d); return x.toISOString().slice(0, 10); };
+// Local, not UTC. toISOString() is UTC, and the router counts days in local time, so the two
+// disagree between midnight and the UTC offset -- which made this suite fail only at night.
+const isoLocal = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const iso = d => { const x = new Date(NOW); x.setDate(x.getDate() + d); return isoLocal(x); };
 function profileFor(industry) {
   const use_cases = {};
   for (const u of CATALOG[industry]) use_cases[u.key] = { enabled: true, label: u.label, archetype: u.archetype, fields: u.fields || [] };

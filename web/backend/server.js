@@ -2614,33 +2614,88 @@ app.post('/api/admin/report/send-now', requireSuperAdmin, async (req, res) => {
 //   • evaluation criteria  — ElevenLabs scores every conversation against goals we define
 //   • data collection      — it extracts named fields straight out of the transcript
 // Both are derived from the profile's own use cases, so an airline gets airline criteria.
-function analysisSpecForProfile(profile) {
-  const uc = ucMap(profile);
-  const keys = enabledKeys(profile);
-  const criteria = keys.slice(0, 20).map(k => {
-    const u = uc[k] || {};
-    const arch = archetypeOf(profile, k);
-    const goal = {
-      payment_reminder: 'the customer acknowledged the amount due and either confirmed payment or gave a specific date they will pay',
-      overdue_followup: 'the customer engaged with the arrears and either committed to a payment date, raised a genuine dispute, or was referred for hardship support',
-      sales_offer: 'the offer was clearly explained and the customer gave a clear yes, no, or a follow-up commitment',
-      appointment_reminder: 'the appointment was confirmed, rescheduled to a specific new time, or cancelled',
-      feedback_survey: 'a satisfaction score was captured, and at least one specific comment was given',
-      lead_qualification: 'the lead was qualified or disqualified against need, timeline and authority, and a next step was agreed',
-      renewal_retention: 'the customer confirmed renewal, declined with a reason, or agreed a follow-up before expiry',
-      service_notification: 'the customer understood what changed and either chose an option or was told exactly what happens next and when',
-      document_collection: 'the customer knows precisely which items are outstanding and how to send them, or a genuine blocker was captured'
-    }[arch] || 'the purpose of the call was achieved and the customer was left clear on what happens next';
+/**
+ * What the agent scores every finished call against.
+ *
+ * This is written to the ONE ElevenLabs agent the whole platform shares, so it must describe calls
+ * in general and never one tenant in particular. It used to be built from whichever profile the
+ * administrator had open, which meant syncing on a banking profile wrote criteria named "EMI Due
+ * Reminder" onto the agent that also serves a clinic, and the clinic's appointment calls were then
+ * scored on whether the customer acknowledged an amount due.
+ *
+ * The nine archetypes are the same for every tenant by construction, so there is nothing left for
+ * one partner's settings to impose on another. Each criterion also declares the kind of call it
+ * covers and returns `unknown` for anything else: the webhook counts only success and failure
+ * toward goalsMet, so a call of a different kind is properly not-applicable rather than a failure.
+ */
+const ARCHETYPE_ANALYSIS = {
+  payment_reminder: {
+    name: 'Payment reminder',
+    what: 'a courtesy reminder about a payment that is due but not yet late',
+    goal: 'the customer acknowledged the amount due and either confirmed payment or gave a specific date they will pay'
+  },
+  overdue_followup: {
+    name: 'Overdue follow-up',
+    what: 'a follow-up on a payment that has already been missed',
+    goal: 'the customer engaged with the arrears and either committed to a payment date, raised a genuine dispute, or was referred for hardship support'
+  },
+  sales_offer: {
+    name: 'Offer or promotion',
+    what: 'an outbound offer, upgrade, promotion or win-back',
+    goal: 'the offer was clearly explained and the customer gave a clear yes, no, or a follow-up commitment'
+  },
+  appointment_reminder: {
+    name: 'Appointment or delivery',
+    what: 'confirming a booking, appointment, visit or delivery slot',
+    goal: 'the appointment was confirmed, rescheduled to a specific new time, or cancelled'
+  },
+  feedback_survey: {
+    name: 'Feedback or satisfaction',
+    what: 'asking about a recent experience, a satisfaction score or a review',
+    goal: 'a satisfaction score was captured, and at least one specific comment was given'
+  },
+  lead_qualification: {
+    name: 'Lead qualification',
+    what: 'following up an enquiry to see whether it is worth pursuing',
+    goal: 'the lead was qualified or disqualified against need, timeline and authority, and a next step was agreed'
+  },
+  renewal_retention: {
+    name: 'Renewal or retention',
+    what: 'a policy, plan, membership or contract coming up for renewal',
+    goal: 'the customer confirmed renewal, declined with a reason, or agreed a follow-up before expiry'
+  },
+  service_notification: {
+    name: 'Service notification',
+    what: 'telling the customer about a disruption, delay, outage, recall or change to their service',
+    goal: 'the customer understood what changed and either chose an option or was told exactly what happens next and when'
+  },
+  document_collection: {
+    name: 'Outstanding documents',
+    what: 'chasing paperwork, verification or documents the customer still owes',
+    goal: 'the customer knows precisely which items are outstanding and how to send them, or a genuine blocker was captured'
+  }
+};
+
+function analysisSpec() {
+  const criteria = ARCHETYPES.map(arch => {
+    const a = ARCHETYPE_ANALYSIS[arch];
     return {
-      id: `uc_${k}`.slice(0, 60),
-      name: (u.label || k).slice(0, 60),
+      id: `arch_${arch}`.slice(0, 60),
+      name: a.name.slice(0, 60),
       type: 'prompt',
-      conversation_goal_prompt: `This call was a "${u.label || k}" call. Mark it successful only if ${goal}. ${u.playbook ? 'Context: ' + String(u.playbook).slice(0, 400) : ''} If the customer was never reached, or the agent did not get to the point, mark it unsuccessful.`,
+      conversation_goal_prompt:
+        `This criterion applies ONLY to calls that are ${a.what}.\n\n` +
+        `FIRST decide what kind of call this was, from the conversation itself. ` +
+        `If it was NOT ${a.what}, return "unknown" and stop — do not judge it, and do not mark it ` +
+        `unsuccessful merely because it was a different kind of call.\n\n` +
+        `If it WAS such a call, mark it successful only if ${a.goal}. ` +
+        `Mark it unsuccessful if the customer was never reached, if the agent did not get to the ` +
+        `point, or if the call ended without that outcome.`,
       use_knowledge_base: false
     };
   });
   // Fields worth having on EVERY call, whatever the industry, plus the money/date ones that make
-  // the write-back row useful without relying on a tool firing mid-call.
+  // the write-back row useful without relying on a tool firing mid-call. Already tenant-neutral.
   const dataCollection = {
     call_outcome: { type: 'string', description: 'One of: promised_payment, already_paid, callback_requested, appointment_set, lead_qualified, renewed, resolved, not_interested, dispute_raised, escalated_to_human, do_not_call, no_answer_voicemail, wrong_person. Choose the single best fit for how this call ended.' },
     customer_sentiment: { type: 'string', description: 'positive, neutral or negative — how the customer sounded overall.' },
@@ -2682,15 +2737,16 @@ app.post('/api/elevenlabs/call-ending/fix', requirePlatformAdmin, async (req, re
 });
 
 app.get('/api/elevenlabs/analysis', requirePlatformAdmin, async (req, res) => {
-  try { const cfg = await getProvider('elevenlabs').getAnalysisConfig(config); res.json({ success: true, ...cfg, proposed: analysisSpecForProfile(getProfile(req)) }); }
+  try { const cfg = await getProvider('elevenlabs').getAnalysisConfig(config); res.json({ success: true, ...cfg, proposed: analysisSpec() }); }
   catch (e) { res.status(400).json({ error: e.message }); }
 });
 app.post('/api/elevenlabs/analysis/sync', requirePlatformAdmin, async (req, res) => {
-  const profile = getProfile(req);
-  const spec = analysisSpecForProfile(profile);
+  // Deliberately takes nothing from the caller's own profile: this writes to the agent every
+  // partner shares, so it must describe calls in general rather than whoever happens to be signed in.
+  const spec = analysisSpec();
   try {
     const r = await getProvider('elevenlabs').updateAnalysis(config, spec);
-    res.json({ success: true, ...r, message: `Agent now scores every call against ${r.criteria} criteria and extracts ${r.fields} fields automatically.` });
+    res.json({ success: true, ...r, message: `Agent now scores every call against ${r.criteria} general criteria and extracts ${r.fields} fields automatically. The criteria are the same for every partner, and each one judges only the kind of call it applies to.` });
   } catch (e) { res.status(400).json({ error: e.message }); }
 });
 
