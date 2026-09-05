@@ -26,6 +26,7 @@ const store = require('./store');
 const sched = require('./scheduler');
 const { getProvider, assemblePrompt, LIBRARY_FACETS } = require('./voice-providers');
 const connectors = require('./connectors');
+const router = require('./router');
 const { simulateCall } = require('./simulator');
 const auth = require('./auth');
 const signin = require('./signin');
@@ -885,93 +886,19 @@ function makeSimulatedEntry(toNumber, vars, profile) {
   return entry;
 }
 
-// ── GENERIC INTELLIGENCE ENGINE (7 use cases) ───────────
+// ── ROW INTELLIGENCE ────────────────────────────────────
+// The decision itself lives in router.js, which knows nothing about any particular industry: it
+// reads the catalogue's own per-use-case `fields` declaration as its evidence. What stays here is
+// the file-level work — resolving the columns once, then ordering and pruning the queue.
+
+// One row on its own, for callers that have no file around it. Cross-row value sniffing cannot help
+// a single row, so a well-named header matters more here than it does on an upload.
 function analyseCustomer(row, profile) {
-  const data = {};
-  for (const [k, v] of Object.entries(row)) data[k.toLowerCase().replace(/\s+/g, '_').trim()] = (v || '').toString().trim();
-  const enabled = enabledUseCases(profile);
-  const scale = profile.locale && profile.locale.money_scale === 'indian' ? 'indian' : 'western';
-  const today = new Date();
-  const result = { customer_name: data.customer_name || data.name || data.full_name || '', to_number: data.to_number || data.phone || data.phone_number || data.mobile || '', time: autoTimeOfDay(), use_case: null, variables: {}, intelligence_reason: '', intelligence_signals: [] };
-  const dueDate = parseDate(data.due_date || data.payment_due_date || '');
-  const daysUntilDue = dueDate ? daysDiff(today, dueDate) : null;
-  const daysOverdue = data.days_overdue ? parseInt(data.days_overdue) : (dueDate && dueDate < today ? daysDiff(dueDate, today) : null);
-  const signals = [];
-  // An explicit use_case column wins if it names one of THIS profile's use cases; otherwise we infer
-  // an archetype from the data and pick the industry's own use case for it (e.g. an overdue signal on
-  // an airline profile lands on that airline's collections-shaped call, not a generic one).
-  const pick = (arch) => pickByArchetype(profile, arch);
-  let uc = null;
-  const explicit = (data.use_case || '').toLowerCase().replace(/[\s-]+/g, '_');
-  if (explicit && enabled[explicit]) { uc = explicit; signals.push('📌 explicit use_case'); }
-  if (!uc) { const a = normaliseUseCase(data.use_case); const k = a && pick(a); if (k) { uc = k; signals.push('📌 explicit use_case'); } }
-  if (!uc) {
-    if (daysOverdue !== null && daysOverdue > 0 && pick('overdue_followup')) { uc = pick('overdue_followup'); signals.push(`⚠️ ${daysOverdue} day(s) overdue`); }
-    else if (daysUntilDue !== null && daysUntilDue >= 0 && daysUntilDue <= 7 && pick('payment_reminder')) { uc = pick('payment_reminder'); signals.push(`🔔 due in ${daysUntilDue} day(s)`); }
-    else if ((data.event_type || data.event_detail) && pick('service_notification')) { uc = pick('service_notification'); signals.push('🔔 service event on file'); }
-    else if ((data.missing_items || data.process_name) && pick('document_collection')) { uc = pick('document_collection'); signals.push('📄 documents pending'); }
-    else if ((data.appointment_date || data.appointment_time) && pick('appointment_reminder')) { uc = pick('appointment_reminder'); signals.push('📅 appointment on file'); }
-    else if ((data.renewal_date || data.renewal_item) && pick('renewal_retention')) { uc = pick('renewal_retention'); signals.push('🔁 renewal due'); }
-    else if ((data.interaction_date || data.interaction_type) && pick('feedback_survey')) { uc = pick('feedback_survey'); signals.push('⭐ recent interaction'); }
-    else if ((data.lead_source || data.interest) && pick('lead_qualification')) { uc = pick('lead_qualification'); signals.push('🧲 new lead'); }
-    else if (pick('sales_offer')) { uc = pick('sales_offer'); signals.push('💼 general outreach'); }
-    else { uc = enabledKeys(profile)[0] || 'sales_offer'; signals.push('• default'); }
-  }
-  result.use_case = uc; result.intelligence_signals = signals;
-  const ucCfg = ucMap(profile)[uc] || {};
-  const money = (raw) => formatAmount(raw, scale);
-  switch (archetypeOf(profile, uc)) {
-    case 'overdue_followup':
-      result.variables = { product_name: data.product_name || data.product || 'account', amount_overdue: money(data.amount_overdue || data.amount_due), original_due_date: formatDateSpoken(dueDate || today), days_overdue: (daysOverdue || 0).toString(), outstanding_balance: money(data.outstanding_balance) };
-      result.intelligence_reason = `Overdue by ${daysOverdue || 0} day(s) on their ${result.variables.product_name}.`; break;
-    case 'payment_reminder':
-      result.variables = { product_name: data.product_name || data.product || 'payment', amount_due: money(data.amount_due), due_date: formatDateSpoken(dueDate), outstanding_balance: money(data.outstanding_balance) };
-      result.intelligence_reason = `Payment due in ${daysUntilDue} day(s) — reminder call appropriate.`; break;
-    case 'appointment_reminder':
-      result.variables = { appointment_type: data.appointment_type || ucCfg.appointment_noun || 'appointment', appointment_date: data.appointment_date ? formatDateSpoken(parseDate(data.appointment_date)) : '', appointment_time: data.appointment_time || '', location: data.location || '', reference: data.reference || '', prep_notes: data.prep_notes || '' };
-      result.intelligence_reason = `Upcoming ${result.variables.appointment_type} — confirmation call.`; break;
-    case 'renewal_retention':
-      result.variables = { renewal_item: data.renewal_item || ucCfg.renewal_noun || 'plan', renewal_date: data.renewal_date ? formatDateSpoken(parseDate(data.renewal_date)) : '', renewal_amount: money(data.renewal_amount) };
-      result.intelligence_reason = `${result.variables.renewal_item} due for renewal — retention call.`; break;
-    case 'feedback_survey':
-      result.variables = { interaction_type: data.interaction_type || 'your recent experience', interaction_date: data.interaction_date || 'recently', scale: data.scale || ucCfg.scale || '1 to 5' };
-      result.intelligence_reason = `Recent ${result.variables.interaction_type} — feedback/CSAT call.`; break;
-    case 'lead_qualification':
-      result.variables = { lead_source: data.lead_source || 'your recent enquiry', interest: data.interest || 'our products' };
-      result.intelligence_reason = `New lead from ${result.variables.lead_source} — qualification call.`; break;
-    case 'service_notification':
-      result.variables = { event_type: data.event_type || ucCfg.event_noun || 'an update to your service', event_detail: data.event_detail || '', event_time: data.event_time || '', impact: data.impact || '', options: data.options || '', resolution_eta: data.resolution_eta || '', reference: data.reference || '' };
-      result.intelligence_reason = `Proactive notification — ${result.variables.event_type}.`; break;
-    case 'document_collection':
-      result.variables = { process_name: data.process_name || ucCfg.process_noun || 'your application', missing_items: data.missing_items || 'the outstanding documents', deadline: data.deadline || '', consequence: data.consequence || '', submission_channel: data.submission_channel || (profile.contact && profile.contact.portal) || '', reference: data.reference || '' };
-      result.intelligence_reason = `Pending documents on ${result.variables.process_name}.`; break;
-    case 'sales_offer':
-    default:
-      result.variables = { offer_type: data.offer_type || 'a special offer', offer_detail: data.offer_detail || 'benefits tailored to you', pre_approved: (data.pre_approved || 'FALSE').toString().toUpperCase().startsWith('T') ? 'TRUE' : 'FALSE', eligible_amount: money(data.eligible_amount), expiry_date: data.expiry_date || endOfNextMonth() };
-      result.intelligence_reason = `Marketing outreach — ${result.variables.offer_type}.`; break;
-  }
-  return result;
-}
-function normaliseUseCase(v) {
-  if (!v) return null;
-  const s = v.toString().toLowerCase().replace(/[\s-]+/g, '_');
-  if (USE_CASE_KEYS.includes(s)) return s;
-  if (/overdue|collection|follow/.test(s)) return 'overdue_followup';
-  if (/reminder|due|payment|emi|bill/.test(s)) return 'payment_reminder';
-  if (/sales|offer|market|promo|upsell|cross|winback|win_back/.test(s)) return 'sales_offer';
-  if (/appoint|booking|delivery|visit/.test(s)) return 'appointment_reminder';
-  if (/feedback|survey|csat|nps/.test(s)) return 'feedback_survey';
-  if (/notif|disrupt|outage|delay|recall|alert|advisory|cancel/.test(s)) return 'service_notification';
-  if (/document|kyc|paperwork|verification|pending_doc/.test(s)) return 'document_collection';
-  if (/lead|qualif|prospect/.test(s)) return 'lead_qualification';
-  if (/renew|retention|subscription/.test(s)) return 'renewal_retention';
-  return null;
+  return router.routeRow(row, router.resolveColumns([row]), profile || activeProfile);
 }
 
 // ── SMART QUEUE (order + skip logic for bulk) ───────────
-// Urgency by ARCHETYPE: a disruption notice or an overdue account outranks a marketing call.
-const UC_PRIORITY = { service_notification: 1, overdue_followup: 2, payment_reminder: 3, appointment_reminder: 4, document_collection: 5, renewal_retention: 6, feedback_survey: 7, lead_qualification: 8, sales_offer: 9 };
-function isTruthy(v) { return /^(1|true|yes|y)$/i.test(String(v == null ? '' : v).trim()); }
+function isTruthy(v) { return router.isTruthy(v); }
 // Order the queue by urgency and drop rows we shouldn't call (missing data, do-not-call, duplicates).
 function annotateQueue(list, profile) {
   const seen = new Set();
@@ -980,12 +907,17 @@ function annotateQueue(list, profile) {
     const num = (c.to_number || '').replace(/\s+/g, '');
     const raw = c.raw || {};
     let skip = '';
-    if (!c.ready) skip = 'missing data';
-    else if (isTruthy(raw.do_not_call) || isTruthy(raw.dnc) || isTruthy(raw.opt_out)) skip = 'do-not-call (data)';
+    // Say WHICH detail is missing. "Missing data" sent a partner hunting through their own export
+    // with no idea what we wanted from it.
+    if (!c.to_number) skip = 'no phone number';
+    else if (!c.customer_name) skip = 'no customer name';
+    else if (c.needs && c.needs.length) skip = 'missing ' + c.needs.join(', ');
+    else if (!c.ready) skip = 'missing data';
+    else if (c.dnc || isTruthy(raw.do_not_call) || isTruthy(raw.dnc) || isTruthy(raw.opt_out)) skip = 'do-not-call (data)';
     else if (num && dncNumbers.has(num)) skip = 'do-not-call (prior call)';
     else if (num && seen.has(num)) skip = 'duplicate number';
     if (num && !skip) seen.add(num);
-    return { ...c, priority: UC_PRIORITY[archetypeOf(profile, c.use_case)] || 9, skip: !!skip, skipReason: skip };
+    return { ...c, priority: c.urgency || router.URGENCY[archetypeOf(profile, c.use_case)] || 9, skip: !!skip, skipReason: skip };
   });
   out.sort((a, b) => (Number(a.skip) - Number(b.skip)) || (a.priority - b.priority));
   out.forEach((c, i) => { c.callOrder = i + 1; });
@@ -993,21 +925,41 @@ function annotateQueue(list, profile) {
 }
 function analyseRows(rows, profile) {
   profile = profile || activeProfile;
-  const analysed = rows.map((row, i) => { const intel = analyseCustomer(row, profile); return { rowIndex: i, raw: row, ...intel, ready: !!(intel.to_number && intel.customer_name && intel.use_case) }; });
+  // Resolved once for the whole file: whether `msisdn` is the phone number is a question about the
+  // column, and one cell is not enough to answer it.
+  const resolved = router.resolveColumns(rows);
+  const analysed = rows.map((row, i) => {
+    const intel = router.routeRow(row, resolved, profile);
+    return { rowIndex: i, raw: row, ...intel, ready: intel.callable };
+  });
   const queued = annotateQueue(analysed, profile);
   // Tally by the profile's own use-case keys (industry-named), not the archetypes.
   const byUseCase = {}; Object.keys(ucMap(profile)).forEach(k => { byUseCase[k] = queued.filter(r => r.use_case === k && !r.skip).length; });
-  const summary = { total: queued.length, ready: queued.filter(r => r.ready).length, queued: queued.filter(r => r.ready && !r.skip).length, skipped: queued.filter(r => r.skip).length, byUseCase };
-  return { customers: queued, summary };
+  const summary = {
+    total: queued.length, ready: queued.filter(r => r.ready).length,
+    queued: queued.filter(r => r.ready && !r.skip).length, skipped: queued.filter(r => r.skip).length,
+    byUseCase,
+    lowConfidence: queued.filter(r => !r.skip && r.confidence === 'low').length
+  };
+  // Shown back to the partner so they can see what we read their file as, and correct us.
+  const columns = Object.entries(resolved.map).map(([field, m]) => ({ field, label: fieldLabel(field, profile), header: m.header, how: m.how }));
+  Object.entries(resolved.control).forEach(([field, header]) => columns.push({ field, label: field.replace(/_/g, ' '), header, how: 'control column' }));
+  return { customers: queued, summary, columns, unmapped: resolved.unmapped };
+}
+// The catalogue's own label for a variable, so the mapping reads in the partner's language
+// ("EMI Amount") rather than ours ("amount_due").
+function fieldLabel(field, profile) {
+  if (field === 'customer_name') return 'Customer name';
+  if (field === 'to_number') return 'Phone number';
+  for (const uc of Object.values(ucMap(profile) || {})) {
+    const f = (uc.fields || []).find(x => x.var === field);
+    if (f && f.label) return f.label;
+  }
+  return field.replace(/_/g, ' ').replace(/^./, c => c.toUpperCase());
 }
 
 // ── HELPERS ─────────────────────────────────────────────
-function parseDate(str) { if (!str) return null; const m = str.toString().match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/); if (m) { const d = new Date(`${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`); return isNaN(d.getTime()) ? null : d; } const d = new Date(str); return isNaN(d.getTime()) ? null : d; }
-function daysDiff(a, b) { return Math.round((b - a) / (1000 * 60 * 60 * 24)); }
-function formatAmount(raw, scale) { if (!raw) return ''; const n = parseFloat(raw.toString().replace(/[^0-9.]/g, '')); if (!n || isNaN(n)) return ''; return Math.round(n).toLocaleString(scale === 'indian' ? 'en-IN' : 'en-US'); }
-function formatDateSpoken(date) { if (!date) return 'the scheduled date'; const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']; const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']; const day = date.getDate(); const suffix = ['th', 'st', 'nd', 'rd'][(day % 10 > 3 || Math.floor(day / 10) === 1) ? 0 : day % 10] || 'th'; return `${days[date.getDay()]}, the ${day}${suffix} of ${months[date.getMonth()]}`; }
-function autoTimeOfDay() { const hr = new Date().getHours(); return hr < 12 ? 'morning' : hr < 17 ? 'afternoon' : 'evening'; }
-function endOfNextMonth() { const d = new Date(); d.setMonth(d.getMonth() + 1); const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']; return `end of ${months[d.getMonth()]}`; }
+function autoTimeOfDay() { return router.autoTimeOfDay(new Date()); }
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 function futureDate(days) { const d = new Date(); d.setDate(d.getDate() + days); return d.toISOString().split('T')[0]; }
 function maskKey(k) { return k ? k.substring(0, 6) + '••••••••' : ''; }
@@ -3033,6 +2985,23 @@ Priya Nair,+919812340155,,,,,,,,,,,,,,,,,your enquiry on our website,a home loan
 Sofia Rossi,+390612340188,,,,,,,,,,,,,,,,,,,annual membership,${futureDate(9)},Renewal / retention`;
   res.setHeader('Content-Type', 'text/csv');
   res.setHeader('Content-Disposition', 'attachment; filename="omnireach-crm-template.csv"');
+  res.send(csv);
+});
+
+// A file shaped like a partner's own export rather than like our template: their column names,
+// no use_case column, and gaps in it. Every row still reaches the right call, which is the claim
+// worth demonstrating and the one the old engine could not have met.
+app.get('/api/template/export', (req, res) => {
+  const csv = `Account Holder,Mobile No,Product,Bill Amount,Payment Due On,Days Late,Scheduled On,Time Slot,Branch,Issue Reported,Fix By,Docs Pending,Last Visit,Opted Out
+Rohan Desai,+919820011001,Home loan,48500,${futureDate(6)},,,,,,,,,
+Fatima Al-Zahra,+971501230011,Motor policy,,,23,,,,,,,,
+Chen Wei,+8613800130011,,,,,${futureDate(2)},between 10 and 12,Pudong branch,,,,,
+Thandiwe Mokoena,+27821230011,Fibre,,,,,,,Line fault in Sandton,${futureDate(1)},,,
+Lucia Ferrari,+393331230011,Current account,,,,,,,,,Proof of address; Recent payslip,,
+James O'Connor,+353871230011,,,,,,,,,,,${futureDate(-4)},
+Priya Raghavan,+919820011002,Credit card,12500,${futureDate(4)},,,,,,,,,yes`;
+  res.setHeader('Content-Type', 'text/csv');
+  res.setHeader('Content-Disposition', 'attachment; filename="partner-export-sample.csv"');
   res.send(csv);
 });
 

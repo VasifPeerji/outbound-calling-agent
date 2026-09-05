@@ -30,12 +30,27 @@ Pick a source on **Smart Targeting**. Each returns rows that the engine then ana
 | `hubspot` | interface-ready | private-app token | `GET /crm/v3/objects/contacts` |
 | `zoho` | interface-ready | OAuth | Zoho CRM records API |
 
-**Row schema** (columns the engine understands; all optional except the first two):
-`customer_name`, `to_number`, `use_case`, `product_name`, `amount_due`, `due_date`, `days_overdue`,
-`amount_overdue`, `outstanding_balance`, `offer_type`, `offer_detail`, `expiry_date`,
-`appointment_type`, `appointment_date`, `appointment_time`, `location`, `interaction_type`,
-`interaction_date`, `lead_source`, `interest`, `renewal_item`, `renewal_date`, `do_not_call`, `notes`.
-Download a filled example from the console (**Download CRM Template**) or `GET /api/template/crm`.
+**Column names are yours, not ours.** Upload the file as it comes out of the source system. The
+router matches each header onto its own vocabulary three ways, in order:
+
+1. **By name** — `due_date`, and the several hundred aliases partners actually use (`msisdn`,
+   `consignee`, `appt_dt`, `guardian_phone`, `Bill Amount`, `Payment Due On`).
+2. **By meaning** — a longer header whose words still say what it is (`bill_due_date`,
+   `restoration_eta`, `pending_documents`).
+3. **By its values** — a column called `crm_field_7` full of `+9198…` is the phone number, and one
+   full of people is the name. Read down the whole column, not one cell.
+
+The mapping it settled on is shown above the results in the console, so it can be checked before
+anything is dialled. Two sample files: `GET /api/template/crm` (our own names, useful as a template)
+and `GET /api/template/export` (**Download Sample Export** — a partner-shaped file with none of our
+names in it, gaps, and several different calls in the one upload).
+
+All the router needs somewhere in the file is a **name** and a **number**. Everything else shapes
+which call is placed and what is said on it.
+
+**Suppression is matched generously**, because the cost of missing it is a call to somebody who
+asked us not to ring: `do_not_call`, `Opted Out`, `DNC`, `DND`, `Do Not Contact`, `unsubscribed`,
+`Consent Revoked`, `Suppressed`, `Blacklisted` and the like all suppress the row.
 
 **Add a source adapter:** add an entry to `sources` in `connectors.js` with an async `fetch(config)`
 that returns an array of plain row objects. That is the whole contract.
@@ -46,15 +61,37 @@ that returns an array of plain row objects. That is the whole contract.
 
 `POST /api/source/fetch` (and the CSV analyser) run every row through the engine, which:
 
-1. **Routes each customer to the best enabled use case** — an explicit `use_case` wins; otherwise it
-   infers from the data (overdue vs due-soon vs appointment vs renewal vs recent-interaction vs
-   lead vs sales). Only use cases enabled in the active profile are assigned.
-2. **Orders by urgency:** overdue → payment reminder → appointment → renewal → feedback → lead → sales.
-3. **Skips rows it should not call**, with the reason shown:
-   - `missing data` — no name or number
-   - `do-not-call (data)` — a truthy `do_not_call` / `dnc` / `opt_out` column
+1. **Routes each customer to the best enabled use case.** Every use case in the catalogue declares
+   the details it needs (`fields`, with `required` flags). The row is scored against those
+   declarations plus what the data is evidently asking for — a date already past, an exception
+   logged, documents outstanding — and the use case whose needs the row actually meets wins. There is
+   no per-industry code: adding an industry stays a catalogue edit. An explicit `use_case` column
+   overrides all of it, and only use cases enabled in the active profile are considered.
+2. **Fills the variables that use case declares**, formatted for speech: amounts grouped to the
+   profile's money scale, dates spoken in full ("Friday, the 11th of September"), slots read as
+   ranges.
+3. **Handles a gap rather than papering over it**, in this order:
+   - **derive it** — days overdue from a due date, the date out of a delivery slot;
+   - **name it from the call itself** — only for the category of the thing ("a delivery exception"),
+     which is true because the call was chosen, never for a figure or a date;
+   - **leave it out** — the prompts already instruct the agent to speak around an empty variable, so
+     silence about an unknown is safe and honest;
+   - **step down** to a call the row can support — a fee reminder with no amount but documents
+     outstanding is a documents call;
+   - **hold the row back** and name the missing column, if none of the above applies.
+
+   A figure or a date is never invented. Anything spoken to a real customer has to be theirs.
+4. **Orders by urgency:** service notification → overdue → payment reminder → appointment →
+   documents → renewal → feedback → lead → sales.
+5. **Skips rows it should not call**, with the reason shown:
+   - `no phone number` / `no customer name` — says which, rather than "missing data"
+   - `missing <field>` — the row wants a call it has not got the details for; the field is named
+   - `do-not-call (data)` — a suppression column, however it is spelled (see above)
    - `do-not-call (prior call)` — the number was marked DNC on an earlier call (honours the outcome)
    - `duplicate number` — the same number earlier in the batch
+
+   Where nothing on the row matches any call the agent makes — an amount and a due date handed to a
+   clinic that only books appointments — it says so, rather than falling back to a sales pitch.
 
 The console shows the ordered queue with an **Order** column and greys out skipped rows. Launching a
 campaign calls only the queued rows, in order.

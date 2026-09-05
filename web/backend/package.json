@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "node server.js",
+    "test": "node tests/run.js",
     "dev": "node server.js",
     "migrate": "node migrate-to-postgres.js",
     "migrate:dry": "node migrate-to-postgres.js --dry-run",

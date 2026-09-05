@@ -243,6 +243,19 @@ gtag('config', 'G-GERTRM88QY');
   .signal-chips { display: flex; flex-wrap: wrap; gap: 4px; }
   .signal-chip { background: var(--brand-50); color: var(--brand-700); font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 10px; white-space: nowrap; border: 1px solid var(--brand-100); }
   .intel-reason { font-size: 11px; color: var(--text-muted); font-style: italic; max-width: 280px; line-height: 1.35; }
+  .colmap { margin: 4px 0 0; padding: 12px 14px; }
+  .colmap-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .colmap-pair { display: inline-flex; align-items: center; gap: 6px; background: var(--surface-2); border: 1px solid var(--border-light); border-radius: 999px; padding: 4px 10px; font-size: 11.5px; max-width: 100%; }
+  .colmap-pair code { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); background: none; padding: 0; }
+  .colmap-pair b { font-weight: 600; }
+  .colmap-pair em { font-style: normal; color: var(--text-muted); font-size: 10.5px; }
+  .colmap-arrow { color: var(--text-muted); }
+  .colmap-rest { margin-top: 8px; font-size: 11px; color: var(--text-muted); }
+  .colmap-rest code { font-family: 'DM Mono', monospace; background: none; }
+  .conf-alt { display: block; font-size: 10.5px; color: var(--text-muted); margin-top: 3px; }
+  .var-preview { display: flex; flex-direction: column; gap: 2px; font-size: 11px; max-width: 230px; }
+  .var-preview span { display: flex; gap: 6px; }
+  .var-preview i { font-style: normal; color: var(--text-muted); flex-shrink: 0; min-width: 78px; }
 
   .progress-bar { height: 6px; background: #E7E9F2; border-radius: 20px; overflow: hidden; margin-top: 7px; }
   .progress-fill { height: 100%; background: linear-gradient(90deg, var(--brand-700), var(--brand)); border-radius: 20px; transition: width .5s ease; width: 0%; }
@@ -767,17 +780,22 @@ gtag('config', 'G-GERTRM88QY');
     <div class="page" id="page-intelligence">
       <div class="page-header"><div class="page-title">Smart Targeting Engine</div><div class="page-subtitle">Upload your CRM data — the engine routes each customer to the best <strong>enabled</strong> use case and builds the call variables automatically.</div></div>
       <div class="template-banner"><div><div class="template-title">📊 Download CRM Template</div><div class="template-desc">All-in-one CSV covering every use case, with live dates. 7 sample customers.</div></div><button class="btn btn-secondary" onclick="downloadCRMTemplate()">⬇ Download Template</button></div>
+      <div class="template-banner"><div><div class="template-title">🧪 Try a file that looks nothing like ours</div><div class="template-desc">A sample shaped like a partner's own export: their column names, no use-case column, and gaps in it. Every row still finds the right call.</div></div><button class="btn btn-secondary" onclick="downloadPartnerExport()">⬇ Download Sample Export</button></div>
       <div class="card" style="margin-bottom:16px">
         <div class="card-header"><div class="card-title">🧠 How routing works</div></div>
-        <div style="font-size:12.5px;color:var(--text-dim);line-height:1.9">
-          <code>use_case</code> column set → used directly. Otherwise, in order:
-          <code>days_overdue &gt; 0</code> or past <code>due_date</code> → <strong>Overdue</strong> ·
-          <code>due_date</code> ≤ 7 days → <strong>Reminder</strong> ·
-          <code>appointment_date</code> → <strong>Appointment</strong> ·
-          <code>renewal_date</code> → <strong>Renewal</strong> ·
-          <code>interaction_date</code> → <strong>Feedback</strong> ·
-          <code>lead_source</code>/<code>interest</code> → <strong>Lead-Qual</strong> · otherwise → <strong>Sales</strong>.
-          Only use cases enabled in the active profile are assigned.
+        <div style="font-size:12.5px;color:var(--text-dim);line-height:1.8">
+          <strong>1. Your columns are matched to ours.</strong> By name where it is obvious, by
+          meaning where it is not (<code>msisdn</code>, <code>consignee</code>, <code>appt_dt</code>),
+          and by reading the values themselves when the header says nothing at all. What we settled on
+          is shown above the results, so you can check it.<br>
+          <strong>2. Each row is matched to a call.</strong> Every use case switched on for this agent
+          declares the details it needs; the one whose needs your row actually meets is the one it
+          gets. A <code>use_case</code> column, if you have one, overrides that.<br>
+          <strong>3. Gaps are handled, not invented.</strong> What can be worked out is
+          (days overdue from a due date); what cannot is left unsaid. A figure or a date is never
+          made up to fill a hole. If something essential is missing, the row is held back and the
+          missing column is named, and if nothing on the row matches any call this agent makes, it
+          says so rather than falling back to a sales pitch.
         </div>
       </div>
       <div class="card" style="margin-bottom:16px">
@@ -791,11 +809,11 @@ gtag('config', 'G-GERTRM88QY');
         <div id="source-config" style="margin-top:14px;display:none"></div>
       </div>
       <div class="card" id="csv-source-card">
-        <div class="card-header"><div><div class="card-title">Upload CRM Data</div><div class="card-subtitle">CSV — one row per customer. Required: customer_name, to_number</div></div><button class="btn btn-ghost btn-sm" onclick="clearIntelCSV()" id="clear-intel-btn" style="display:none">✕ Clear</button></div>
+        <div class="card-header"><div><div class="card-title">Upload CRM Data</div><div class="card-subtitle">CSV — one row per customer. Upload it as it comes out of your system; the columns do not need renaming.</div></div><button class="btn btn-ghost btn-sm" onclick="clearIntelCSV()" id="clear-intel-btn" style="display:none">✕ Clear</button></div>
         <div class="drop-zone" id="intel-drop-zone" ondragover="handleDragOver(event,'intel-drop-zone')" ondragleave="handleDragLeave('intel-drop-zone')" ondrop="handleDrop(event,'intel-drop-zone')">
           <input type="file" id="intel-file-input" accept=".csv" onchange="handleIntelFileSelect(event)"/>
           <div class="drop-icon">🧠</div><div class="drop-title">Drop CRM CSV here or click to browse</div>
-          <div class="drop-sub">Columns like <strong>due_date, appointment_date, renewal_date, lead_source</strong> drive automatic routing</div>
+          <div class="drop-sub">Your own headers are fine — <strong>msisdn</strong>, <strong>consignee</strong>, <strong>appt_dt</strong>, <strong>Bill Amount</strong>. All we need somewhere in the file is a name and a number.</div>
         </div>
         <div id="intel-results" style="display:none"></div>
       </div>
@@ -2601,7 +2619,13 @@ async function processIntelFile(file) {
   const btn = document.getElementById('clear-intel-btn'); btn.style.display = 'inline-flex'; btn.textContent = '⏳ Analysing…'; btn.disabled = true;
   try {
     const fd = new FormData(); fd.append('file', new Blob([text], { type: 'text/csv' }), file.name);
-    const res = await fetch(`${backendUrl}/api/analyse-csv`, { method: 'POST', body: fd });
+    // A multipart upload cannot go through apiFetch (which sets a JSON content type), but it still
+    // needs the bearer token: without it every drag-and-drop returned 401 and the console reported
+    // it as "Analysis failed" with no hint that the request was simply not signed.
+    const res = await fetch(`${backendUrl}/api/analyse-csv`, {
+      method: 'POST', body: fd,
+      headers: authToken ? { Authorization: 'Bearer ' + authToken } : {}
+    });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Analysis failed'); }
     const data = await res.json();
     applyAnalysis(data);
@@ -2609,26 +2633,62 @@ async function processIntelFile(file) {
   finally { btn.textContent = '✕ Clear'; btn.disabled = false; }
 }
 function applyAnalysis(data) {
-  analysedCustomers = data.customers; renderIntelResults(data.customers, data.summary); updateBulkPanel(data.summary);
+  analysedCustomers = data.customers;
+  renderIntelResults(data.customers, data.summary, data.columns || [], data.unmapped || []);
+  updateBulkPanel(data.summary);
   toast('success', 'Analysis complete', `${data.summary.queued} queued · ${data.summary.skipped} skipped`);
 }
-function renderIntelResults(customers, summary) {
+// How the partner's own headers were understood. Shown first, because every row below is downstream
+// of it: if we read the wrong column as the due date, that is visible here and nowhere else.
+function renderColumnMap(columns, unmapped) {
+  if (!columns.length) return '';
+  const HOW = { exact: '', alias: '', similar: 'matched by name', 'from the values': 'recognised from the data', 'control column': 'controls the run' };
+  const chips = columns.map(c => {
+    const note = HOW[c.how] || '';
+    return `<span class="colmap-pair" title="${escapeHtml(c.how)}"><code>${escapeHtml(c.header)}</code><span class="colmap-arrow">→</span><b>${escapeHtml(c.label)}</b>${note ? `<em>${escapeHtml(note)}</em>` : ''}</span>`;
+  }).join('');
+  const rest = unmapped.length
+    ? `<div class="colmap-rest">Not used: ${unmapped.map(h => `<code>${escapeHtml(h)}</code>`).join(' ')}</div>` : '';
+  return `<div class="card colmap"><div class="ps-label" style="margin-bottom:8px">How your file was read</div>
+    <div class="colmap-grid">${chips}</div>${rest}</div>`;
+}
+function renderIntelResults(customers, summary, columns, unmapped) {
+  columns = columns || []; unmapped = unmapped || [];
   const el = document.getElementById('intel-results'); el.style.display = 'block';
   const chips = Object.keys(summary.byUseCase || {}).filter(k => summary.byUseCase[k]).map(k => { const m = ucMeta(k); return `<span class="badge ${m.badge}">${m.emoji} ${escapeHtml(m.short)}: ${summary.byUseCase[k]}</span>`; }).join(' ');
   el.innerHTML = `<div style="margin-top:18px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px;flex-wrap:wrap"><div style="font-size:15px;font-weight:700">Analysis — ${summary.total} rows · <span style="color:var(--green)">${summary.queued} queued</span> · ${summary.skipped} skipped</div><button class="btn btn-green btn-sm" onclick="showPage('bulk', document.querySelectorAll('.nav-item')[2])">→ Launch Campaign</button></div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">${chips}</div>
-    <div style="font-size:11.5px;color:var(--text-muted);margin-bottom:8px">Ordered by urgency (overdue → payment → appointment → renewal → feedback → lead → sales). Do-not-call, duplicates, and incomplete rows are skipped automatically.</div>
-    <div class="table-wrapper"><table><thead><tr><th>Order</th><th>Customer</th><th>Phone</th><th>Use Case</th><th>Signals</th><th>Reasoning</th><th>Status</th></tr></thead><tbody>
+    ${renderColumnMap(columns, unmapped)}
+    <div style="font-size:11.5px;color:var(--text-muted);margin:10px 0 8px">Each row is matched to the call its own data is asking for, then ordered by urgency (service → overdue → payment → appointment → documents → renewal → feedback → lead → sales). Do-not-call, duplicates, and rows missing something essential are skipped.</div>
+    <div class="table-wrapper"><table><thead><tr><th>Order</th><th>Customer</th><th>Phone</th><th>Use Case</th><th>Confidence</th><th>Why this call</th><th>What we'll say</th><th>Status</th></tr></thead><tbody>
     ${customers.map((c) => `<tr style="${c.skip ? 'opacity:.5' : ''}"><td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted)">${c.skip ? '—' : c.callOrder}</td>
       <td>${escapeHtml(c.customer_name) || '<span style="color:var(--red)">MISSING</span>'}</td>
       <td style="font-family:'DM Mono',monospace;font-size:11.5px">${escapeHtml(c.to_number) || '<span style="color:var(--red)">MISSING</span>'}</td>
       <td>${ucBadge(c.use_case)}</td>
-      <td><div class="signal-chips">${(c.intelligence_signals || []).map(s => `<span class="signal-chip">${escapeHtml(s)}</span>`).join('')}</div></td>
-      <td><div class="intel-reason">${escapeHtml(c.intelligence_reason) || '—'}</div></td>
+      <td>${confidenceBadge(c)}</td>
+      <td><div class="intel-reason">${escapeHtml(c.intelligence_reason) || '—'}</div>
+          <div class="signal-chips">${(c.intelligence_signals || []).map(s => `<span class="signal-chip">${escapeHtml(s)}</span>`).join('')}</div></td>
+      <td>${varPreview(c)}</td>
       <td>${c.skip ? `<span class="badge badge-muted">⊘ ${escapeHtml(c.skipReason)}</span>` : (c.ready ? '<span class="badge badge-green">✓ Ready</span>' : '<span class="badge badge-red">⚠ Incomplete</span>')}</td></tr>`).join('')}
     </tbody></table></div></div>`;
   document.getElementById('intel-badge').textContent = customers.length;
+}
+// How sure the router is, and what it would take to be surer. A row it guessed at is worth a look
+// before five hundred of them are dialled.
+function confidenceBadge(c) {
+  if (c.skip && c.needs && c.needs.length) return `<span class="badge badge-red" title="Add these columns to call this row">needs ${escapeHtml(c.needs.join(', '))}</span>`;
+  const m = { certain: ['badge-green', 'named in file'], high: ['badge-green', 'high'], medium: ['badge-amber', 'medium'], low: ['badge-amber', 'low'], none: ['badge-muted', '—'] }[c.confidence] || ['badge-muted', '—'];
+  const alt = (c.alternatives || []).length ? ` · else ${escapeHtml(c.alternatives[0].label)}` : '';
+  return `<span class="badge ${m[0]}" title="Next best: ${escapeHtml((c.alternatives || []).map(a => a.label).join(', ') || 'none')}">${m[1]}</span><span class="conf-alt">${alt}</span>`;
+}
+// The actual values the agent will speak. A partner reading their own customer's name and amount
+// back off our screen is the fastest way to prove the data was really understood.
+function varPreview(c) {
+  const v = c.variables || {};
+  const keys = Object.keys(v).slice(0, 4);
+  if (!keys.length) return '<span style="color:var(--text-muted)">—</span>';
+  return `<div class="var-preview">${keys.map(k => `<span><i>${escapeHtml(k.replace(/_/g, ' '))}</i>${escapeHtml(String(v[k]))}</span>`).join('')}</div>`;
 }
 function clearIntelCSV() {
   analysedCustomers = [];
@@ -3139,10 +3199,22 @@ function exportHistory() {
   const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
   downloadFile(csv, `omnireach-calls-${Date.now()}.csv`, 'text/csv');
 }
-function downloadCRMTemplate() {
-  if (backendConnected) window.open(`${backendUrl}/api/template/crm`, '_blank');
-  toast('success', 'Template downloading', '7 sample customers across every use case.');
+/**
+ * These endpoints sit behind the same session check as everything else, and `window.open` cannot
+ * carry the bearer token, so opening them in a tab returned 401 while the toast said the file was
+ * on its way. Fetch it, then hand it over through the same helper the call export uses.
+ */
+async function downloadSample(path, filename, note) {
+  if (!checkBackend()) return;
+  try {
+    const res = await fetch(`${backendUrl}${path}`, { headers: authToken ? { Authorization: 'Bearer ' + authToken } : {} });
+    if (!res.ok) throw new Error(res.status === 401 ? 'Your session has expired. Sign in again.' : `Server returned ${res.status}.`);
+    downloadFile(await res.text(), filename, 'text/csv');
+    toast('success', 'Downloaded', note);
+  } catch (e) { toast('error', 'Download failed', e.message); }
 }
+function downloadCRMTemplate() { downloadSample('/api/template/crm', 'omnireach-crm-template.csv', '7 sample customers across every use case.'); }
+function downloadPartnerExport() { downloadSample('/api/template/export', 'partner-export-sample.csv', 'Upload it as-is — none of the columns are named the way we name them.'); }
 function downloadFile(content, filename, type) { const b = new Blob([content], { type }); const u = URL.createObjectURL(b); const a = document.createElement('a'); a.href = u; a.download = filename; a.click(); URL.revokeObjectURL(u); }
 
 // ══════ SETTINGS ══════
