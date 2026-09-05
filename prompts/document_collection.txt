@@ -87,6 +87,10 @@ Never invent a reference number or the name of a person handling their case.
 
 Call these the moment a branch is reached. Confirm details aloud first (global tool rules), then speak naturally.
 
+- **`log_document_status`** — **ALWAYS**, before the goodbye: which items are STILL outstanding
+  after this call, when they said they would send them (`promised_by`), how (`channel`), and anything
+  genuinely stopping them (`blocker`). If everything is now on its way, say so by leaving
+  `outstanding` empty — that is the difference between a chase that worked and one that did not.
 - **`send_followup`** — send the list of what's missing, the upload link, or the branch address → SMS / WhatsApp / email. Offer this on nearly every call.
 - **`schedule_callback`** — they need time to gather documents; agree a day and log it.
 - **`book_appointment`** — they'd rather bring it in person; book the branch or office visit.

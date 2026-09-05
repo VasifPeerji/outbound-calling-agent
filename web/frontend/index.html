@@ -3064,6 +3064,11 @@ function outcomeChips(c) {
   if (c.survey) chips.push(`<span class="badge badge-amber">⭐ ${escapeHtml(c.survey.score || '')}</span>`);
   if (c.lead) chips.push(`<span class="badge badge-brand">🧲 ${escapeHtml(c.lead.qualified || 'lead')}</span>`);
   if (c.renewal) chips.push(`<span class="badge badge-brand">🔁 ${escapeHtml(c.renewal.decision || 'renewal')}</span>`);
+  if (c.service) chips.push(`<span class="badge badge-blue">📢 ${escapeHtml(c.service.option_chosen || (/^y/i.test(c.service.acknowledged || '') ? 'acknowledged' : 'notified'))}</span>`);
+  // Same precedence as the next-step column: a customer who gave a date has committed, even if they
+  // also mentioned something slowing them down. Showing "blocked" there contradicted the row.
+  if (c.documents) chips.push(`<span class="badge ${c.documents.promised_by ? 'badge-green' : c.documents.blocker ? 'badge-amber' : 'badge-muted'}">📄 ${escapeHtml(c.documents.promised_by || (c.documents.blocker ? 'blocked' : (c.documents.outstanding ? 'outstanding' : 'nothing outstanding')))}</span>`);
+  if (c.offer) chips.push(`<span class="badge ${/accept/i.test(c.offer.decision || '') ? 'badge-green' : /declin/i.test(c.offer.decision || '') ? 'badge-muted' : 'badge-amber'}">💼 ${escapeHtml(c.offer.decision || 'offer')}</span>`);
   if (c.dispute) chips.push(`<span class="badge badge-amber">⚠️ dispute</span>`);
   if (c.transferred) chips.push(`<span class="badge badge-muted">↗ ${escapeHtml(c.transferred.department || 'transfer')}</span>`);
   if (c.followups && c.followups.length) chips.push(`<span class="badge badge-muted">✉️ follow-up</span>`);
@@ -3071,6 +3076,14 @@ function outcomeChips(c) {
   return chips.length ? `<div style="display:flex;flex-wrap:wrap;gap:4px">${chips.join('')}</div>` : '<span style="color:var(--text-muted);font-size:11px">—</span>';
 }
 // Full "Actions captured" block for the call-detail modal
+// Customers give dates in their own words, and half of them already carry the preposition, so
+// prefixing another produces "by in a couple of days". Mirrors whenPhrase() in connectors.js, which
+// words the next-step column the same way.
+function whenPhrase(raw) {
+  const v = String(raw == null ? '' : raw).trim();
+  if (!v) return '';
+  return /^(by|on|before|after|this|next|tomorrow|today|tonight|within|in|around|end of|first thing)\b/i.test(v) ? v : 'by ' + v;
+}
 function outcomeDetail(entry) {
   const rows = [];
   const join = (arr) => arr.filter(Boolean).join(' · ');
@@ -3082,6 +3095,17 @@ function outcomeDetail(entry) {
   if (entry.survey) rows.push(['Survey', join([entry.survey.score && ('score ' + entry.survey.score), entry.survey.scale, entry.survey.would_recommend && ('recommend: ' + entry.survey.would_recommend), entry.survey.verbatim])]);
   if (entry.lead) rows.push(['Lead', join([entry.lead.qualified && ('fit: ' + entry.lead.qualified), entry.lead.interest, entry.lead.budget, entry.lead.timeline, entry.lead.notes])]);
   if (entry.renewal) rows.push(['Renewal', join([entry.renewal.decision, entry.renewal.reason, entry.renewal.offer_accepted && ('offer: ' + entry.renewal.offer_accepted)])]);
+  if (entry.service) rows.push(['Service outcome', join([
+    entry.service.acknowledged && ('understood: ' + entry.service.acknowledged),
+    entry.service.option_chosen && ('chose: ' + entry.service.option_chosen),
+    /^y/i.test(entry.service.follow_up_needed || '') ? 'follow-up needed' : '',
+    entry.service.reference])]);
+  if (entry.documents) rows.push(['Documents', join([
+    entry.documents.outstanding ? ('still outstanding: ' + entry.documents.outstanding) : 'nothing outstanding',
+    entry.documents.promised_by && whenPhrase(entry.documents.promised_by),
+    entry.documents.channel && ('via ' + entry.documents.channel),
+    entry.documents.blocker && ('blocked: ' + entry.documents.blocker)])]);
+  if (entry.offer) rows.push(['Offer', join([entry.offer.decision, entry.offer.reason, entry.offer.reference])]);
   if (entry.dispute) rows.push(['Dispute', join([entry.dispute.about, entry.dispute.details])]);
   if (entry.transferred) rows.push(['Transferred', join([entry.transferred.department, entry.transferred.reason])]);
   if (entry.contactUpdates && entry.contactUpdates.length) rows.push(['Contact update', entry.contactUpdates.map(u => `${u.field}: ${u.value}`).join('; ')]);

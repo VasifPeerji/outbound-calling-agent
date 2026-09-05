@@ -112,6 +112,9 @@ genuinely enthusiastic about the offer, and completely disciplined about what is
 
 Call these the moment a branch is reached. Confirm details aloud first (global tool rules), then speak naturally.
 
+- **`log_offer_outcome`** — **ALWAYS**, once they answer: `accepted`, `declined` or `considering`,
+  and WHY in their own words. A declined offer with the reason attached is worth more to the team
+  than a vague no, and it is the only record of how the offer itself landed.
 - **`capture_lead`** — when there's genuine interest (Step 4): whether they're a fit, the product, and any budget/timeline they share.
 - **`book_appointment`** — if they want a specialist call, visit, or demo → capture the day/time.
 - **`schedule_callback`** — bad time (Step 3) or "need to think / discuss with family" (Step 6).

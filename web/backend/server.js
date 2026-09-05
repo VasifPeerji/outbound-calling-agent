@@ -997,7 +997,7 @@ const LEAK_TELLS = [
   // the agent reading its own plan aloud.
   [/\bI (?:need to|should|will|must|am going to|am now going to)\b[^.!?]{0,80}\b(?:tool|function|the call outcome|record the outcome|end the call|the system|my instructions|next step)\b/gi, 'narrating its next step'],
   [/\blet me think\b|\bthinking:|\bmy reasoning\b|\bstep \d[:.]/gi, 'thinking out loud'],
-  [/\b(?:book_appointment|record_call_outcome|schedule_callback|mark_do_not_call|transfer_to_human|capture_lead|log_promise_to_pay|flag_dispute|end_call)\b/g, 'tool name spoken'],
+  [/\b(?:book_appointment|record_call_outcome|schedule_callback|mark_do_not_call|transfer_to_human|capture_lead|log_promise_to_pay|flag_dispute|log_service_outcome|log_document_status|log_offer_outcome|capture_survey_response|log_renewal_decision|reschedule_appointment|cancel_appointment|update_contact_info|send_followup|end_call)\b/g, 'tool name spoken'],
   [/\{\{[a-z_]+\}\}/gi, 'unfilled variable spoken']
 ];
 function detectPromptLeak(transcript) {
@@ -1119,6 +1119,9 @@ function applyOutcome(entry, tool, p) {
     case 'cancel_appointment': entry.appointment = { status: 'cancelled', reason: p.reason || '' }; break;
     case 'capture_lead': entry.lead = { qualified: p.qualified || '', interest: p.interest || '', budget: p.budget || '', timeline: p.timeline || '', notes: p.notes || '' }; break;
     case 'log_renewal_decision': entry.renewal = { decision: p.decision || '', reason: p.reason || '', offer_accepted: p.offer_accepted || '' }; break;
+    case 'log_service_outcome': entry.service = { acknowledged: p.acknowledged || '', option_chosen: p.option_chosen || '', follow_up_needed: p.follow_up_needed || '', reference: p.reference || '' }; break;
+    case 'log_document_status': entry.documents = { outstanding: p.outstanding || '', promised_by: p.promised_by || '', channel: p.channel || '', blocker: p.blocker || '' }; break;
+    case 'log_offer_outcome': entry.offer = { decision: p.decision || '', reason: p.reason || '', reference: p.reference || '' }; break;
   }
 }
 // Push completed-call outcomes back to the configured system of record (CRM/DB/sheet/webhook).

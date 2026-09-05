@@ -114,13 +114,16 @@ function simulateCall(vars, profile) {
       U(`Actually, that does sound useful.`);
       A(`Wonderful, ${who}! I'll have a specialist walk you through it — I've captured your interest.`);
       disposition = 'lead_qualified'; sentiment = 'positive'; apply.lead = { qualified: 'yes', interest: v.offer_type || '', budget: '', timeline: 'soon', notes: '' }; logTool('capture_lead', apply.lead);
+      apply.offer = { decision: 'accepted', reason: 'saw the value straight away', reference: v.reference || '' }; logTool('log_offer_outcome', apply.offer);
     } else if (b === 'callback') {
       const t2 = pick(['tomorrow', 'next week', 'this weekend']);
       U(`Can you call me ${t2}?`); A(`Absolutely, ${who} — I'll set that up. Talk ${t2}!`);
       disposition = 'callback_requested'; apply.callback = { time: t2, reason: 'wants to consider' }; logTool('schedule_callback', apply.callback);
+      apply.offer = { decision: 'considering', reason: 'wants time to think', reference: v.reference || '' }; logTool('log_offer_outcome', apply.offer);
     } else if (b === 'no') {
       U(`No thanks, not for me.`); A(`No problem at all, ${who} — I appreciate your time. Do keep ${short} in mind down the line.`);
       disposition = 'not_interested';
+      apply.offer = { decision: 'declined', reason: pick(['not the right time', 'already has one', 'price']), reference: v.reference || '' }; logTool('log_offer_outcome', apply.offer);
     } else {
       U(`Please stop calling me with offers.`); A(`Understood, ${who}, and apologies for the disturbance — I've recorded that and you won't get these calls again.`);
       disposition = 'do_not_call'; apply.dnc = true; apply.dncReason = 'opted out of offers'; logTool('mark_do_not_call', { reason: 'opted out of offers', scope: 'marketing_only' });
@@ -191,21 +194,25 @@ function simulateCall(vars, profile) {
       A(`Done, ${who} — you're confirmed. You'll get it in writing shortly. Thank you for being so understanding.`);
       disposition = 'appointment_set'; sentiment = 'neutral';
       apply.appointment = { status: 'rescheduled', date: v.resolution_eta || '', time: '', type: what, location: '' }; logTool('reschedule_appointment', { new_date: v.resolution_eta || '', new_time: '' });
+      apply.service = { acknowledged: 'yes', option_chosen: opt, follow_up_needed: 'no', reference: v.reference || '' }; logTool('log_service_outcome', apply.service);
     } else if (b === 'annoyed') {
       U(`This is the second time this has happened. It's really not good enough.`);
       A(`You're right to be annoyed, ${who}, and I'm not going to defend it. I've logged this formally so it's looked at properly, and someone will come back to you. In the meantime, here's what we can do right now.`);
       disposition = 'dispute_raised'; sentiment = 'negative';
       apply.dispute = { about: what, details: 'repeat disruption, customer dissatisfied' }; logTool('flag_dispute', apply.dispute);
+      apply.service = { acknowledged: 'yes', option_chosen: '', follow_up_needed: 'yes', reference: v.reference || '' }; logTool('log_service_outcome', apply.service);
     } else if (b === 'refund') {
       U(`I don't want an alternative, I'd just like my money back.`);
       A(`That's absolutely your choice, ${who} — I've started the refund and you'll see it back on your original payment method. I'm sorry we couldn't do better this time.`);
       disposition = 'resolved'; sentiment = 'negative';
       apply.appointment = { status: 'cancelled', reason: 'customer chose a refund' }; logTool('cancel_appointment', { reason: 'refund requested' });
+      apply.service = { acknowledged: 'yes', option_chosen: 'refund', follow_up_needed: 'no', reference: v.reference || '' }; logTool('log_service_outcome', apply.service);
     } else {
       const t2 = pick(['this evening', 'tomorrow morning']);
       U(`I can't deal with this now, I'm driving.`);
       A(`Understood, ${who} — I won't keep you. In short: ${what}. I'll call you back ${t2} to sort the options. Drive safely.`);
       disposition = 'callback_requested'; apply.callback = { time: t2, reason: 'was driving' }; logTool('schedule_callback', apply.callback);
+      apply.service = { acknowledged: 'no', option_chosen: '', follow_up_needed: 'yes', reference: v.reference || '' }; logTool('log_service_outcome', apply.service);
     }
   } else if (arch === 'document_collection') {
     const proc = v.process_name || 'your application';
@@ -219,20 +226,24 @@ function simulateCall(vars, profile) {
       A(`Brilliant, ${who}. So that's ${items} via the link${v.deadline ? ', ideally before ' + v.deadline : ''}. Thank you for sorting it so quickly!`);
       disposition = 'resolved'; sentiment = 'positive';
       apply.followups = [{ channel: 'sms', content: 'document upload link' }]; logTool('send_followup', { channel: 'sms', content_type: 'upload link' });
+      apply.documents = { outstanding: items, promised_by: 'today', channel: v.submission_channel || 'secure link', blocker: '' }; logTool('log_document_status', apply.documents);
     } else if (b === 'no_document') {
       U(`I don't actually have that document.`);
       A(`Not a problem at all, ${who} — there are usually alternatives we can accept. Let me check exactly what would work for your case and have someone confirm it, so you're not sending something that gets rejected.`);
       disposition = 'escalated_to_human'; apply.transferred = { department: 'verification', reason: 'alternative document check' }; logTool('transfer_to_human', apply.transferred);
+      apply.documents = { outstanding: items, promised_by: '', channel: '', blocker: 'does not have the document; alternatives being checked' }; logTool('log_document_status', apply.documents);
     } else if (b === 'already_sent') {
       U(`I sent all of that last week already.`);
       A(`Thank you for telling me, ${who}, and apologies for the crossed wires — I'm not going to ask you to do it twice. I've logged it to be traced and you'll hear back once it's matched to your file.`);
       disposition = 'dispute_raised'; sentiment = 'negative';
       apply.dispute = { about: 'documents already submitted', details: 'customer says sent last week' }; logTool('flag_dispute', apply.dispute);
+      apply.documents = { outstanding: '', promised_by: '', channel: '', blocker: 'says already submitted last week; needs tracing' }; logTool('log_document_status', apply.documents);
     } else {
       const t2 = pick(['next week', 'in a couple of days', 'after the weekend']);
       U(`I'll need to dig it out — can you give me a few days?`);
       A(`Of course, ${who}. I'll check back ${t2}.${v.deadline ? ' Just so you know, the date we\'re working to is ' + v.deadline + '.' : ''} I'll send the list across so it's all in one place.`);
       disposition = 'callback_requested'; apply.callback = { time: t2, reason: 'gathering documents' }; logTool('schedule_callback', apply.callback);
+      apply.documents = { outstanding: items, promised_by: t2, channel: v.submission_channel || '', blocker: 'needs time to find them' }; logTool('log_document_status', apply.documents);
     }
   } else {
     A(`Hello ${who}, it's ${agent} from ${company}. Thanks for your time today.`);

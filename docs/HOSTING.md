@@ -427,6 +427,24 @@ curl -X POST https://omnireach.smartcogs.ai/api/elevenlabs/analysis/sync \
 Run it once after this release. It only changes how calls are SCORED afterwards; it has no effect on
 what any customer hears, because everything spoken is sent per call rather than stored on the agent.
 
+### One-off: publishing the new tools to the agent
+
+The tools the agent may call also live on the ElevenLabs agent rather than in this repository, so
+adding one to `config/agent_tools.json` does nothing until the agent is told about it. Three were
+added so that service-notification, document-collection and offer calls can record their own
+outcome, and until this runs those calls will keep recording only the generic disposition:
+
+```bash
+curl -X POST https://omnireach.smartcogs.ai/api/elevenlabs/tools/sync \
+  -H "Authorization: Bearer <a platform admin's token>"
+```
+
+It creates or updates each tool and attaches the full set to the agent. Safe to re-run: tools that
+have not changed are left alone, and the response says how many were created, updated and attached.
+
+`AUTO_SYNC_TOOLS` also does this on boot unless it is set to `false`, so on most deployments the
+`pm2 reload` above is enough and this is only needed when that is switched off.
+
 ---
 
 ## The daily activity report

@@ -93,6 +93,10 @@ Call these the moment a branch is reached. Confirm details aloud first (global t
 
 - **`reschedule_appointment`** — they accept a new time, slot, flight, or delivery window. Read it back, get a "yes", then log.
 - **`book_appointment`** — a fresh slot is chosen where there was none.
+- **`log_service_outcome`** — **ALWAYS**, once they have heard the news: whether they understood it
+  (`acknowledged`), which option they chose if any were offered (`option_chosen`), whether somebody
+  needs to come back to them (`follow_up_needed`), and any reference quoted. This is the record of
+  what the call was FOR — without it nobody downstream knows how the customer took it.
 - **`cancel_appointment`** — they no longer want the service or booking at all.
 - **`send_followup`** — send the new details, options in writing, or a claim link → SMS / WhatsApp / email.
 - **`flag_dispute`** — they want to complain formally or seek compensation. Capture it; promise nothing.
