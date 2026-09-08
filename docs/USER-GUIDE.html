@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>OmniReach — User Guide</title>
+<title>OmniReach — User Manual</title>
 <style>
   :root{
     --bg:#F6F7FB; --surface:#fff; --surface-2:#F8F9FC; --line:#E5E7EF; --line-2:#EDEFF5;
@@ -13,373 +13,407 @@
     --red:#D93E52; --red-bg:#FDECEE; --mono:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font:16px/1.68 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);}
-  .wrap{display:grid;grid-template-columns:264px 1fr;gap:0;max-width:1400px;margin:0 auto;align-items:start}
-  nav{position:sticky;top:0;height:100vh;overflow-y:auto;padding:26px 18px;border-right:1px solid var(--line);background:var(--surface)}
-  nav h2{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin:20px 0 8px}
-  nav h2:first-child{margin-top:0}
-  nav a{display:block;padding:5px 9px;border-radius:6px;font-size:13.5px;color:var(--ink-2);text-decoration:none;line-height:1.4}
-  nav a:hover{background:var(--brand-bg);color:var(--brand-2)}
-  main{padding:36px 44px 90px;min-width:0}
-  header.hero{background:linear-gradient(135deg,#4F46E5,#3730A3);color:#fff;border-radius:16px;padding:32px 34px;margin-bottom:34px}
-  header.hero h1{font-size:29px;letter-spacing:-.02em;margin-bottom:8px}
-  header.hero p{font-size:15.5px;opacity:.93;max-width:70ch}
-  h2.sec{font-size:23px;letter-spacing:-.015em;margin:46px 0 14px;padding-top:14px;border-top:2px solid var(--ink);}
+  body{font:16px/1.68 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+  .page{max-width:860px;margin:0 auto;padding:40px 48px 70px;background:var(--surface)}
+
+  /* ── cover ── */
+  .cover{min-height:86vh;display:flex;flex-direction:column;justify-content:center;
+         background:linear-gradient(135deg,#4F46E5,#3730A3);color:#fff;padding:64px 56px;margin:0 auto;max-width:860px}
+  .cover .mark{font-size:12px;letter-spacing:.16em;text-transform:uppercase;opacity:.75;margin-bottom:26px}
+  .cover h1{font-size:44px;line-height:1.1;letter-spacing:-.03em;margin-bottom:14px;font-weight:700}
+  .cover .sub{font-size:19px;opacity:.93;max-width:34ch;line-height:1.5}
+  .cover .meta{margin-top:auto;padding-top:52px;font-size:13px;opacity:.82;line-height:1.9;border-top:1px solid rgba(255,255,255,.25)}
+
+  /* ── contents ── */
+  .toc h2{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 22px;font-weight:700}
+  .toc .grp{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-2);
+            font-weight:700;margin:24px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+  .toc .grp:first-of-type{margin-top:0}
+  .toc a{display:flex;align-items:baseline;gap:9px;text-decoration:none;color:var(--ink);
+         font-size:14.5px;padding:5px 0;line-height:1.45}
+  .toc a .num{flex:0 0 24px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+  .toc a .ttl{flex:0 1 auto}
+  .toc a .dots{flex:1 1 auto;border-bottom:1px dotted #C7CCDA;transform:translateY(-4px);min-width:14px}
+  .toc a .pg{flex:0 0 auto;color:var(--ink-2);font-variant-numeric:tabular-nums;font-size:13.5px;min-width:16px;text-align:right}
+  .toc a:hover .ttl{color:var(--brand-2)}
+
+  h2.sec{font-size:25px;letter-spacing:-.02em;margin:0 0 8px;font-weight:700}
+  .kicker{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--brand);font-weight:700;margin-bottom:6px}
+  .rule{height:2px;background:var(--ink);margin:0 0 22px;width:56px}
   h3{font-size:17px;margin:26px 0 9px;color:var(--ink)}
-  h4{font-size:14.5px;margin:18px 0 6px;color:var(--ink-2)}
-  p{margin-bottom:12px;max-width:78ch}
-  ul,ol{margin:0 0 13px 22px;max-width:76ch} li{margin-bottom:6px}
+  p{margin-bottom:12px;max-width:76ch}
+  ul,ol{margin:0 0 13px 22px;max-width:74ch} li{margin-bottom:6px}
   code{font-family:var(--mono);font-size:.87em;background:var(--surface-2);border:1px solid var(--line-2);border-radius:4px;padding:1px 5px}
   pre{background:#1C2030;color:#E4E7F2;border-radius:10px;padding:16px 18px;overflow-x:auto;margin:12px 0 16px;font-family:var(--mono);font-size:12.9px;line-height:1.62}
   pre code{background:none;border:none;padding:0;color:inherit;font-size:inherit}
-  pre .c{color:#7B8397} pre .k{color:#C09CF5} pre .s{color:#8BD5A0} pre .n{color:#F0B77E}
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:16px 0}
+  pre .s{color:#8BD5A0}
+  .card{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:16px 0}
   .note{border-left:3px solid var(--brand);background:var(--brand-bg);border-radius:0 8px 8px 0;padding:13px 16px;margin:14px 0;font-size:14.5px}
   .warn{border-left:3px solid var(--amber);background:var(--amber-bg);border-radius:0 8px 8px 0;padding:13px 16px;margin:14px 0;font-size:14.5px}
   .good{border-left:3px solid var(--green);background:var(--green-bg);border-radius:0 8px 8px 0;padding:13px 16px;margin:14px 0;font-size:14.5px}
-  .bad{border-left:3px solid var(--red);background:var(--red-bg);border-radius:0 8px 8px 0;padding:13px 16px;margin:14px 0;font-size:14.5px}
   table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
   th{background:var(--surface-2);text-align:left;padding:10px 13px;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--line)}
   td{padding:10px 13px;border-bottom:1px solid var(--line-2);vertical-align:top}
   tr:last-child td{border-bottom:none}
-  .flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px;margin:18px 0}
-  .box{flex:1;min-width:150px;background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px}
-  .box b{display:block;font-size:13.5px;margin-bottom:4px}
-  .box span{font-size:12.5px;color:var(--ink-3);line-height:1.5}
-  .box.hi{border-color:var(--brand);background:var(--brand-bg)}
-  .arrow{align-self:center;color:var(--ink-3);font-size:19px;flex:0 0 auto}
-  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:11px;margin:18px 0}
-  .stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:11px;margin:18px 0}
+  .stat{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:14px}
   .stat b{display:block;font-size:23px;color:var(--brand);letter-spacing:-.02em}
   .stat span{font-size:12px;color:var(--ink-3);line-height:1.4;display:block;margin-top:2px}
   .qa{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:16px 19px;margin:13px 0}
   .qa .q{font-weight:650;font-size:15.5px;margin-bottom:7px;color:var(--brand-2)}
   .qa p:last-child{margin-bottom:0}
   .pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2);vertical-align:middle}
-  @media(max-width:960px){.wrap{grid-template-columns:1fr}nav{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line)}main{padding:24px 20px 60px}}
+
+  @media(max-width:900px){.page,.cover{padding:26px 20px 50px}.cover h1{font-size:32px}}
+
   @media print{
-    /* Backgrounds carry meaning here: an amber box means stop and read. Without this they all
-       print as the same empty rectangle. */
+    /* Backgrounds carry meaning here: an amber panel means stop and read. Without this every panel
+       prints as the same empty rectangle. */
     *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    @page{margin:14mm 13mm}
-    nav{display:none}
-    .wrap{grid-template-columns:1fr;max-width:none}
-    main{padding:0}
-    body{font-size:10.5pt;line-height:1.55;background:#fff}
+    @page{margin:17mm 15mm 20mm}
+    body{background:#fff;font-size:10.4pt;line-height:1.55}
+    .page{max-width:none;margin:0;padding:0;background:#fff}
     p,ul,ol{max-width:none}
-    header.hero{border-radius:10px;padding:22px 24px;margin-bottom:22px}
-    header.hero h1{font-size:22pt}
-    header.hero p{font-size:11pt}
-    /* Keep a heading with the text under it, and never split a block that reads as one unit. */
-    h2.sec{font-size:15pt;margin:24px 0 10px;break-after:avoid;break-inside:avoid}
-    h3,h4{break-after:avoid}
-    .card,.note,.warn,.good,.bad,.qa,.stat,.box,pre{break-inside:avoid}
-    table{break-inside:auto}
+
+    .cover{min-height:auto;height:259mm;max-width:none;margin:0;padding:60mm 22mm 30mm;break-after:page}
+    .cover h1{font-size:34pt}
+    .cover .sub{font-size:14pt}
+    .cover .meta{padding-top:22mm;font-size:10pt}
+    .toc{break-after:page}
+
+    /* Each numbered section opens a new page, the way a manual should read. */
+    section{break-before:page}
+    h2.sec{font-size:17pt;break-after:avoid}
+    h3{break-after:avoid}
+    .card,.note,.warn,.good,.qa,.stat,pre{break-inside:avoid}
     tr,th,td{break-inside:avoid}
     thead{display:table-header-group}
     pre{background:#f4f4f8;color:#222;border:1px solid #ddd;font-size:9pt}
-    pre .s{color:#0a6b3d} pre .c{color:#666} pre .k{color:#5b2fb5} pre .n{color:#9a5b00}
+    pre .s{color:#0a6b3d}
     a{color:inherit;text-decoration:none}
   }
 </style>
 </head>
 <body>
-<div class="wrap">
-<nav>
-  <h2>Getting started</h2>
-  <a href="#signin">1. Signing in</a>
-  <a href="#company">2. Set the company first</a>
-  <a href="#simulation">3. Simulation and live</a>
 
-  <h2>Making calls</h2>
-  <a href="#single">4. One call</a>
-  <a href="#targeting">5. Calling a list</a>
-  <a href="#analysis">6. Reading the analysis</a>
-  <a href="#launch">7. Launching the campaign</a>
-
-  <h2>After the call</h2>
-  <a href="#history">8. Call History</a>
-  <a href="#writeback">9. Write-back</a>
-  <a href="#analytics">10. Analytics</a>
-  <a href="#scheduler">11. Scheduler</a>
-
-  <h2>Configuring</h2>
-  <a href="#builder">12. Agent Builder</a>
-  <a href="#profile">13. Company Profile</a>
-
-  <h2>Housekeeping</h2>
-  <a href="#allowance">14. Your allowance</a>
-  <a href="#admin">15. Admin</a>
-
-  <h2>Reference</h2>
-  <a href="#wrong">16. When something looks wrong</a>
-  <a href="#limits">17. What it will not do</a>
-  <a href="#glossary">18. Words we use</a>
-</nav>
-
-<main>
-<header class="hero">
-  <h1>OmniReach: the user guide</h1>
-  <p>How to run outbound voice campaigns on the platform, from signing in to reading the outcome
-  back out. Written for whoever is actually driving the console, not for whoever installed it.
-  If you want to know how the machinery works underneath, that is a different document
-  (<code>HOW-OMNIREACH-WORKS.html</code>).</p>
-</header>
-
-<p>OmniReach dials a list of people, has a real conversation with each of them using an AI voice,
-takes actions during that conversation (books a callback, records a promise to pay, notes which
-documents are still missing), and pushes the outcome back to wherever you keep your records.</p>
-
-<p>The whole of it is driven by one thing: the <b>company profile</b>. Choose an industry and a
-country, and the console assembles a complete agent from it, including the brand name, the voice,
-the language, the currency, how it addresses people, the compliance framework it works under, and
-the conversation playbooks it is allowed to run. Change the profile and it is a different company in
-a different market, with no code touched. Almost everything in this guide follows from that.</p>
-
-<div class="stats">
-  <div class="stat"><b>31</b><span>industries in the catalogue</span></div>
-  <div class="stat"><b>198</b><span>ready-made call types</span></div>
-  <div class="stat"><b>9</b><span>conversation playbooks underneath them</span></div>
-  <div class="stat"><b>17</b><span>actions the agent can take mid-call</span></div>
+<!-- ═══════════ COVER ═══════════ -->
+<div class="cover">
+  <div class="mark">Streebo</div>
+  <h1>OmniReach</h1>
+  <div class="sub">User manual for the outbound voice calling platform</div>
+  <div class="meta">
+    Version 1.0<br/>
+    September 2026
+  </div>
 </div>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="signin">1. Signing in</h2>
+<!-- ═══════════ CONTENTS ═══════════ -->
+<div class="page toc">
+  <h2>Contents</h2>
 
-<p>There is no password to remember. Put your work email in, and a six-digit code arrives in your
-inbox within a few seconds. Type it, and you are in. The code lasts ten minutes and works once.</p>
+  <div class="grp">Getting started</div>
+  <a href="#signin"><span class="num">1</span><span class="ttl">Signing in</span><span class="dots"></span><span class="pg" data-pg="signin">&nbsp;</span></a>
+  <a href="#company"><span class="num">2</span><span class="ttl">Setting the company</span><span class="dots"></span><span class="pg" data-pg="company">&nbsp;</span></a>
+  <a href="#simulation"><span class="num">3</span><span class="ttl">Simulation and live calling</span><span class="dots"></span><span class="pg" data-pg="simulation">&nbsp;</span></a>
 
-<p>We built it this way on purpose. Passwords for a demo platform get written on whiteboards and
-shared in group chats, and then nobody knows who actually placed a call. A code sent to a mailbox
-proves the mailbox, every time, without anyone having to invent a password they will forget.</p>
+  <div class="grp">Making calls</div>
+  <a href="#single"><span class="num">4</span><span class="ttl">Placing a single call</span><span class="dots"></span><span class="pg" data-pg="single">&nbsp;</span></a>
+  <a href="#targeting"><span class="num">5</span><span class="ttl">Calling from a list</span><span class="dots"></span><span class="pg" data-pg="targeting">&nbsp;</span></a>
+  <a href="#analysis"><span class="num">6</span><span class="ttl">Reading the analysis</span><span class="dots"></span><span class="pg" data-pg="analysis">&nbsp;</span></a>
+  <a href="#launch"><span class="num">7</span><span class="ttl">Launching a campaign</span><span class="dots"></span><span class="pg" data-pg="launch">&nbsp;</span></a>
 
-<p>Your browser is remembered after the first sign-in, so you will not be asked for a code every
-morning. Signing out from the profile menu (top right, your initial) clears that.</p>
+  <div class="grp">After the call</div>
+  <a href="#history"><span class="num">8</span><span class="ttl">Call History</span><span class="dots"></span><span class="pg" data-pg="history">&nbsp;</span></a>
+  <a href="#writeback"><span class="num">9</span><span class="ttl">Write-back</span><span class="dots"></span><span class="pg" data-pg="writeback">&nbsp;</span></a>
+  <a href="#analytics"><span class="num">10</span><span class="ttl">Analytics</span><span class="dots"></span><span class="pg" data-pg="analytics">&nbsp;</span></a>
+  <a href="#scheduler"><span class="num">11</span><span class="ttl">Scheduler</span><span class="dots"></span><span class="pg" data-pg="scheduler">&nbsp;</span></a>
 
-<h3>If you have never signed in before</h3>
-<p>Create an account from the sign-in screen. What happens next depends on your email domain:</p>
+  <div class="grp">Configuration</div>
+  <a href="#builder"><span class="num">12</span><span class="ttl">Agent Builder</span><span class="dots"></span><span class="pg" data-pg="builder">&nbsp;</span></a>
+  <a href="#profile"><span class="num">13</span><span class="ttl">Company Profile</span><span class="dots"></span><span class="pg" data-pg="profile">&nbsp;</span></a>
 
-<table>
-  <tr><th>Your domain</th><th>What happens</th></tr>
-  <tr><td>On the approved list</td><td>You register, get a code, and you are in. Nobody at our end has to do anything.</td></tr>
-  <tr><td>Approved individually, by address</td><td>Same, and it works even when open sign-up is switched off, because somebody already said yes to you specifically.</td></tr>
-  <tr><td>Anything else</td><td>You are told plainly that the request has gone for review, and it appears in our Access requests queue. Nothing on the platform is reachable until it is approved.</td></tr>
-</table>
+  <div class="grp">Account and administration</div>
+  <a href="#allowance"><span class="num">14</span><span class="ttl">Your calling allowance</span><span class="dots"></span><span class="pg" data-pg="allowance">&nbsp;</span></a>
+  <a href="#admin"><span class="num">15</span><span class="ttl">Administration</span><span class="dots"></span><span class="pg" data-pg="admin">&nbsp;</span></a>
 
-<div class="note"><b>Being refused is not a fault.</b> If you get "sent to an administrator for
-review", the platform is working correctly. Send a note to your Streebo contact and it takes about a
-minute to approve at our end.</div>
+  <div class="grp">Reference</div>
+  <a href="#wrong"><span class="num">16</span><span class="ttl">Troubleshooting</span><span class="dots"></span><span class="pg" data-pg="wrong">&nbsp;</span></a>
+  <a href="#limits"><span class="num">17</span><span class="ttl">Scope and limitations</span><span class="dots"></span><span class="pg" data-pg="limits">&nbsp;</span></a>
+  <a href="#glossary"><span class="num">18</span><span class="ttl">Glossary</span><span class="dots"></span><span class="pg" data-pg="glossary">&nbsp;</span></a>
+</div>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="company">2. Set the company first</h2>
+<div class="page">
 
-<p>Before you do anything else, look at the top of the screen. There is a pill that reads
-<b>operating as</b> followed by a company name. That is the agent that will make your calls, and
-everything downstream is shaped by it.</p>
+<!-- ═══════════ 1 ═══════════ -->
+<section id="signin">
+  <div class="kicker">Getting started</div>
+  <h2 class="sec">1. Signing in</h2>
+  <div class="rule"></div>
 
-<p>To change it, go to <b>Company Profile</b>. The fastest route is to load one of the industry
-presets, then edit the two or three fields that matter for your prospect: the company name, the
-country, the agent's own name. That is usually enough for a demo.</p>
+  <p>OmniReach places outbound telephone calls that are handled by an AI voice agent. You provide the
+  people to call and what the call is about. The platform dials each person, holds the conversation,
+  records what was agreed, and writes the outcome back to your own records.</p>
 
-<p>The profile decides:</p>
-<ul>
-  <li><b>Which call types you can run.</b> Only the playbooks enabled in the active profile appear on the Single Call screen. A clinic profile offers appointment confirmations and results; it does not offer loan collections, because a clinic does not make those calls.</li>
-  <li><b>What the agent sounds like.</b> Voice, language, and how it addresses people (first name, "Mr / Ms" plus surname, first name plus "ji", "sir / ma'am").</li>
-  <li><b>The money and the dates.</b> Currency word, and whether amounts are grouped the Indian way (25,00,000) or the Western way (2,500,000). The agent speaks amounts as words, so this matters more than it looks.</li>
-  <li><b>The compliance framework</b> it works under, which changes what it will and will not say.</li>
-</ul>
+  <div class="stats">
+    <div class="stat"><b>31</b><span>industries supported</span></div>
+    <div class="stat"><b>198</b><span>ready-made call types</span></div>
+    <div class="stat"><b>204</b><span>countries</span></div>
+    <div class="stat"><b>74</b><span>languages</span></div>
+  </div>
 
-<div class="warn"><b>Change the profile before the campaign, not during.</b> A campaign takes a copy
-of the profile at the moment you launch it and uses that copy for every call in the run. This is
-deliberate: a campaign that changed identity halfway through would be much harder to explain than
-one that finishes as it started. If you edit the profile mid-run, the change applies to your
-<i>next</i> campaign.</div>
+  <h3>Signing in</h3>
+  <p>There is no password. Enter your work email address and a six-digit code arrives in your inbox
+  within a few seconds. Enter the code and you are in. Each code is valid for ten minutes and can be
+  used once.</p>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="simulation">3. Simulation and live</h2>
+  <p>Your browser is remembered afterwards, so you will not be asked for a code every day. Signing
+  out from the profile menu, top right, showing your initial, clears that.</p>
 
-<p>Top right of every screen there is a <b>SIMULATION</b> switch. It is the single most important
-control on the platform, so it is worth being precise about what it does.</p>
+  <h3>Creating an account</h3>
+  <p>Choose <b>Create an account</b> on the sign-in screen. What happens next depends on your email
+  domain.</p>
 
-<table>
-  <tr><th></th><th>Simulation on</th><th>Live</th></tr>
-  <tr><td>A phone rings</td><td>No</td><td>Yes</td></tr>
-  <tr><td>It costs money</td><td>No</td><td>Yes, telephony and voice minutes</td></tr>
-  <tr><td>You get a full transcript</td><td>Yes</td><td>Yes</td></tr>
-  <tr><td>Outcome, disposition, sentiment</td><td>Yes</td><td>Yes</td></tr>
-  <tr><td>Analytics and write-back fill in</td><td>Yes</td><td>Yes</td></tr>
-  <tr><td>Counts against your daily allowance</td><td>No</td><td>Yes</td></tr>
-</table>
+  <table>
+    <tr><th>Your email domain</th><th>What happens</th></tr>
+    <tr><td>On the approved list</td><td>You register, receive a code, and sign in immediately. No approval is required.</td></tr>
+    <tr><td>Approved individually, by address</td><td>The same, and it continues to work even when open sign-up is switched off.</td></tr>
+    <tr><td>Any other domain</td><td>You are told the request has gone for review, and it is added to the Access requests queue. Nothing on the platform is reachable until it is approved.</td></tr>
+  </table>
 
-<p>A simulated call runs the same conversation logic and produces the same shaped record, including
-the actions the agent would have taken. Every simulated record is stamped as such, shows a
-<span class="pill">Simulated</span> marker in the history, and is counted separately everywhere it
-matters. It never quietly inflates a real number.</p>
+  <div class="note">If you see the message <i>"sent to an administrator for review"</i>, the platform
+  is behaving correctly. Contact your Streebo representative, and approval normally takes a minute.</div>
+</section>
 
-<div class="good"><b>Use simulation for everything except the moment you want a real phone to
-ring.</b> Building a profile, checking a script reads well, testing a CSV, showing a prospect the
-analysis table, proving the write-back columns: none of that needs telephony. Most of a demo can be
-run in simulation, and often should be.</div>
+<!-- ═══════════ 2 ═══════════ -->
+<section id="company">
+  <div class="kicker">Getting started</div>
+  <h2 class="sec">2. Setting the company</h2>
+  <div class="rule"></div>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="single">4. One call</h2>
+  <p>At the top of every screen there is a marker reading <b>operating as</b>, followed by a company
+  name. That is the agent that will place your calls, and it shapes everything that follows.</p>
 
-<p><b>Single Call</b> is the screen to use when you want to hear the thing work, or when you are
-demonstrating one specific conversation.</p>
+  <p>To change it, open <b>Company Profile</b>. The quickest route is to load one of the industry
+  presets and then edit the few fields that matter for your prospect: the company name, the country,
+  and the agent's own name.</p>
 
-<ol>
-  <li><b>Pick a use case.</b> These are the playbooks enabled in the active profile. Each one is a whole conversation, not a template sentence.</li>
-  <li><b>Fill in the customer.</b> Name and phone number. The number must be in international format, starting with a plus and the country code: <code>+919820011001</code>, not <code>9820011001</code>. Time of day is filled in for you from the clock.</li>
-  <li><b>Fill in the call variables.</b> These change with the use case. Required ones are marked with an asterisk. A bill reminder wants the product, the amount and the due date; an appointment confirmation wants the type, the date and the time.</li>
-  <li><b>Launch.</b></li>
-</ol>
+  <h3>What the profile controls</h3>
+  <ul>
+    <li><b>Which call types are available.</b> Only the use cases enabled in the active profile appear on the Single Call screen. A clinic profile offers appointment confirmations and results; it does not offer loan collections.</li>
+    <li><b>How the agent sounds.</b> Voice, language, and how it addresses people: first name, "Mr" or "Ms" plus surname, first name plus "ji", or "sir" and "ma'am".</li>
+    <li><b>Money and dates.</b> The currency, and whether amounts are grouped in the Indian style (25,00,000) or the Western style (2,500,000). Amounts are spoken as words, so this affects what the customer hears.</li>
+    <li><b>The compliance framework</b> the agent works under, which governs what it will and will not say.</li>
+  </ul>
 
-<div class="note"><b>Leave a variable blank rather than inventing something.</b> The agent is
-instructed to speak around an empty variable gracefully, so an unknown balance simply never comes
-up. Putting a made-up number in is worse than leaving it out, because the agent will say it with
-complete confidence to a real person.</div>
+  <div class="warn"><b>Set the profile before launching, not during.</b> A campaign uses the profile
+  as it stood at the moment it was launched, for every call in that run. Edits made while a campaign
+  is running take effect on your next campaign.</div>
+</section>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="targeting">5. Calling a list</h2>
+<!-- ═══════════ 3 ═══════════ -->
+<section id="simulation">
+  <div class="kicker">Getting started</div>
+  <h2 class="sec">3. Simulation and live calling</h2>
+  <div class="rule"></div>
 
-<p><b>Smart Targeting</b> is where a file becomes a queue of calls. Upload the export as it comes out
-of your system. You do not need to rename the columns.</p>
+  <p>At the top right of every screen there is a <b>SIMULATION</b> switch. It is the most important
+  control on the platform.</p>
 
-<h3>What the file needs</h3>
-<p>A name and a phone number, somewhere in it. That is the whole requirement. Everything else shapes
-which call is placed and what gets said on it, but a row without a name or a number cannot be
-called at all and will be held back.</p>
+  <table>
+    <tr><th></th><th>Simulation on</th><th>Live</th></tr>
+    <tr><td>A telephone rings</td><td>No</td><td>Yes</td></tr>
+    <tr><td>Cost incurred</td><td>None</td><td>Telephony and voice minutes</td></tr>
+    <tr><td>Full transcript produced</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Outcome, disposition, sentiment</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Analytics and write-back populated</td><td>Yes</td><td>Yes</td></tr>
+    <tr><td>Counts against your daily allowance</td><td>No</td><td>Yes</td></tr>
+  </table>
 
-<p>The columns are matched three ways, in this order:</p>
-<ol>
-  <li><b>By name.</b> <code>due_date</code>, and the several hundred aliases people actually use in the wild: <code>msisdn</code>, <code>consignee</code>, <code>appt_dt</code>, <code>guardian_phone</code>, <code>Bill Amount</code>, <code>Payment Due On</code>.</li>
-  <li><b>By meaning</b>, when the header is longer but still says what it is: <code>bill_due_date</code>, <code>restoration_eta</code>, <code>pending_documents</code>.</li>
-  <li><b>By the values themselves</b>, when the header says nothing useful. A column called <code>crm_field_7</code> full of <code>+9198…</code> is the phone number, and one full of people's names is the name.</li>
-</ol>
+  <p>A simulated call runs the same conversation logic and produces the same record, including the
+  actions the agent would have taken during the call. Every simulated record is marked
+  <span class="pill">Simulated</span> in the call history and is counted separately wherever figures
+  are reported.</p>
 
-<p>Semicolon files (which is what Excel produces across most of Europe and Latin America), tab
-separated files, a byte-order mark, a report with its own title on the first line, headers with
-units in them such as <code>Amount (INR)</code>: all handled. So are the things Excel does to your
-data, like turning a long phone number into <code>9.19820011001E+11</code> or writing a date as the
-number <code>46272</code>.</p>
+  <div class="good"><b>Use simulation for everything except the moment a real telephone needs to
+  ring.</b> Building a profile, checking that a script reads well, testing a file, demonstrating the
+  analysis table, showing the write-back columns: none of this requires telephony.</div>
+</section>
 
-<h3>Two sample files</h3>
-<p>Both are on the Smart Targeting screen.</p>
-<ul>
-  <li><b>Download CRM Template</b> is the tidy version, using our own column names. Useful as a starting point when someone asks what the file should look like.</li>
-  <li><b>Download Sample Export</b> is the interesting one. It is deliberately shaped like a partner's own export: their column names, no use-case column, gaps in it, and several different kinds of call sitting in the same upload. Upload it unchanged and every row still finds the right call. In a demo, this is the file to use.</li>
-</ul>
+<!-- ═══════════ 4 ═══════════ -->
+<section id="single">
+  <div class="kicker">Making calls</div>
+  <h2 class="sec">4. Placing a single call</h2>
+  <div class="rule"></div>
 
-<h3>Other places the data can come from</h3>
-<p>Under <b>Data source</b> you can also pull from a URL (CSV or JSON), a published Google Sheet, or
-a REST API. Salesforce, HubSpot, Zoho and a direct database connection are wired up to the same
-interface but need credentials before they will run.</p>
+  <p>Use <b>Single Call</b> to place one call at a time, either to hear the agent work or to
+  demonstrate one particular conversation.</p>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="analysis">6. Reading the analysis</h2>
+  <ol>
+    <li><b>Choose a use case.</b> These are the call types enabled in the active profile. Each is a complete conversation, not a single scripted sentence.</li>
+    <li><b>Enter the customer details.</b> Name and telephone number. The number must be in international format, beginning with a plus sign and the country code, for example <code>+919820011001</code> rather than <code>9820011001</code>. Time of day is filled in automatically.</li>
+    <li><b>Complete the call variables.</b> These change with the use case, and required fields are marked with an asterisk. A bill reminder asks for the product, the amount and the due date; an appointment confirmation asks for the type, the date and the time.</li>
+    <li><b>Launch the call.</b></li>
+  </ol>
 
-<p>When the file is analysed you get two things: a summary of how your columns were understood, and
-a row-by-row table of what will happen.</p>
+  <div class="note"><b>Leave a field blank rather than entering a placeholder value.</b> The agent
+  speaks around an empty variable, so an unknown balance simply does not come up in conversation. A
+  substitute figure will be spoken to the customer as though it were correct.</div>
+</section>
 
-<h3>"How your file was read"</h3>
-<p>A list of pairs, <code>Mobile No → Phone number</code>, <code>Account Holder → Customer name</code>.
-Check this first. Everything below it is downstream of this mapping, and if we have read the wrong
-column as the due date, this panel is the only place you will see it before a call goes out. Any
-column we did not use is listed at the end.</p>
+<!-- ═══════════ 5 ═══════════ -->
+<section id="targeting">
+  <div class="kicker">Making calls</div>
+  <h2 class="sec">5. Calling from a list</h2>
+  <div class="rule"></div>
 
-<h3>The table</h3>
-<table>
-  <tr><th>Column</th><th>What to look at</th></tr>
-  <tr><td>Order</td><td>The dialling order. Urgent calls go first: a service disruption, then arrears, then a payment reminder, then appointments, then documents, renewals, feedback, leads, and marketing last.</td></tr>
-  <tr><td>Use Case</td><td>The call this row will get.</td></tr>
-  <tr><td>Confidence</td><td>How sure the routing is, and what it would otherwise have chosen. "Named in file" means your file told us outright, using a <code>use_case</code> column.</td></tr>
-  <tr><td>Why this call</td><td>The evidence, in words: "payment due in 5 days", "23 days overdue", "documents outstanding". Worth reading aloud in a demo.</td></tr>
-  <tr><td>What we'll say</td><td>The actual values the agent will speak for that person. This is the fastest way to prove the data was really understood.</td></tr>
-  <tr><td>Status</td><td>Ready, or the reason it was held back.</td></tr>
-</table>
+  <p><b>Smart Targeting</b> turns a file of contacts into a queue of calls. Upload the export exactly
+  as it comes out of your system. The columns do not need renaming.</p>
 
-<h3>Why rows get skipped</h3>
-<table>
-  <tr><th>Reason</th><th>What it means</th></tr>
-  <tr><td><code>no phone number</code> / <code>no customer name</code></td><td>Exactly that. It names which one is missing rather than saying "missing data" and leaving you to hunt.</td></tr>
-  <tr><td><code>missing Deadline</code> (or another field)</td><td>The row wants a particular call but does not carry something that call cannot do without. The missing column is named, so you can add it and re-upload.</td></tr>
-  <tr><td><code>do-not-call (data)</code></td><td>A suppression column in your file. Spelled however you like: <code>Opted Out</code>, <code>DNC</code>, <code>Do Not Contact</code>, <code>unsubscribed</code>, <code>Consent Revoked</code>, and others. We match this generously on purpose, because the cost of missing it is a call to somebody who asked us not to ring.</td></tr>
-  <tr><td><code>do-not-call (prior call)</code></td><td>That number asked us to stop on an earlier call. It is honoured across campaigns.</td></tr>
-  <tr><td><code>duplicate number</code></td><td>The same number appears earlier in the file. We call it once.</td></tr>
-</table>
+  <h3>What the file must contain</h3>
+  <p>A name and a telephone number, somewhere in the file. Everything else determines which call is
+  placed and what is said during it, but a row without a name or a number cannot be called and will
+  be held back.</p>
 
-<p>You may also see a row that says <b>nothing on this row matches the calls this agent makes</b>.
-That is not a failure to read the file. It means the profile genuinely has no call for what the row
-describes, which happens when, for instance, a file full of amounts and due dates is uploaded
-against a clinic profile that only books appointments. Change the profile, or the file.</p>
+  <p>Columns are matched in three ways, in order:</p>
+  <ol>
+    <li><b>By name</b>, including the many variants in common use: <code>msisdn</code>, <code>consignee</code>, <code>appt_dt</code>, <code>guardian_phone</code>, <code>Bill Amount</code>, <code>Payment Due On</code>.</li>
+    <li><b>By meaning</b>, where a longer heading still describes the field: <code>bill_due_date</code>, <code>restoration_eta</code>, <code>pending_documents</code>.</li>
+    <li><b>By the values themselves</b>, where the heading is uninformative. A column named <code>crm_field_7</code> containing numbers in the form <code>+9198…</code> is recognised as the telephone number.</li>
+  </ol>
 
-<div class="warn"><b>The one warning worth stopping for.</b> If every date in a column falls on or
-before the 12th, nothing in the file says whether it is written day-first or month-first, and you
-will get an amber note saying so. We read it day-first, so 09/11 is the 9th of November. If the
-export came out of an American system it means the 11th of September and every date on those rows is
-wrong. A single date past the 12th anywhere in that column settles it and the warning disappears.</div>
+  <h3>File formats handled</h3>
+  <p>Comma, semicolon and tab separated files; files saved with a byte-order mark; a report carrying
+  its own title on the first line; headings that include units, such as <code>Amount (INR)</code>.
+  Values altered by spreadsheet software are also recovered, including telephone numbers converted to
+  scientific notation and dates stored as serial numbers.</p>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="launch">7. Launching the campaign</h2>
+  <h3>Sample files</h3>
+  <p>Two are available on the Smart Targeting screen.</p>
+  <ul>
+    <li><b>Download CRM Template</b> uses the platform's own column names. Useful as a starting point when someone asks what the file should look like.</li>
+    <li><b>Download Sample Export</b> is shaped like a partner's own export: unfamiliar column names, no use-case column, missing values, and several kinds of call in one file. It can be uploaded unchanged.</li>
+  </ul>
 
-<p>Move to <b>Bulk Campaign</b>. You will see the queued count, the breakdown by call type, and a
-delay setting between calls (three seconds by default). Name the campaign if you want it to be
-findable later, then launch.</p>
+  <h3>Other sources</h3>
+  <p>Under <b>Data source</b>, contacts can also be drawn from a URL (CSV or JSON), a published
+  Google Sheet, or a REST API. Salesforce, HubSpot, Zoho and a direct database connection use the
+  same interface and require credentials before they can be enabled.</p>
+</section>
 
-<p>Progress updates live. The <b>Stop</b> button takes effect between calls, so a call already
-connected will finish its conversation properly rather than being cut off mid-sentence.</p>
+<!-- ═══════════ 6 ═══════════ -->
+<section id="analysis">
+  <div class="kicker">Making calls</div>
+  <h2 class="sec">6. Reading the analysis</h2>
+  <div class="rule"></div>
 
-<div class="note"><b>Simulated campaigns run fast on purpose.</b> The delay between calls is
-shortened to a fraction of a second when simulating, so a two hundred row file finishes while you
-are still talking about it.</div>
+  <p>Once a file is analysed you are shown two things: a summary of how your columns were
+  interpreted, and a row-by-row table of what will happen.</p>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="history">8. Call History</h2>
+  <h3>How your file was read</h3>
+  <p>A list of pairs, such as <code>Mobile No → Phone number</code> and
+  <code>Account Holder → Customer name</code>. Check this first, as everything below it depends on
+  this interpretation. Any column that was not used is listed at the end.</p>
 
-<p>Every call, with its transcript and its recording. Three tabs across the top:</p>
-<ul>
-  <li><b>Personal</b>, your own calls. This is the default, because it is what you usually want.</li>
-  <li><b>Colleagues</b>, other people in your organisation.</li>
-  <li><b>Company</b>, everything your organisation has done.</li>
-</ul>
+  <h3>The analysis table</h3>
+  <table>
+    <tr><th>Column</th><th>What it shows</th></tr>
+    <tr><td>Order</td><td>The dialling order. Urgent calls are placed first: service disruptions, then arrears, payment reminders, appointments, documents, renewals, feedback, leads, and marketing last.</td></tr>
+    <tr><td>Use Case</td><td>The call this row will receive.</td></tr>
+    <tr><td>Confidence</td><td>How certain the match is, and what would otherwise have been chosen. "Named in file" means a <code>use_case</code> column specified it directly.</td></tr>
+    <tr><td>Why this call</td><td>The evidence in plain words: "payment due in 5 days", "23 days overdue", "documents outstanding".</td></tr>
+    <tr><td>What we'll say</td><td>The values the agent will speak to that person.</td></tr>
+    <tr><td>Status</td><td>Ready, or the reason the row was held back.</td></tr>
+  </table>
 
-<p>Open a call and you get the transcript, the recording where there is one, and an
-<b>Actions captured</b> block: the disposition, a one-sentence summary, and whatever the agent
-recorded during the conversation. A promise to pay with the amount and date. A rescheduled
-appointment with the new time. Which documents are still outstanding and when the customer said
-they would send them. Whether a service disruption was understood and which option they chose. A
-dispute, a transfer, a corrected phone number.</p>
+  <h3>Why rows are held back</h3>
+  <table>
+    <tr><th>Reason shown</th><th>Meaning</th></tr>
+    <tr><td><code>no phone number</code><br/><code>no customer name</code></td><td>The row is missing one of the two fields required to place any call. The message names which.</td></tr>
+    <tr><td><code>missing Deadline</code>, or another field</td><td>The row matches a call type but lacks something that call cannot proceed without. Add the named column and upload again.</td></tr>
+    <tr><td><code>do-not-call (data)</code></td><td>A suppression column in your file. Recognised spellings include <code>Opted Out</code>, <code>DNC</code>, <code>Do Not Contact</code>, <code>unsubscribed</code> and <code>Consent Revoked</code>.</td></tr>
+    <tr><td><code>do-not-call (prior call)</code></td><td>That number asked not to be contacted during an earlier call. This is honoured across all future campaigns.</td></tr>
+    <tr><td><code>duplicate number</code></td><td>The same number appears earlier in the file and will be called once.</td></tr>
+  </table>
 
-<div class="note"><b>If the recording is not there yet, wait a moment.</b> The transcript, summary
-and outcome arrive by webhook from ElevenLabs when the call ends, which is normally seconds after
-the customer hangs up, not instantly. A call that has just finished can briefly show as ended with
-nothing attached. Refresh and it will be there.</div>
+  <p>A row may also report that <b>nothing on it matches the calls this agent makes</b>. This occurs
+  when the active profile has no call type for what the row describes, such as a file of amounts and
+  due dates uploaded against a clinic profile that only confirms appointments. Change the profile or
+  the file.</p>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="writeback">9. Write-back</h2>
+  <div class="warn"><b>Date format warning.</b> If every date in a column falls on or before the
+  12th, the file does not indicate whether dates are written day-first or month-first, and an amber
+  note appears. Dates are read day-first, so 09/11 is the 9th of November. If the file originated in
+  an American system it means the 11th of September, and the dates on those rows will be wrong. A
+  single date after the 12th anywhere in the column resolves this and the warning disappears.</div>
+</section>
 
-<p>A call that nobody records is a call that has to be listened to again later. <b>Write-back</b>
-pushes the outcome of every finished call to wherever you keep your records.</p>
+<!-- ═══════════ 7 ═══════════ -->
+<section id="launch">
+  <div class="kicker">Making calls</div>
+  <h2 class="sec">7. Launching a campaign</h2>
+  <div class="rule"></div>
 
-<p>Choose a destination:</p>
-<ul>
-  <li><b>Preview in-app</b>, which writes nowhere and simply shows you the rows. Start here.</li>
-  <li><b>Webhook</b>, a POST of JSON to any URL you give it, with optional headers for authentication.</li>
-  <li><b>Enriched CSV</b>, downloadable.</li>
-  <li>Salesforce, HubSpot, Zoho and SQL are built against the same interface and need credentials.</li>
-</ul>
+  <p>Move to <b>Bulk Campaign</b>. You will see the number of queued calls, a breakdown by call type,
+  and the delay between calls, which defaults to three seconds. Name the campaign if you want to find
+  it easily later, then launch it.</p>
 
-<h3>What ends up in a row</h3>
-<p>A stable core is always present: who was called, on what number, which call it was, the outcome,
-a summary, the sentiment, when, and the call id. Beyond that, a row carries whatever that particular
-call produced and nothing else, so a documents chase does not arrive padded out with forty empty
-payment columns.</p>
+  <p>Progress updates as the campaign runs. The <b>Stop</b> button takes effect between calls, so a
+  call already in progress finishes its conversation rather than being cut off.</p>
 
-<p>There is one column worth pointing out in a demo, because it is the one a human actually reads:
-<b>next_step</b>. It says in plain words what happens now, drawn from whichever outcome the call
-produced.</p>
+  <div class="note">Simulated campaigns use a much shorter delay between calls, so a large file
+  completes in a few moments.</div>
+</section>
 
-<pre><code>next_step
+<!-- ═══════════ 8 ═══════════ -->
+<section id="history">
+  <div class="kicker">After the call</div>
+  <h2 class="sec">8. Call History</h2>
+  <div class="rule"></div>
+
+  <p>Every call, with its transcript and recording. Three tabs are available:</p>
+  <ul>
+    <li><b>Personal</b>, your own calls. This is the default view.</li>
+    <li><b>Colleagues</b>, calls placed by others in your organisation.</li>
+    <li><b>Company</b>, everything your organisation has placed.</li>
+  </ul>
+
+  <p>Opening a call shows the transcript, the recording where one exists, and an
+  <b>Actions captured</b> panel containing the disposition, a one-sentence summary, and everything
+  the agent recorded during the conversation. This may include a promise to pay with the amount and
+  date, a rescheduled appointment with its new time, which documents remain outstanding and when the
+  customer undertook to send them, whether a service disruption was understood and which option was
+  chosen, a dispute, a transfer to a colleague, or a corrected telephone number.</p>
+
+  <div class="note">The transcript, summary and outcome arrive shortly after the call ends rather
+  than instantly. A call that has just finished may briefly appear with nothing attached. Refresh the
+  page and the detail will be present.</div>
+</section>
+
+<!-- ═══════════ 9 ═══════════ -->
+<section id="writeback">
+  <div class="kicker">After the call</div>
+  <h2 class="sec">9. Write-back</h2>
+  <div class="rule"></div>
+
+  <p><b>Write-back</b> sends the outcome of every completed call to your own system of record.</p>
+
+  <p>Available destinations:</p>
+  <ul>
+    <li><b>Preview in-app</b>, which writes nowhere and simply displays the rows. Use this first.</li>
+    <li><b>Webhook</b>, posting JSON to any URL, with optional headers for authentication.</li>
+    <li><b>Enriched CSV</b>, available as a download.</li>
+    <li>Salesforce, HubSpot, Zoho and SQL databases, which require credentials.</li>
+  </ul>
+
+  <h3>What a row contains</h3>
+  <p>A fixed set of columns is always present: who was called, the number, the call type, the
+  outcome, a summary, the sentiment, the time, and the call reference. Beyond that, each row carries
+  only what that particular call produced, so a documents chase is not padded out with empty payment
+  columns.</p>
+
+  <p>One column is worth noting. <b>next_step</b> states in plain words what happens now.</p>
+
+  <pre><code>next_step
 <span class="s">"Pay 12500 by Friday"</span>
 <span class="s">"Booked for Tuesday at 10:30"</span>
 <span class="s">"Documents by Friday"</span>
@@ -387,188 +421,211 @@ produced.</p>
 <span class="s">"Transferred to collections"</span>
 <span class="s">"Do not call again"</span></code></pre>
 
-<p>Alongside that you get everything the agent captured (promise amount and date, dispute, transfer,
-follow-up messages sent, corrected contact details, survey score and verbatim, offer decision and
-the reason for it, documents outstanding) and the fields extracted automatically from the
-conversation after it ends, including the objection the customer raised and which language the call
-actually ran in.</p>
+  <p>Alongside it you receive everything the agent captured, including promise amount and date,
+  disputes, transfers, messages sent, corrected contact details, survey scores and comments, offer
+  decisions with the reason given, and outstanding documents. The record also includes details
+  extracted from the conversation automatically, such as the objection raised and the language the
+  call was actually conducted in.</p>
 
-<p>If you would rather control the columns yourself, set a custom mapping. A column you ask for is
-always written, whether or not that call filled it, because you asked for it.</p>
+  <p>To control the columns yourself, configure a custom mapping. A column you specify is always
+  written, whether or not that call populated it.</p>
+</section>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="analytics">10. Analytics</h2>
+<!-- ═══════════ 10 ═══════════ -->
+<section id="analytics">
+  <div class="kicker">After the call</div>
+  <h2 class="sec">10. Analytics</h2>
+  <div class="rule"></div>
 
-<p>How many calls, to which countries, how long, how they ended, and what the agent achieved.
-Same Personal / Colleagues / Company tabs as the history, and the same default.</p>
+  <p>How many calls were placed, to which countries, for how long, how they ended, and what the agent
+  achieved. The same Personal, Colleagues and Company tabs apply, with Personal as the default.</p>
 
-<p>Simulated calls are excluded by default. There is a switch to include them, which is the right
-thing to use when you want to show a full-looking dashboard without having spent anything on
-telephony. Turn it on knowingly, and turn it off before quoting a number to anyone.</p>
+  <p>Simulated calls are excluded by default. A switch is provided to include them, which is useful
+  when demonstrating a populated dashboard without incurring telephony costs. Turn it off again
+  before reporting any figure.</p>
+</section>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="scheduler">11. Scheduler</h2>
+<!-- ═══════════ 11 ═══════════ -->
+<section id="scheduler">
+  <div class="kicker">After the call</div>
+  <h2 class="sec">11. Scheduler</h2>
+  <div class="rule"></div>
 
-<p>Calls and campaigns that run without anybody at a keyboard. Each schedule carries its own agent,
-its own market, its own timezone and its own calling window, so several can be running against
-different countries at once without interfering with each other.</p>
+  <p>Calls and campaigns can be set to run unattended. Each schedule carries its own agent, market,
+  timezone and calling window, so several may run against different countries at the same time
+  without interfering with one another.</p>
 
-<p>A schedule takes a snapshot of the agent profile when you create it. That is intentional, and the
-same reasoning as campaigns: a schedule that quietly changed identity because somebody edited a
-profile last Tuesday would be an unpleasant surprise on a Monday morning.</p>
+  <p>A schedule uses the agent profile as it stood when the schedule was created. Later edits to that
+  profile do not alter a schedule already in place.</p>
 
-<p>Schedules are visible to your whole organisation so that a colleague covering for you can see
-what is queued. Pausing or deleting one stays with whoever created it.</p>
+  <p>Schedules are visible to your whole organisation, so a colleague covering for you can see what
+  is queued. Pausing and deleting remain with whoever created the schedule.</p>
+</section>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="builder">12. Agent Builder</h2>
+<!-- ═══════════ 12 ═══════════ -->
+<section id="builder">
+  <div class="kicker">Configuration</div>
+  <h2 class="sec">12. Agent Builder</h2>
+  <div class="rule"></div>
 
-<p>Compose an agent for an industry and a region from scratch, then save it. Useful when you are
-preparing for a specific prospect and want it waiting for you next time rather than rebuilt from
-memory.</p>
+  <p>Compose an agent for a given industry and region, then save it. This is useful when preparing
+  for a specific prospect, so that the configuration is ready next time rather than rebuilt from
+  memory.</p>
 
-<p>Saved configurations are visible across your organisation, so the team works from one library
-rather than each person rebuilding the same prospect. Editing and deleting stay with whoever saved
-it: seeing a colleague's work and being able to overwrite it are different things.</p>
+  <p>Saved configurations are visible across your organisation, so a team can work from one shared
+  library. Editing and deleting remain with whoever saved the configuration.</p>
+</section>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="profile">13. Company Profile</h2>
+<!-- ═══════════ 13 ═══════════ -->
+<section id="profile">
+  <div class="kicker">Configuration</div>
+  <h2 class="sec">13. Company Profile</h2>
+  <div class="rule"></div>
 
-<p>The full detail behind section 2. Load a preset, then edit. The fields that change the call most
-noticeably are the company name, the agent's name, the country and language, the honorific style,
-and which use cases are switched on.</p>
+  <p>The full detail behind section 2. Load a preset, then edit it. The fields with the most
+  noticeable effect on a call are the company name, the agent's name, the country and language, the
+  form of address, and which use cases are enabled.</p>
 
-<p>Further down there is a knowledge section: a few plain facts the agent can draw on, one per line,
-written the way you want them spoken. Numbers and codes are read aloud, so write them as you would
-say them rather than as you would type them.</p>
+  <p>Further down there is a knowledge section: a short list of facts the agent may draw on, one per
+  line. Write them as you want them spoken, since numbers and reference codes are read aloud.</p>
+</section>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="allowance">14. Your allowance</h2>
+<!-- ═══════════ 14 ═══════════ -->
+<section id="allowance">
+  <div class="kicker">Account and administration</div>
+  <h2 class="sec">14. Your calling allowance</h2>
+  <div class="rule"></div>
 
-<p>Accounts have a daily ceiling on live calling. The standard allowance is three calls or ten
-minutes of talk time per day, whichever runs out first. Simulated calls do not count against it.</p>
+  <p>Each account has a daily limit on live calling. The standard allowance is three calls or ten
+  minutes of talk time per day, whichever is reached first. Simulated calls do not count towards it.</p>
 
-<p>Bulk campaigns are switched off for partner accounts by default. If you try to launch one you
-will see this:</p>
+  <p>Bulk campaigns are disabled for partner accounts by default. Attempting to launch one produces
+  the following message:</p>
 
-<div class="card" style="font-size:14.5px">
-Bulk campaigns aren't switched on for your account just yet. Your daily allowance is 3 calls or 10
-minutes of talk time, so calls are placed one at a time from the Single Call page. If you'd like to
-run a larger campaign, just ask your Streebo contact and we'll be glad to arrange it.
-</div>
+  <div class="card" style="font-size:14.5px">
+  Bulk campaigns aren't switched on for your account just yet. Your daily allowance is 3 calls or 10
+  minutes of talk time, so calls are placed one at a time from the Single Call page. If you'd like to
+  run a larger campaign, just ask your Streebo contact and we'll be glad to arrange it.
+  </div>
 
-<p>This is not an oversight. Somebody on a three-call allowance who uploads five hundred contacts
-gets a queue of refusals rather than a demo, and if the allowance were raised without the ceiling
-being thought about first, one careless upload becomes real money and five hundred real phones
-ringing. So bulk is handed over deliberately, per account, and it can be granted for a day or a
-week rather than for ever.</p>
+  <p>Bulk access and higher allowances are granted per account, and can be granted for a fixed period
+  such as a single day or a week.</p>
 
-<div class="good"><b>Ask, and it takes a minute.</b> Allowances and bulk access can be raised
-temporarily for a specific demo, with an expiry date attached, so nobody has to remember to turn it
-back down.</div>
+  <div class="good">To request either, contact your Streebo representative. Allowances can be raised
+  for a specific demonstration, with an expiry date attached.</div>
+</section>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="admin">15. Admin <span class="pill">administrators only</span></h2>
+<!-- ═══════════ 15 ═══════════ -->
+<section id="admin">
+  <div class="kicker">Account and administration</div>
+  <h2 class="sec">15. Administration <span class="pill">administrators only</span></h2>
+  <div class="rule"></div>
 
-<p>The Admin tab appears only for administrators, and the restricted parts of it are not sent to a
-browser that has no business with them. If you are not an administrator, the tab is not hidden from
-you, it is simply not there.</p>
+  <p>The Admin tab is available to administrators only. If you are not an administrator it does not
+  appear.</p>
 
-<p>What lives in it:</p>
-<ul>
-  <li><b>Accounts.</b> Create, deactivate, set an allowance, grant a temporary boost including bulk access.</li>
-  <li><b>Access requests.</b> People from unapproved domains who have asked to get in. Approving one puts them into an organisation you choose.</li>
-  <li><b>Sign-up and limits.</b> The approved domains, individually approved addresses, and the two switches that govern self-registration. There is a live summary that states in plain words what the current combination actually does, so you are not left to infer it from two checkboxes.</li>
-  <li><b>Guardrails.</b> The default daily allowance, whether it is enforced, whether the whole platform is restricted to simulation, and whether partners may run bulk campaigns.</li>
-  <li><b>Daily report.</b> A summary emailed to Streebo once a day covering every partner: calls placed, who was called and in which country, talk time, industries demonstrated, and any boosts in force. The time, timezone and recipients are all editable.</li>
-</ul>
+  <table>
+    <tr><th>Area</th><th>Purpose</th></tr>
+    <tr><td>Accounts</td><td>Create and deactivate accounts, set an allowance, and grant a temporary increase including bulk access.</td></tr>
+    <tr><td>Access requests</td><td>People from unapproved domains who have asked for access. Approving one assigns them to an organisation.</td></tr>
+    <tr><td>Sign-up and limits</td><td>Approved domains, individually approved addresses, and the two settings governing self-registration. A summary states what the current combination allows.</td></tr>
+    <tr><td>Guardrails</td><td>The default daily allowance, whether it is enforced, whether the platform is restricted to simulation, and whether partners may run bulk campaigns.</td></tr>
+    <tr><td>Daily report</td><td>A summary emailed once a day covering every partner: calls placed, who was called and in which country, talk time, industries demonstrated, and any allowance increases in force. Time, timezone and recipients are configurable.</td></tr>
+  </table>
+</section>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="wrong">16. When something looks wrong</h2>
+<!-- ═══════════ 16 ═══════════ -->
+<section id="wrong">
+  <div class="kicker">Reference</div>
+  <h2 class="sec">16. Troubleshooting</h2>
+  <div class="rule"></div>
 
-<div class="qa">
-  <div class="q">"Backend not connected" across the top</div>
-  <p>The console cannot reach the server. On a hosted instance that usually means the service is
-  down or restarting; give it a moment and press Retry. Running locally, it means the Node server on
-  port 3002 is not up.</p>
-</div>
+  <div class="qa">
+    <div class="q">"Backend not connected" appears across the top of the screen</div>
+    <p>The console cannot reach the server. On a hosted installation this usually means the service
+    is restarting. Wait a moment and press Retry.</p>
+  </div>
 
-<div class="qa">
-  <div class="q">Every row in my file was skipped</div>
-  <p>Look at the "How your file was read" panel first. If the name or the phone number is not listed
-  there, we did not find them, and no row can be called without both. If they are listed and rows are
-  still held back, the Status column names the missing field per row.</p>
-</div>
+  <div class="qa">
+    <div class="q">Every row in my file was held back</div>
+    <p>Check the "How your file was read" panel first. If the name or the telephone number is not
+    listed there, they were not found, and no row can be called without both. If they are listed and
+    rows are still held back, the Status column names the missing field for each row.</p>
+  </div>
 
-<div class="qa">
-  <div class="q">The agent did not mention the amount</div>
-  <p>That variable was empty for that row, and the agent is instructed to speak around an empty
-  variable rather than say a blank or read out a placeholder. Check the "What we'll say" column in
-  the analysis: it shows exactly what the agent was given.</p>
-</div>
+  <div class="qa">
+    <div class="q">The agent did not mention the amount</div>
+    <p>That variable was empty for that row, and the agent speaks around an empty variable rather
+    than reading out a blank. The "What we'll say" column in the analysis shows exactly what the
+    agent was given.</p>
+  </div>
 
-<div class="qa">
-  <div class="q">A date was spoken as the wrong day</div>
-  <p>Almost always the day-first / month-first question. See the amber note in section 6. Add one
-  date past the 12th to that column, or write dates as <code>2026-09-11</code>, and it is
-  unambiguous.</p>
-</div>
+  <div class="qa">
+    <div class="q">A date was spoken as the wrong day</div>
+    <p>This is normally the day-first and month-first question described in section 6. Add one date
+    later than the 12th to that column, or write dates in the form <code>2026-09-11</code>.</p>
+  </div>
 
-<div class="qa">
-  <div class="q">The call ended sooner than expected</div>
-  <p>Live calls are capped at whatever talk time your account has left for the day, so the last call
-  of an allowance can be cut short. The cap exists so a single long call cannot overspend a
-  ten-minute budget.</p>
-</div>
+  <div class="qa">
+    <div class="q">The call ended sooner than expected</div>
+    <p>Live calls are limited to the talk time remaining on your account for that day, so the last
+    call within an allowance may be cut short.</p>
+  </div>
 
-<div class="qa">
-  <div class="q">A number I already called is being skipped</div>
-  <p>If it was marked do-not-call on an earlier conversation, that is honoured permanently, across
-  every future campaign. It is shown as <code>do-not-call (prior call)</code> rather than silently
-  dropped.</p>
-</div>
+  <div class="qa">
+    <div class="q">A number I have called before is being skipped</div>
+    <p>If it was marked do-not-call during an earlier conversation, that is honoured permanently
+    across all future campaigns, and is shown as <code>do-not-call (prior call)</code>.</p>
+  </div>
 
-<div class="qa">
-  <div class="q">Analytics look emptier than the history</div>
-  <p>Simulated calls are left out of analytics unless you switch them on. The history shows
-  everything.</p>
-</div>
+  <div class="qa">
+    <div class="q">Analytics show fewer calls than the history</div>
+    <p>Simulated calls are excluded from analytics unless the switch is enabled. The call history
+    shows everything.</p>
+  </div>
+</section>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="limits">17. What it will not do</h2>
+<!-- ═══════════ 17 ═══════════ -->
+<section id="limits">
+  <div class="kicker">Reference</div>
+  <h2 class="sec">17. Scope and limitations</h2>
+  <div class="rule"></div>
 
-<p>Worth knowing before somebody asks you in a meeting.</p>
+  <p>The following are outside the scope of the platform as it currently stands.</p>
 
-<ul>
-  <li><b>It does not take inbound calls.</b> This is an outbound platform. A customer cannot ring the number back and reach the agent.</li>
-  <li><b>It does not check whether a number is reachable before dialling.</b> A dead number is discovered by calling it, and comes back as no answer.</li>
-  <li><b>It does not retry.</b> A call that goes to voicemail is recorded as such and left. Re-dialling is a decision for a person, or a second campaign.</li>
-  <li><b>It does not translate your data.</b> The agent speaks the language in the profile. If your file has French product names and the profile is English, it will read French product names in English.</li>
-  <li><b>Salesforce, HubSpot, Zoho and direct database write-back need credentials.</b> The interface is built and the mapping works; the connection is not something you can switch on from the console alone.</li>
-  <li><b>It cannot tell 09/11 apart from 11/09 in a column where no date passes the 12th.</b> Nothing can. We say so rather than guessing quietly.</li>
-  <li><b>It will not invent a value to fill a gap.</b> If an amount or a date is missing, the call either works around it or is held back with the missing column named. This is a deliberate limit, and the right one: a specific number spoken to a real customer has to be theirs.</li>
-</ul>
+  <ul>
+    <li><b>Inbound calls are not handled.</b> A customer cannot return the call and reach the agent.</li>
+    <li><b>Numbers are not verified before dialling.</b> An unreachable number is identified by calling it, and is recorded as no answer.</li>
+    <li><b>Calls are not retried automatically.</b> A call that reaches voicemail is recorded and left. Re-dialling is a separate decision.</li>
+    <li><b>Data is not translated.</b> The agent speaks the language set in the profile. Product names held in another language will be read in the profile language.</li>
+    <li><b>Salesforce, HubSpot, Zoho and direct database write-back require credentials.</b> The mapping is ready; the connection cannot be enabled from the console alone.</li>
+    <li><b>Dates cannot be disambiguated in a column where no date falls after the 12th.</b> Where this occurs, a warning is shown rather than an assumption being made silently.</li>
+    <li><b>Missing values are not substituted.</b> Where an amount or a date is absent, the call either proceeds without it or the row is held back with the missing column named.</li>
+  </ul>
+</section>
 
-<!-- ══════════════════════════════════════════════ -->
-<h2 class="sec" id="glossary">18. Words we use</h2>
+<!-- ═══════════ 18 ═══════════ -->
+<section id="glossary">
+  <div class="kicker">Reference</div>
+  <h2 class="sec">18. Glossary</h2>
+  <div class="rule"></div>
 
-<table>
-  <tr><th>Term</th><th>Means</th></tr>
-  <tr><td>Profile</td><td>The company the agent is being right now. Brand, market, voice, language, compliance, and which call types are available.</td></tr>
-  <tr><td>Use case</td><td>One kind of call, named the way that industry names it: "EMI Due Reminder", "Delivery Exception", "e-KYC Pending".</td></tr>
-  <tr><td>Playbook / archetype</td><td>The nine conversation engines underneath the use cases. Every use case in the catalogue is one of these nine wearing an industry's clothes.</td></tr>
-  <tr><td>Variable</td><td>A value the agent speaks on a specific call: an amount, a date, a document list.</td></tr>
-  <tr><td>Disposition</td><td>How the call ended, in one word: promised_payment, appointment_set, dispute_raised, do_not_call, no_answer_voicemail.</td></tr>
-  <tr><td>Action / tool</td><td>Something the agent does mid-conversation rather than after it: logging a promise to pay, booking a callback, marking do-not-call.</td></tr>
-  <tr><td>Write-back</td><td>Pushing the outcome of a call to your system of record.</td></tr>
-  <tr><td>Boost</td><td>A temporary lift to an account's allowance, optionally including bulk access, with an expiry.</td></tr>
-</table>
+  <table>
+    <tr><th>Term</th><th>Definition</th></tr>
+    <tr><td>Profile</td><td>The company the agent represents: brand, market, voice, language, compliance framework, and the call types available.</td></tr>
+    <tr><td>Use case</td><td>One kind of call, named as that industry names it, such as "EMI Due Reminder", "Delivery Exception" or "e-KYC Pending".</td></tr>
+    <tr><td>Variable</td><td>A value the agent speaks on a particular call: an amount, a date, a list of documents.</td></tr>
+    <tr><td>Disposition</td><td>How the call ended, in one word: promised_payment, appointment_set, dispute_raised, do_not_call, no_answer_voicemail.</td></tr>
+    <tr><td>Action</td><td>Something the agent records during the conversation rather than afterwards, such as logging a promise to pay or booking a callback.</td></tr>
+    <tr><td>Write-back</td><td>Sending the outcome of a call to your own system of record.</td></tr>
+    <tr><td>Allowance</td><td>The daily limit on live calling applied to an account.</td></tr>
+    <tr><td>Simulation</td><td>A dry run that produces a full transcript and outcome without placing a telephone call.</td></tr>
+  </table>
 
-<p style="margin-top:34px;color:var(--ink-3);font-size:13.5px">Anything in here that does not match
-what you are seeing on screen is worth telling us about. The console changes faster than the guide
-does.</p>
+  <p style="margin-top:30px;color:var(--ink-3);font-size:13.5px">If anything in this manual does not
+  match what you see on screen, please let your Streebo contact know.</p>
+</section>
 
-</main>
 </div>
 </body>
 </html>
