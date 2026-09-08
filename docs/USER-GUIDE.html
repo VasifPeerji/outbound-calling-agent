@@ -57,7 +57,30 @@
   .qa p:last-child{margin-bottom:0}
   .pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2);vertical-align:middle}
   @media(max-width:960px){.wrap{grid-template-columns:1fr}nav{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line)}main{padding:24px 20px 60px}}
-  @media print{nav{display:none}.wrap{grid-template-columns:1fr}pre{background:#f4f4f8;color:#222;border:1px solid #ddd}}
+  @media print{
+    /* Backgrounds carry meaning here: an amber box means stop and read. Without this they all
+       print as the same empty rectangle. */
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    @page{margin:14mm 13mm}
+    nav{display:none}
+    .wrap{grid-template-columns:1fr;max-width:none}
+    main{padding:0}
+    body{font-size:10.5pt;line-height:1.55;background:#fff}
+    p,ul,ol{max-width:none}
+    header.hero{border-radius:10px;padding:22px 24px;margin-bottom:22px}
+    header.hero h1{font-size:22pt}
+    header.hero p{font-size:11pt}
+    /* Keep a heading with the text under it, and never split a block that reads as one unit. */
+    h2.sec{font-size:15pt;margin:24px 0 10px;break-after:avoid;break-inside:avoid}
+    h3,h4{break-after:avoid}
+    .card,.note,.warn,.good,.bad,.qa,.stat,.box,pre{break-inside:avoid}
+    table{break-inside:auto}
+    tr,th,td{break-inside:avoid}
+    thead{display:table-header-group}
+    pre{background:#f4f4f8;color:#222;border:1px solid #ddd;font-size:9pt}
+    pre .s{color:#0a6b3d} pre .c{color:#666} pre .k{color:#5b2fb5} pre .n{color:#9a5b00}
+    a{color:inherit;text-decoration:none}
+  }
 </style>
 </head>
 <body>
