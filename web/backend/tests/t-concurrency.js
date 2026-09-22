@@ -117,7 +117,7 @@ const req = (method, p, token, body) => new Promise(resolve => {
 const CATALOG = require(path.join(SRC, 'config/catalog/use-cases.json'));
 function profileFor(company, industry, voiceId, language) {
   const use_cases = {};
-  for (const u of CATALOG[industry]) use_cases[u.key] = { enabled: true, label: u.label, emoji: u.emoji || '*', archetype: u.archetype, desc: u.desc || '', playbook: u.playbook || '', fields: u.fields || [] };
+  for (const u of CATALOG[industry]) use_cases[u.key] = { enabled: true, label: u.label, emoji: u.emoji || '*', archetype: u.archetype, desc: u.desc || '', playbook: u.playbook || '', fields: u.fields || [], ...(u.trigger ? { trigger: u.trigger } : {}) };
   return {
     company: { name: company, industry },
     locale: { money_scale: 'western' },

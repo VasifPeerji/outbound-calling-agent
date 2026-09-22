@@ -3623,7 +3623,7 @@ function buildUseCases() {
   const out = {};
   industryUseCases().forEach(u => {
     if (!chosen.includes(u.key)) return;
-    out[u.key] = { enabled: true, label: u.label, emoji: u.emoji || '•', archetype: u.archetype || u.key, desc: u.desc || '', playbook: u.playbook || '', fields: u.fields || [], ...(u._legacy || {}) };
+    out[u.key] = { enabled: true, label: u.label, emoji: u.emoji || '•', archetype: u.archetype || u.key, desc: u.desc || '', playbook: u.playbook || '', fields: u.fields || [], ...(u.trigger ? { trigger: u.trigger } : {}), ...(u._legacy || {}) };
   });
   return out;
 }

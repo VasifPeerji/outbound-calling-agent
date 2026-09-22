@@ -823,6 +823,16 @@ loadTools();
 function activeProviderName(profile) { const p = profile || activeProfile; return (p && p.voice && p.voice.provider) || config.defaultProvider || 'elevenlabs'; }
 function providerConfigured(name) { try { return getProvider(name).isConfigured(config); } catch (e) { return false; } }
 
+// Every {{variable}} the prompt or opener mentions must reach the provider, even if blank. A CSV
+// row with no suggested times, or an optional field nobody filled, would otherwise leave a
+// placeholder with no value, which the provider can reject or read out literally. Blank is what
+// the prompt expects: it is told to speak around empty values.
+function fillReferencedVars(vars, ...texts) {
+  for (const t of texts) for (const m of String(t || '').matchAll(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g))
+    if (!(m[1] in vars) && !m[1].startsWith('system__')) vars[m[1]] = '';
+  return vars;
+}
+
 // Place one call using the given user's profile. Returns { providerName, providerCallId }.
 // `user` is optional; when given, the call is capped at whatever talk-time budget that person has
 // left today, so a 10-minute daily allowance cannot be overspent by a single long call. Because
@@ -862,6 +872,7 @@ async function placeCall(toNumber, callVars, profile, user) {
   // Calls work perfectly well without tools — but the agent must stop claiming it has filed things.
   if (prompt && toolsLive.known && !toolsLive.ok) prompt += '\n\n\n' + '='.repeat(60) + '\n\n\n' + NO_TOOLS_GUIDANCE;
   const firstMessage = providerName === 'elevenlabs' ? buildFirstMessage(profile, dynamicVars.time) : '';
+  fillReferencedVars(dynamicVars, prompt, firstMessage);
   // null when this user has no minute budget, in which case the agent's own limit applies unchanged.
   const maxDurationSeconds = remainingSecondsToday(user);
   const result = await adapter.createCall({ toNumber, dynamicVars, prompt, firstMessage, llm, language, voice, config, maxDurationSeconds });
@@ -997,7 +1008,7 @@ const LEAK_TELLS = [
   // the agent reading its own plan aloud.
   [/\bI (?:need to|should|will|must|am going to|am now going to)\b[^.!?]{0,80}\b(?:tool|function|the call outcome|record the outcome|end the call|the system|my instructions|next step)\b/gi, 'narrating its next step'],
   [/\blet me think\b|\bthinking:|\bmy reasoning\b|\bstep \d[:.]/gi, 'thinking out loud'],
-  [/\b(?:book_appointment|record_call_outcome|schedule_callback|mark_do_not_call|transfer_to_human|capture_lead|log_promise_to_pay|flag_dispute|log_service_outcome|log_document_status|log_offer_outcome|capture_survey_response|log_renewal_decision|reschedule_appointment|cancel_appointment|update_contact_info|send_followup|end_call)\b/g, 'tool name spoken'],
+  [/\b(?:book_appointment|record_call_outcome|schedule_callback|mark_do_not_call|transfer_to_human|capture_lead|log_promise_to_pay|flag_dispute|log_service_outcome|log_document_status|log_offer_outcome|capture_survey_response|log_renewal_decision|reschedule_appointment|cancel_appointment|propose_appointment_slot|update_contact_info|send_followup|end_call)\b/g, 'tool name spoken'],
   [/\{\{[a-z_]+\}\}/gi, 'unfilled variable spoken']
 ];
 function detectPromptLeak(transcript) {
@@ -1117,6 +1128,8 @@ function applyOutcome(entry, tool, p) {
     case 'book_appointment': entry.appointment = { status: 'booked', date: p.date || '', time: p.time || '', type: p.type || '', location: p.location || '' }; break;
     case 'reschedule_appointment': entry.appointment = { status: 'rescheduled', date: p.new_date || '', time: p.new_time || '' }; break;
     case 'cancel_appointment': entry.appointment = { status: 'cancelled', reason: p.reason || '' }; break;
+    // A time the customer asked for. Nothing is booked until someone checks it and confirms.
+    case 'propose_appointment_slot': entry.appointment = { status: 'proposed', date: p.proposed_date || '', time: p.proposed_time || '', note: p.note || '' }; break;
     case 'capture_lead': entry.lead = { qualified: p.qualified || '', interest: p.interest || '', budget: p.budget || '', timeline: p.timeline || '', notes: p.notes || '' }; break;
     case 'log_renewal_decision': entry.renewal = { decision: p.decision || '', reason: p.reason || '', offer_accepted: p.offer_accepted || '' }; break;
     case 'log_service_outcome': entry.service = { acknowledged: p.acknowledged || '', option_chosen: p.option_chosen || '', follow_up_needed: p.follow_up_needed || '', reference: p.reference || '' }; break;
@@ -2649,8 +2662,8 @@ const ARCHETYPE_ANALYSIS = {
   },
   appointment_reminder: {
     name: 'Appointment or delivery',
-    what: 'confirming a booking, appointment, visit or delivery slot',
-    goal: 'the appointment was confirmed, rescheduled to a specific new time, or cancelled'
+    what: 'confirming a booking, appointment, meeting, visit or delivery slot, or rebooking one that was missed',
+    goal: 'the appointment was confirmed, moved to a specific new time, a specific day and time the customer proposed was taken down to be confirmed, or it was cancelled'
   },
   feedback_survey: {
     name: 'Feedback or satisfaction',
@@ -3167,3 +3180,4 @@ if (require.main === module) start();
 
 module.exports = app;
 module.exports.start = start;
+module.exports.fillReferencedVars = fillReferencedVars;

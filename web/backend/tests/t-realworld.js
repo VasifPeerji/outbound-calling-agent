@@ -24,7 +24,7 @@ const isoLocal = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,
 const iso = d => { const x = new Date(NOW); x.setDate(x.getDate() + d); return isoLocal(x); };
 function profileFor(industry) {
   const use_cases = {};
-  for (const u of CATALOG[industry]) use_cases[u.key] = { enabled: true, label: u.label, archetype: u.archetype, fields: u.fields || [] };
+  for (const u of CATALOG[industry]) use_cases[u.key] = { enabled: true, label: u.label, archetype: u.archetype, fields: u.fields || [], trigger: u.trigger };
   return { company: { industry }, locale: {}, contact: {}, use_cases };
 }
 function run(rows, industry) {

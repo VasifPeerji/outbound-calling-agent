@@ -155,8 +155,8 @@
   records what was agreed, and writes the outcome back to your own records.</p>
 
   <div class="stats">
-    <div class="stat"><b>31</b><span>industries supported</span></div>
-    <div class="stat"><b>198</b><span>ready-made call types</span></div>
+    <div class="stat"><b>38</b><span>industries supported</span></div>
+    <div class="stat"><b>256</b><span>ready-made call types</span></div>
     <div class="stat"><b>204</b><span>countries</span></div>
     <div class="stat"><b>74</b><span>languages</span></div>
   </div>
@@ -261,6 +261,19 @@
   <div class="note"><b>Leave a field blank rather than entering a placeholder value.</b> The agent
   speaks around an empty variable, so an unknown balance simply does not come up in conversation. A
   substitute figure will be spoken to the customer as though it were correct.</div>
+
+  <h3>Meetings, visits and times to offer</h3>
+  <p>Any call that may end with a new booking, such as a meeting reminder, a missed meeting, a
+  viewing or an enquiry follow-up, has a <b>Times We Can Offer</b> field. Enter two or three times
+  you know you can do, separated by semicolons, for example <code>Tue 10am; Wed 2pm; Thu 9am</code>.
+  The agent offers those first and books the one the customer picks. If the field is empty, or none
+  of the times suit, the agent asks for an exact day and time, reads it back and tells the customer
+  it will be checked and confirmed. It never describes that time as booked. The proposed time appears
+  in Call History and in write-back as <code>proposed</code>, with the next step
+  <i>Check and confirm their proposed time</i>, so someone on your side can confirm it.</p>
+  <p>Calls for a <b>missed</b> meeting or appointment open with a light "we missed you", recap the
+  agenda in a line if one was given, and move straight to rebooking. The customer is never told they
+  were a no-show.</p>
 </section>
 
 <!-- ═══════════ 5 ═══════════ -->
@@ -283,6 +296,12 @@
     <li><b>By meaning</b>, where a longer heading still describes the field: <code>bill_due_date</code>, <code>restoration_eta</code>, <code>pending_documents</code>.</li>
     <li><b>By the values themselves</b>, where the heading is uninformative. A column named <code>crm_field_7</code> containing numbers in the form <code>+9198…</code> is recognised as the telephone number.</li>
   </ol>
+
+  <p>For meetings and appointments, a date that has already passed is treated as a missed booking
+  where the profile has a call for that, and a future date as a reminder. An attendance column
+  (<code>Attended</code>, <code>No Show</code>, <code>Meeting Status</code>) settles it either way, so
+  somebody who did attend is never called about missing it. Offered times can come from a column such
+  as <code>Available Slots</code> or <code>Suggested Times</code>.</p>
 
   <h3>File formats handled</h3>
   <p>Comma, semicolon and tab separated files; files saved with a byte-order mark; a report carrying
@@ -389,7 +408,8 @@
   <p>Opening a call shows the transcript, the recording where one exists, and an
   <b>Actions captured</b> panel containing the disposition, a one-sentence summary, and everything
   the agent recorded during the conversation. This may include a promise to pay with the amount and
-  date, a rescheduled appointment with its new time, which documents remain outstanding and when the
+  date, a rescheduled appointment with its new time, a time the customer proposed that is waiting to
+  be confirmed, which documents remain outstanding and when the
   customer undertook to send them, whether a service disruption was understood and which option was
   chosen, a dispute, a transfer to a colleague, or a corrected telephone number.</p>
 

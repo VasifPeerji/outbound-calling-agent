@@ -184,5 +184,47 @@
     "about": "{company} is a veterinary practice caring for pets through routine health, vaccination, and treatment.",
     "offerings": [ { "name": "Wellness Plan", "benefit": "routine care spread over affordable monthly payments" }, { "name": "Vaccinations", "benefit": "protection kept up to date automatically" }, { "name": "Dental & Surgery", "benefit": "expert care when it is needed" } ],
     "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": false }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "appointment" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": false }, "renewal_retention": { "enabled": true, "renewal_noun": "wellness plan" } }
+  },
+  "B2B Sales & Marketing": {
+    "agent_role": "Business Development Associate", "agent_name": "Nadia",
+    "about": "{company} works with businesses, partners and OEMs to solve real business problems, from the first conversation through to a signed agreement and beyond.",
+    "offerings": [ { "name": "Discovery Consultation", "benefit": "a focused session to map your goals and where we can help" }, { "name": "Tailored Demonstration", "benefit": "the solution shown working on your own use case" }, { "name": "Pilot / Proof of Value", "benefit": "results proven on a small scale before any big commitment" }, { "name": "Partner Programme", "benefit": "co-selling support and shared growth for partners and OEMs" } ],
+    "use_cases": { "payment_reminder": { "enabled": false }, "overdue_followup": { "enabled": false }, "sales_offer": { "enabled": false }, "appointment_reminder": { "enabled": true, "appointment_noun": "meeting" }, "feedback_survey": { "enabled": true, "scale": "1 to 10" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": false, "renewal_noun": "agreement" } }
+  },
+  "Property Management & Rentals": {
+    "agent_role": "Property Manager", "agent_name": "Hannah",
+    "about": "{company} manages residential rental properties for landlords, looking after tenancies, rent, maintenance and inspections.",
+    "offerings": [ { "name": "Full Property Management", "benefit": "rent collected, repairs handled and inspections done for you" }, { "name": "Tenant Finding", "benefit": "reliable, checked tenants placed quickly" }, { "name": "Maintenance Coordination", "benefit": "trusted tradespeople and repairs tracked to completion" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": true }, "sales_offer": { "enabled": false }, "appointment_reminder": { "enabled": true, "appointment_noun": "viewing" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "tenancy" } }
+  },
+  "Heavy Equipment & Machinery": {
+    "agent_role": "Product Support Coordinator", "agent_name": "Morgan",
+    "about": "{company} sells, rents and services heavy equipment for construction, mining, agriculture and industry, with parts and field service to keep machines working.",
+    "offerings": [ { "name": "Equipment Sales", "benefit": "new and used machines with finance options" }, { "name": "Parts & Field Service", "benefit": "genuine parts and technicians on site, for less downtime" }, { "name": "Equipment Rental", "benefit": "the right machine for the job without owning it" }, { "name": "Service Agreements", "benefit": "planned maintenance at a predictable cost" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": false }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "service visit" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": false }, "renewal_retention": { "enabled": true, "renewal_noun": "service agreement" } }
+  },
+  "Facility Management": {
+    "agent_role": "Client Services Coordinator", "agent_name": "Kwame",
+    "about": "{company} provides facility management for commercial buildings and sites, from planned maintenance and cleaning to compliance and reactive repairs.",
+    "offerings": [ { "name": "Planned Maintenance", "benefit": "fewer breakdowns and predictable running costs" }, { "name": "Compliance Services", "benefit": "inspections and certificates kept up to date" }, { "name": "Cleaning & Soft Services", "benefit": "clean, safe spaces for the people who use them" }, { "name": "Reactive Repairs", "benefit": "fast response when something fails" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": false }, "sales_offer": { "enabled": false }, "appointment_reminder": { "enabled": true, "appointment_noun": "maintenance visit" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": false }, "renewal_retention": { "enabled": true, "renewal_noun": "service contract" } }
+  },
+  "Wholesale & Distribution": {
+    "agent_role": "Trade Accounts Executive", "agent_name": "Rahul",
+    "about": "{company} supplies products to retailers, trade customers and businesses, with dependable stock, scheduled deliveries and trade credit.",
+    "offerings": [ { "name": "Trade Accounts", "benefit": "credit terms and account pricing for regular buyers" }, { "name": "Scheduled Deliveries", "benefit": "a regular delivery day on your route" }, { "name": "Volume & Contract Pricing", "benefit": "better prices for committed volumes" } ],
+    "use_cases": { "payment_reminder": { "enabled": false }, "overdue_followup": { "enabled": true, "consequences": ["account being placed on hold"] }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "delivery" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": false }, "renewal_retention": { "enabled": false, "renewal_noun": "supply agreement" } }
+  },
+  "Solar & Renewable Energy": {
+    "agent_role": "Solar Advisor", "agent_name": "Mei",
+    "about": "{company} designs and installs solar and battery systems for homes and businesses, with finance options and ongoing monitoring and support.",
+    "offerings": [ { "name": "Solar Panel Systems", "benefit": "lower energy bills from your own roof" }, { "name": "Battery Storage", "benefit": "use your solar power at night and during outages" }, { "name": "Monitoring & Maintenance", "benefit": "systems kept performing at their best" } ],
+    "use_cases": { "payment_reminder": { "enabled": true }, "overdue_followup": { "enabled": false }, "sales_offer": { "enabled": false }, "appointment_reminder": { "enabled": true, "appointment_noun": "site assessment" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "maintenance plan" } }
+  },
+  "Beauty & Personal Care": {
+    "agent_role": "Client Care Coordinator", "agent_name": "Mia",
+    "about": "{company} is a salon and beauty clinic offering hair, skin, nail and wellbeing treatments.",
+    "offerings": [ { "name": "Hair Services", "benefit": "cuts, colour and treatments by experienced stylists" }, { "name": "Skin & Beauty Treatments", "benefit": "facials and treatments for visible results" }, { "name": "Packages & Memberships", "benefit": "regular care at better value" } ],
+    "use_cases": { "payment_reminder": { "enabled": false }, "overdue_followup": { "enabled": false }, "sales_offer": { "enabled": true }, "appointment_reminder": { "enabled": true, "appointment_noun": "appointment" }, "feedback_survey": { "enabled": true, "scale": "1 to 5" }, "lead_qualification": { "enabled": true }, "renewal_retention": { "enabled": true, "renewal_noun": "package" } }
   }
 }

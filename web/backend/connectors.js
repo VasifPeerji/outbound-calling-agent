@@ -183,6 +183,7 @@ function nextStep(e) {
   if (e.dnc) return 'Do not call again';
   if (p.date) return `Pay ${p.amount ? p.amount + ' ' : ''}${whenPhrase(p.date)}`.replace(/\s+/g, ' ').trim();
   if (a.status === 'cancelled') return 'Appointment cancelled';
+  if (a.status === 'proposed' && a.date) return `Check and confirm their proposed time: ${a.date}${a.time ? ' at ' + a.time : ''}`;
   if (a.date) return `${a.status === 'rescheduled' ? 'Rescheduled' : 'Booked'} for ${a.date}${a.time ? ' at ' + a.time : ''}`;
   if (d.promised_by) return `Documents ${whenPhrase(d.promised_by)}`;
   if (d.blocker) return `Blocked: ${d.blocker}`;

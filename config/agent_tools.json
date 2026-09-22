@@ -318,6 +318,33 @@
       "say": "That's cancelled for you — no problem at all."
     },
     {
+      "name": "propose_appointment_slot",
+      "description": "Log a day and time the customer proposed for a meeting, visit or appointment, when none of the offered times suited or none were offered. It is a request for the team to check and confirm, not a booking.",
+      "applies_to": [
+        "appointment_reminder",
+        "lead_qualification"
+      ],
+      "confirm_first": true,
+      "parameters": {
+        "proposed_date": {
+          "type": "string",
+          "description": "The day the customer proposed, read back and confirmed."
+        },
+        "proposed_time": {
+          "type": "string",
+          "description": "The time or window they proposed."
+        },
+        "note": {
+          "type": "string",
+          "description": "Anything that matters for confirming it: a second option they gave, who else must attend, online or in person."
+        }
+      },
+      "required": [
+        "proposed_date"
+      ],
+      "say": "I'll check {proposed_date} at {proposed_time} and we'll confirm it with you."
+    },
+    {
       "name": "capture_lead",
       "description": "Record qualification details for a new lead and whether they are a fit.",
       "applies_to": [

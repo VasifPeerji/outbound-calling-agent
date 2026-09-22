@@ -49,11 +49,20 @@ const FIELD = {
   amount_overdue: { type: 'money', aliases: ['amount_overdue', 'overdue_amount', 'arrears', 'arrears_amount', 'past_due_amount', 'outstanding_due', 'unpaid_amount', 'balance_overdue', 'delinquent_amount'], tokens: ['overdue', 'arrears', 'unpaid', 'delinquent'] },
   outstanding_balance: { type: 'money', aliases: ['outstanding_balance', 'balance', 'outstanding', 'total_outstanding', 'principal_outstanding', 'loan_balance', 'account_balance', 'remaining_balance', 'ledger_balance'], tokens: ['outstanding', 'balance', 'principal', 'remaining'] },
 
-  appointment_type: { type: 'text', aliases: ['appointment_type', 'appt_type', 'visit_type', 'booking_type', 'service_type', 'consultation_type', 'session_type', 'department', 'dept', 'speciality', 'specialty', 'clinic'], tokens: ['appointment', 'appt', 'visit', 'booking', 'consultation', 'session', 'department', 'speciality', 'specialty'] },
-  appointment_date: { type: 'date', aliases: ['appointment_date', 'appt_date', 'appt_dt', 'visit_date', 'booking_date', 'scheduled_date', 'scheduled_on', 'session_date', 'consultation_date', 'service_date', 'pickup_date', 'delivery_date', 'install_date', 'installation_date', 'inspection_date', 'test_drive_date', 'viewing_date', 'interview_date', 'appointment_on'], tokens: ['appointment', 'appt', 'visit', 'booking', 'scheduled', 'delivery', 'pickup', 'install', 'inspection', 'viewing', 'interview', 'date'] },
-  appointment_time: { type: 'time', aliases: ['appointment_time', 'appt_time', 'visit_time', 'booking_time', 'scheduled_time', 'time_slot', 'slot', 'delivery_slot', 'delivery_window', 'service_window', 'pickup_time', 'session_time', 'window'], tokens: ['appointment', 'appt', 'visit', 'booking', 'scheduled', 'slot', 'window', 'time'] },
+  appointment_type: { type: 'text', aliases: ['appointment_type', 'appt_type', 'visit_type', 'booking_type', 'service_type', 'consultation_type', 'session_type', 'department', 'dept', 'speciality', 'specialty', 'clinic', 'meeting_type', 'meeting', 'meeting_name', 'meeting_title', 'demo_type', 'event_name', 'webinar', 'webinar_title', 'treatment', 'service_booked'], tokens: ['appointment', 'appt', 'visit', 'booking', 'consultation', 'session', 'department', 'speciality', 'specialty', 'meeting', 'demo', 'webinar'] },
+  appointment_date: { type: 'date', aliases: ['appointment_date', 'appt_date', 'appt_dt', 'visit_date', 'booking_date', 'scheduled_date', 'scheduled_on', 'session_date', 'consultation_date', 'service_date', 'pickup_date', 'delivery_date', 'install_date', 'installation_date', 'inspection_date', 'test_drive_date', 'viewing_date', 'interview_date', 'appointment_on', 'meeting_date', 'meeting_on', 'demo_date', 'webinar_date', 'event_date', 'survey_date', 'missed_on', 'missed_date', 'no_show_date', 'survey_date_booked', 'works_date'], tokens: ['appointment', 'appt', 'visit', 'booking', 'scheduled', 'delivery', 'pickup', 'install', 'inspection', 'viewing', 'interview', 'meeting', 'demo', 'webinar', 'date'] },
+  appointment_time: { type: 'time', aliases: ['appointment_time', 'appt_time', 'visit_time', 'booking_time', 'scheduled_time', 'time_slot', 'slot', 'delivery_slot', 'delivery_window', 'service_window', 'pickup_time', 'session_time', 'window', 'meeting_time', 'demo_time', 'webinar_time', 'event_time_slot'], tokens: ['appointment', 'appt', 'visit', 'booking', 'scheduled', 'slot', 'window', 'meeting', 'demo', 'webinar', 'time'] },
   location: { type: 'text', aliases: ['location', 'branch', 'branch_name', 'store', 'store_name', 'centre', 'center', 'site', 'address', 'venue', 'clinic_location', 'city', 'facility', 'outlet', 'depot', 'warehouse', 'showroom', 'campus'], tokens: ['location', 'branch', 'store', 'centre', 'center', 'site', 'address', 'venue', 'city', 'facility', 'outlet', 'campus'] },
   prep_notes: { type: 'text', aliases: ['prep_notes', 'preparation', 'prep', 'prep_instructions', 'instructions', 'notes', 'special_instructions', 'remarks', 'advice', 'pre_visit_notes'], tokens: ['prep', 'preparation', 'instruction', 'note', 'remark', 'advice'] },
+  // Times the company can offer if a booking has to be made or moved. Deliberately kept apart from
+  // appointment_time: one is the slot that is booked, the other is what the agent may offer instead.
+  suggested_slots: { type: 'slots', aliases: ['suggested_slots', 'suggested_times', 'available_slots', 'available_times', 'offered_slots', 'slot_options', 'time_options', 'proposed_slots', 'alternative_slots', 'alternative_times', 'free_slots', 'open_slots', 'rebooking_slots', 'reschedule_options', 'availability'], tokens: ['suggested', 'alternative', 'availability', 'slots'] },
+  agenda: { type: 'text', aliases: ['agenda', 'meeting_agenda', 'topics', 'topic', 'discussion_points', 'talking_points', 'meeting_purpose', 'purpose_of_meeting', 'meeting_objective', 'objective', 'discussion_topic'], tokens: ['agenda', 'topic', 'topics', 'discussion', 'talking', 'objective'] },
+  information_needed: { type: 'list', aliases: ['information_needed', 'info_needed', 'inputs_needed', 'inputs_required', 'information_required', 'details_needed', 'requirements_needed', 'questions_for_prospect', 'next_inputs', 'data_needed'], tokens: ['inputs', 'information', 'needed'] },
+  equipment: { type: 'text', aliases: ['equipment', 'machine', 'machine_model', 'model', 'asset', 'asset_name', 'serial_number', 'serial_no', 'equipment_id', 'fleet_number', 'fleet_no', 'unit_model', 'vehicle', 'system', 'system_size'], tokens: ['equipment', 'machine', 'asset', 'serial', 'fleet'] },
+  // Whether they turned up. Evidence only, never spoken: it tells a missed-appointment call from a
+  // reminder, and a no-show from somebody to ask for feedback.
+  attendance: { type: 'text', aliases: ['attendance', 'attendance_status', 'attended', 'showed_up', 'show_status', 'no_show', 'noshow', 'meeting_status', 'appointment_status', 'visit_status', 'attended_yn', 'did_attend', 'meeting_outcome'], tokens: ['attendance', 'attended', 'showed', 'noshow'] },
   reference: { type: 'id', aliases: ['reference', 'reference_no', 'ref', 'ref_no', 'booking_ref', 'booking_reference', 'order_id', 'order_no', 'order_number', 'shipment_ref', 'shipment_id', 'awb', 'tracking_id', 'tracking_number', 'case_id', 'ticket_id', 'ticket_no', 'policy_number', 'policy_no', 'account_number', 'account_no', 'invoice_no', 'invoice_number', 'consignment_no', 'application_no', 'claim_no', 'job_no', 'work_order'], tokens: ['reference', 'ref', 'order', 'shipment', 'awb', 'tracking', 'ticket', 'policy', 'account', 'invoice', 'consignment', 'claim', 'id', 'no', 'number'] },
 
   renewal_item: { type: 'text', aliases: ['renewal_item', 'renewal_product', 'policy_name', 'contract', 'contract_name', 'membership', 'membership_type', 'subscription_plan', 'licence', 'license', 'amc', 'warranty'], tokens: ['renewal', 'contract', 'membership', 'subscription', 'licence', 'license', 'warranty', 'amc'] },
@@ -159,7 +168,7 @@ const ESSENTIAL = {
  */
 const SUBJECT = {
   product_name: { strip: /\b(due|overdue|reminder|payment|follow[- ]?up|missed|late|arrears|collection|notice)\b/gi, fallback: 'your account' },
-  appointment_type: { strip: /\b(reminder|confirmation|confirm|booking|scheduling|schedule|window|slot)\b/gi, fallback: 'appointment' },
+  appointment_type: { strip: /\b(reminder|confirmation|confirm|booking|scheduling|schedule|window|slot|missed|no[- ]?show|rebook|rebooking|follow[- ]?up|date)\b/gi, fallback: 'appointment' },
   interaction_type: { strip: /\b(feedback|survey|csat|nps|rating|review|follow[- ]?up)\b/gi, fallback: 'your recent experience' },
   event_type: { strip: /\b(notification|alert|notice)\b/gi, fallback: 'an update to your service' },
   process_name: { strip: /\b(documents?|collection|pending|outstanding|verification|request)\b/gi, fallback: 'your application' },
@@ -439,6 +448,7 @@ function resolveRow(row, resolved) {
     const n = norm(k);
     if (FIELD[n] && out[n] === undefined && !isBlank(v)) out[n] = String(v).trim();
   }
+  if (resolved.map.attendance) out._attendanceHeader = norm(resolved.map.attendance.header);
   const ctl = {};
   for (const [key, header] of Object.entries(resolved.control)) { const v = row[header]; if (!isBlank(v)) ctl[key] = String(v).trim(); }
   return { data: out, control: ctl, meta };
@@ -479,8 +489,35 @@ function timeSignals(d, now) {
  * Positive numbers argue for, negative against. Kept separate from field coverage so a row can want
  * a call it is not yet complete enough to place, which is what makes the downgrade meaningful.
  */
-function archetypeSignal(arch, d, t) {
+const NO_SHOW = /^(no[- ]?show|missed|did ?n[o']?t (attend|show|join|turn up|come)|dna|absent|not attended|not present|n)$/i;
+const SHOWED = /^(attended|completed|held|done|present|showed( up)?|y|yes|met)$/i;
+/** What the file says about whether they turned up: 'missed', 'attended', or null for no word. */
+function attendanceOf(d) {
+  const v = String(d.attendance == null ? '' : d.attendance).trim();
+  if (!v) return null;
+  // A column called "no_show" holding TRUE means the opposite of one called "attended" holding TRUE.
+  const col = String(d._attendanceHeader || '');
+  if (/no_?show|missed/.test(col) && /^(1|true|yes|y)$/i.test(v)) return 'missed';
+  if (/no_?show|missed/.test(col) && /^(0|false|no|n)$/i.test(v)) return 'attended';
+  if (NO_SHOW.test(v)) return 'missed';
+  if (SHOWED.test(v)) return 'attended';
+  return null;
+}
+
+function archetypeSignal(arch, d, t, uc) {
   const has = k => !isBlank(d[k]);
+  const turnedUp = attendanceOf(d);
+  // A use case that exists for appointments that did NOT happen reads the calendar the other way round.
+  if (arch === 'appointment_reminder' && uc && uc.trigger === 'missed') {
+    if (turnedUp === 'missed') return { score: 55, why: 'marked as missed' };
+    if (turnedUp === 'attended') return { score: -60, why: '' };
+    if (t.daysToAppt !== null && t.daysToAppt < 0 && t.daysToAppt >= -30) return { score: 40, why: `an appointment ${-t.daysToAppt} day${t.daysToAppt === -1 ? '' : 's'} ago` };
+    if (t.daysToAppt !== null && t.daysToAppt >= 0) return { score: -45, why: '' };
+    return { score: 0, why: '' };
+  }
+  if (turnedUp === 'missed' && (arch === 'appointment_reminder' || arch === 'feedback_survey')) return { score: -50, why: '' };
+  // Nobody can be reminded about something that already happened, and one they attended is done.
+  if (arch === 'appointment_reminder' && turnedUp === 'attended') return { score: -80, why: '' };
   switch (arch) {
     case 'overdue_followup':
       if (t.daysOverdue > 0) return { score: 45, why: `${t.daysOverdue} day${t.daysOverdue === 1 ? '' : 's'} overdue` };
@@ -493,7 +530,7 @@ function archetypeSignal(arch, d, t) {
       return { score: 0, why: '' };
     case 'appointment_reminder':
       if (t.daysToAppt !== null && t.daysToAppt >= 0 && t.daysToAppt <= 30) return { score: 42, why: t.daysToAppt === 0 ? 'an appointment today' : `an appointment in ${t.daysToAppt} day${t.daysToAppt === 1 ? '' : 's'}` };
-      if (t.daysToAppt !== null && t.daysToAppt < 0) return { score: -30, why: '' };
+      if (t.daysToAppt !== null && t.daysToAppt < 0) return { score: -80, why: '' };
       if (has('appointment_time') || has('appointment_type')) return { score: 20, why: 'a booking on file' };
       return { score: 0, why: '' };
     case 'service_notification':
@@ -521,6 +558,29 @@ function archetypeSignal(arch, d, t) {
       return { score: 0, why: '' };
     default: return { score: 0, why: '' };
   }
+}
+
+/**
+ * Sibling use cases of the same kind often declare the same fields ("Demo Request" and "Webinar
+ * Follow-up" both need a source and an interest), so the fields cannot tell them apart. The row's
+ * own words can: a lead source of "Webinar: Q3 pricing" is asking for the webinar call. Only the
+ * DISTINCTIVE words of a label count, never the ones every call of that kind shares.
+ */
+const LABEL_STOP = new Set(['follow', 'followup', 'up', 'reminder', 'call', 'due', 'check', 'update', 'request', 'confirmation',
+  'confirm', 'notice', 'alert', 'feedback', 'new', 'your', 'the', 'and', 'for', 'lead', 'offer', 'appointment', 'payment',
+  'renewal', 'document', 'documents', 'type', 'source', 'interest', 'after', 'before', 'with', 'from',
+  'time', 'date', 'account', 'overdue', 'survey', 'expiring', 'expiry', 'ready', 'visit', 'our', 'enquiry', 'inquiry']);
+// "downloaded", "downloads" and "download" are one word for this purpose; applied to both sides.
+const stem = w => (w.length > 5 ? w.replace(/(ing|ed|es|s)$/, '') : w.replace(/s$/, ''));
+function labelWords(uc, key) {
+  return [...new Set(tokensOf((uc && uc.label) || key).filter(w => w.length >= 4 && !LABEL_STOP.has(w)).map(stem))];
+}
+const WORD_FIELDS = ['lead_source', 'interest', 'appointment_type', 'offer_type', 'event_type', 'interaction_type', 'process_name', 'renewal_item', 'agenda'];
+function labelEvidence(uc, key, d) {
+  const words = labelWords(uc, key);
+  if (!words.length) return [];
+  const text = new Set(WORD_FIELDS.flatMap(f => tokensOf(d[f] || '')).map(stem));
+  return words.filter(w => text.has(w));
 }
 
 /** A field only one use case in this profile asks for is strong evidence for that use case. */
@@ -586,7 +646,7 @@ function scoreUseCases(d, ctl, profile, now) {
     const metOpt = optional.filter(have);
     const coverage = required.length ? metReq.length / required.length : 1;
 
-    const sig = archetypeSignal(arch, d, t);
+    const sig = archetypeSignal(arch, d, t, uc);
     let score = 0;
     const why = [];
     if (explicit === key) { score += 1000; why.push('the file names this call'); }
@@ -595,12 +655,16 @@ function scoreUseCases(d, ctl, profile, now) {
     score += coverage * 40;
     if (missingReq.length === 0 && required.length) why.push('every detail it needs is present');
     score += metOpt.length * 4;
+    // A use case that cannot go without a field the row has is a closer fit than one that merely allows it.
+    score += metReq.length * 3;
     const discHit = [...metReq, ...metOpt].filter(v => disc.has(v));
     if (discHit.length) { score += 12 * discHit.length; }
+    const said = labelEvidence(uc, key, d);
+    if (said.length) { score += 14 * said.length; why.push(`the row mentions "${said.join('", "')}"`); }
     if (missingReq.length) score -= 18 * missingReq.length;
     score -= (URGENCY[arch] || 9) * 0.4;   // tie-break only
 
-    return { key, uc, archetype: arch, score, coverage, required, missingReq, metOpt, why, complete: missingReq.length === 0, explicit: explicit === key, urgency: URGENCY[arch] || 9 };
+    return { key, uc, archetype: arch, score, coverage, required, missingReq, metOpt, why, complete: missingReq.length === 0, explicit: explicit === key, urgency: URGENCY[arch] || 9, signal: sig.score };
   }).sort((a, b) => b.score - a.score);
 }
 function enabledUseCases(profile) {
@@ -704,6 +768,8 @@ function formatValue(field, raw, scale) {
     case 'phone': return String(raw).trim();
     case 'bool': return isTruthy(raw) ? 'TRUE' : 'FALSE';
     case 'list': return String(raw).trim().replace(/\s*[;|]\s*/g, ', ');
+    // Each slot said the way a diary reads: "Thursday, the 24th of September, 10:00", never an ISO string.
+    case 'slots': return String(raw).split(/\s*[;|\n]\s*/).map(x => x.trim()).filter(Boolean).map(speakIfDate).join('; ');
     case 'id': return String(raw).trim();
     case 'int': { const n = parseInt(String(raw).replace(/\D/g, ''), 10); return isNaN(n) ? '' : String(n); }
     default:
@@ -800,7 +866,8 @@ function routeRow(row, resolved, profile, opts) {
   // outstanding is a documents call, and that is a better call than a hollow one.
   let chosen = top, downgradedFrom = null;
   if (!top.complete && !top.explicit) {
-    const alt = ranked.find(c => c.complete && c.score > 0);
+    // Never a call the row argues AGAINST, such as a reminder for a date that has passed.
+    const alt = ranked.find(c => c.complete && c.score > 0 && c.signal >= 0);
     // Only step down for a candidate with real evidence of its own, never merely to find something
     // complete: an empty row must not become a marketing call by process of elimination.
     if (alt && alt.score >= top.score - 45) { chosen = alt; downgradedFrom = top; }

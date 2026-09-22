@@ -50,7 +50,7 @@ const OWN_OUTCOME = {
 
 function profileFor(industry) {
   const use_cases = {};
-  for (const u of CATALOG[industry]) use_cases[u.key] = { enabled: true, label: u.label, archetype: u.archetype, playbook: u.playbook || '', fields: u.fields || [] };
+  for (const u of CATALOG[industry]) use_cases[u.key] = { enabled: true, label: u.label, archetype: u.archetype, playbook: u.playbook || '', fields: u.fields || [], trigger: u.trigger };
   return { company: { name: 'Test ' + industry, industry }, locale: {}, agent: {}, contact: {}, compliance: {}, offerings: {}, use_cases };
 }
 // An industry that has a use case for every archetype, so one profile can exercise all nine.

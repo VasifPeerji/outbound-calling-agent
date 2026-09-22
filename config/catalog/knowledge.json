@@ -496,5 +496,117 @@
       { "q": "How much will the treatment cost?", "a": "An estimate is given before treatment starts, so nothing comes as a surprise." },
       { "q": "Do you see emergencies out of hours?", "a": "Yes, there is emergency cover outside normal hours." }
     ]
+  },
+
+  "B2B Sales & Marketing": {
+    "facts": [
+      "Discovery calls are free and usually take about thirty minutes.",
+      "Demos are tailored to the customer's own use case rather than a standard script.",
+      "A pilot or proof of value can be arranged before any larger commitment.",
+      "Proposals are valid for a stated period and pricing is confirmed by the account owner.",
+      "Partners and OEMs get a named partner manager and co-selling support."
+    ],
+    "faqs": [
+      { "q": "How much does it cost?", "a": "It depends on scope, which is why the specialist confirms pricing after understanding your needs. I can set that call up." },
+      { "q": "Can you send me something first?", "a": "Of course. I can send a short overview now, and we can talk once you have had a look." },
+      { "q": "Who will be on the call?", "a": "A specialist for your area, and the account owner if pricing is on the table." },
+      { "q": "Can I move the meeting?", "a": "Yes, easily. I can offer a few times now, or take a time that suits you and confirm it." }
+    ]
+  },
+
+  "Property Management & Rentals": {
+    "facts": [
+      "Repairs can be reported at any time, and urgent ones are prioritised.",
+      "Routine inspections happen every few months with advance notice.",
+      "Rent can be paid by bank transfer or standing order.",
+      "Tenants are always given notice before anyone enters the property.",
+      "The deposit is protected and returned after the move-out check."
+    ],
+    "faqs": [
+      { "q": "When will my repair be fixed?", "a": "I can check where it is and make sure the tradesperson has your availability." },
+      { "q": "Can I keep a pet?", "a": "That needs the landlord's agreement, and I can ask on your behalf." },
+      { "q": "How do I get my deposit back?", "a": "It is returned after the move-out check, less any agreed deductions." },
+      { "q": "Can the rent go up?", "a": "Any change is given in writing with proper notice, and I can pass on your view to the property manager." }
+    ]
+  },
+
+  "Heavy Equipment & Machinery": {
+    "facts": [
+      "Field technicians can attend on site, so machines do not always need to come in.",
+      "Genuine parts are held in stock for common models, and others can be ordered.",
+      "Service intervals follow machine hours, and keeping to them protects the warranty.",
+      "Rental machines can be extended if the rental desk confirms availability.",
+      "Trade-in values are set after a physical inspection of the machine."
+    ],
+    "faqs": [
+      { "q": "How quickly can a technician come out?", "a": "I can check the next available technician for your area and book it now." },
+      { "q": "Is this repair covered?", "a": "That depends on the warranty terms, so the service team will confirm once they have looked at it." },
+      { "q": "Can you deliver the parts to site?", "a": "In many cases yes, and I can check that for your order." },
+      { "q": "What is my machine worth?", "a": "That is set by an inspection, which I can book so you get a real figure." }
+    ]
+  },
+
+  "Facility Management": {
+    "facts": [
+      "Urgent faults are responded to as a priority, day or night.",
+      "Planned works are always notified in advance with the areas affected.",
+      "Every job has a work order number that can be tracked.",
+      "Statutory inspections are scheduled ahead of their expiry dates.",
+      "Technicians carry identification and follow site rules and permits."
+    ],
+    "faqs": [
+      { "q": "How do I report a fault?", "a": "You can report it to the helpdesk at any time, and I can log it now if you like." },
+      { "q": "When will the engineer arrive?", "a": "I can check the job and give you the latest time we have." },
+      { "q": "Why is this invoice higher than usual?", "a": "It may include extra works; I can have the account manager go through it line by line." },
+      { "q": "Can the works be done out of hours?", "a": "Often yes, and I can ask the team to look at an out-of-hours slot." }
+    ]
+  },
+
+  "Wholesale & Distribution": {
+    "facts": [
+      "Orders placed before the daily cut-off go out on the next delivery run.",
+      "Trade accounts have agreed credit terms and account pricing.",
+      "Stock is allocated when an order is placed, not before.",
+      "Damaged or missing items are reviewed for a credit or replacement.",
+      "Delivery days follow the customer's regular route."
+    ],
+    "faqs": [
+      { "q": "Can I add to my order?", "a": "Yes, if it is before the cut-off. Tell me what you need and I will read it back." },
+      { "q": "Why is my account on hold?", "a": "Usually it is an overdue balance; I can check what is outstanding and how to clear it." },
+      { "q": "Can I get a better price?", "a": "Volume and contract pricing is possible, and the account manager can look at it with you." },
+      { "q": "Where is my delivery?", "a": "I can check the run it is on and the expected window." }
+    ]
+  },
+
+  "Solar & Renewable Energy": {
+    "facts": [
+      "Site assessments are free and use your real bill and roof to size the system.",
+      "Savings and payback depend on usage, roof and tariff, and are worked out at the assessment.",
+      "Systems are monitored remotely, so faults can often be spotted before you notice them.",
+      "Installations usually take one to two days depending on the system.",
+      "Finance options are available, subject to approval."
+    ],
+    "faqs": [
+      { "q": "How much will I save?", "a": "That depends on your usage and roof, which is exactly what the free assessment works out." },
+      { "q": "Do I need a battery?", "a": "Not always. The assessor will look at when you use power and tell you honestly if it is worth it." },
+      { "q": "What if it is cloudy?", "a": "Panels still produce on cloudy days, just less, and the design allows for that." },
+      { "q": "Why is my output low?", "a": "I can arrange a remote check first, and a technician if needed." }
+    ]
+  },
+
+  "Beauty & Personal Care": {
+    "facts": [
+      "Appointments can be moved up to twenty four hours ahead at no charge.",
+      "A patch test is needed before colour and some skin treatments.",
+      "New clients can book a free consultation before their first treatment.",
+      "Packages must be used within their stated validity period.",
+      "Gift vouchers are available for any treatment."
+    ],
+    "faqs": [
+      { "q": "Can I move my appointment?", "a": "Of course. I can offer a few times now, or take a time that suits you." },
+      { "q": "Do I need a patch test?", "a": "For colour and some skin treatments, yes, at least forty eight hours before." },
+      { "q": "Is this treatment right for my skin?", "a": "The therapist will assess that at a consultation, which I can book for you." },
+      { "q": "How much is it?", "a": "It depends on the treatment and the stylist, and I can check the exact price for what you want." }
+    ]
   }
 }

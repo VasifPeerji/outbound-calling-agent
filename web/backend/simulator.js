@@ -129,18 +129,47 @@ function simulateCall(vars, profile) {
       disposition = 'do_not_call'; apply.dnc = true; apply.dncReason = 'opted out of offers'; logTool('mark_do_not_call', { reason: 'opted out of offers', scope: 'marketing_only' });
     }
   } else if (arch === 'appointment_reminder') {
-    A(`Hihi ${who}, it's ${agent} from ${company} — a quick reminder about your ${v.appointment_type || 'appointment'} on ${v.appointment_date || 'the scheduled date'}${v.appointment_time ? ' at ' + v.appointment_time : ''}. Does that still work for you?`);
-    const b = pick(['confirm', 'confirm', 'reschedule', 'cancel']);
-    if (b === 'confirm') {
-      U(`Yes, that's fine.`); A(`Lovely — you're all confirmed, ${who}. See you then!`);
-      disposition = 'appointment_set'; sentiment = 'positive'; apply.appointment = { status: 'confirmed', date: v.appointment_date || '', time: v.appointment_time || '', type: v.appointment_type || '', location: v.location || '' }; logTool('book_appointment', apply.appointment);
-    } else if (b === 'reschedule') {
-      const nd = pick(['next Tuesday', 'Thursday afternoon', 'the following week']);
-      U(`Could we move it to ${nd}?`); A(`Of course, ${who} — I've moved it to ${nd}. All set.`);
-      disposition = 'appointment_set'; apply.appointment = { status: 'rescheduled', date: nd, time: '' }; logTool('reschedule_appointment', { new_date: nd, new_time: '' });
+    const what = v.appointment_type || 'appointment';
+    const missed = (ucCfg || {}).trigger === 'missed';
+    let settled = false;
+    if (missed) {
+      A(`Thanks, ${who}. It's ${agent} from ${company}. We had you down for the ${what} on ${v.appointment_date || 'the day we agreed'} and missed you, so I wanted to check everything's all right and find another time.`);
+      U(pick([`Oh no, I'm so sorry, something came up at the last minute.`, `Ah, I never got the link in the end.`, `Sorry, it completely went out of my head.`]));
+      A(`Not at all, these things happen.${v.agenda ? ` It was to ${v.agenda.replace(/^to\s+/i, '')}, so it's worth getting back in.` : ''} Is it still useful to you?`);
+      if (chance(0.15)) {
+        U(`Honestly, it's not a priority for us any more.`);
+        A(`That's completely fine, ${who}, and thank you for being straight with me. I'll note that, and we're here if it comes back round.`);
+        disposition = 'not_interested'; apply.appointment = { status: 'cancelled', reason: 'no longer a priority after missing it' }; logTool('cancel_appointment', { reason: 'no longer a priority' });
+        settled = true;
+      } else U(`Yes, definitely, let's find another time.`);
     } else {
-      U(`I need to cancel, sorry.`); A(`No problem at all, ${who} — that's cancelled. You're welcome to rebook any time.`);
+      A(`Hi ${who}, it's ${agent} from ${company}. A quick reminder about your ${what} on ${v.appointment_date || 'the scheduled date'}${v.appointment_time ? ' at ' + v.appointment_time : ''}${v.agenda ? ', to ' + v.agenda.replace(/^to\s+/i, '') : ''}. Does that still work for you?`);
+    }
+    const b = settled ? 'none' : missed ? pick(['slot', 'slot', 'propose']) : pick(['confirm', 'confirm', 'confirm', 'slot', 'propose', 'cancel']);
+    const slots = String(v.suggested_slots || '').split(/\s*;\s*/).filter(Boolean);
+    if (b === 'confirm') {
+      U(`Yes, that's fine.`); A(`Lovely, you're all confirmed, ${who}. See you then!`);
+      disposition = 'appointment_set'; sentiment = 'positive'; apply.appointment = { status: 'confirmed', date: v.appointment_date || '', time: v.appointment_time || '', type: what, location: v.location || '' }; logTool('book_appointment', apply.appointment);
+    } else if (b === 'slot' && slots.length) {
+      if (!missed) U(`Actually, I can't make that any more.`);
+      A(`No problem at all. I've got ${slots.slice(0, 3).join(', or ')}. Would any of those suit?`);
+      const chosen = pick(slots.slice(0, 3));
+      U(`${chosen} works.`);
+      A(`${chosen}, then. That's booked, ${who}, and I'll send the details over again so you have them.`);
+      disposition = 'appointment_set'; sentiment = 'positive'; apply.appointment = { status: 'rescheduled', date: chosen, time: '' }; logTool('reschedule_appointment', { new_date: chosen, new_time: '' });
+      apply.followups = [{ channel: 'email', content: 'meeting details' }]; logTool('send_followup', apply.followups[0]);
+    } else if (b === 'cancel') {
+      U(`I need to cancel, sorry.`); A(`No problem at all, ${who}, that's cancelled. You're welcome to rebook any time.`);
       disposition = 'resolved'; apply.appointment = { status: 'cancelled', reason: '' }; logTool('cancel_appointment', { reason: '' });
+    } else if (b !== 'none') {
+      // No times to offer, or none suited: take theirs down as a request and say it will be confirmed.
+      if (!missed) U(`Actually, that day doesn't work any more.`);
+      if (slots.length) { A(`No problem. I could do ${slots.slice(0, 3).join(', or ')}. Would any of those suit?`); U(`None of those, I'm afraid.`); }
+      A(`That's fine. Which day would suit you best, and roughly what time?`);
+      const day = pick(['Thursday', 'next Monday', 'Wednesday the 14th']), tm = pick(['half past three', 'ten in the morning', 'two o\'clock']);
+      U(`${day}, around ${tm}?`);
+      A(`${day} at ${tm}. Let me check we can make that work, and we'll confirm it with you shortly.`);
+      disposition = 'callback_requested'; apply.appointment = { status: 'proposed', date: day, time: tm, note: missed ? 'rebooking after a missed ' + what : '' }; logTool('propose_appointment_slot', { proposed_date: day, proposed_time: tm, note: apply.appointment.note });
     }
   } else if (arch === 'feedback_survey') {
     const scale = v.scale || '1 to 5';
@@ -159,9 +188,21 @@ function simulateCall(vars, profile) {
     A(`Hi ${who}, it's ${agent} from ${company} — following up on your interest in ${v.interest || 'our products'} from ${v.lead_source || 'your enquiry'}. Is that still something you're looking into?`);
     const b = pick(['qualified', 'qualified', 'exploring', 'no']);
     if (b === 'qualified') {
-      const t2 = pick(['this week', 'next week']);
-      U(`Yes, I'm hoping to move on it fairly soon.`); A(`Great to hear, ${who}! Let's get a specialist to walk you through it — I'll book something for ${t2}.`);
-      disposition = 'appointment_set'; sentiment = 'positive'; apply.lead = { qualified: 'yes', interest: v.interest || '', budget: '', timeline: 'soon', notes: '' }; apply.appointment = { status: 'booked', date: t2, time: '', type: 'specialist call' }; logTool('capture_lead', apply.lead); logTool('book_appointment', apply.appointment);
+      const slots = String(v.suggested_slots || '').split(/\s*;\s*/).filter(Boolean);
+      U(`Yes, I'm hoping to move on it fairly soon.`);
+      apply.lead = { qualified: 'yes', interest: v.interest || '', budget: '', timeline: 'soon', notes: '' }; logTool('capture_lead', apply.lead);
+      if (v.information_needed) { A(`That's helpful. So the next conversation is useful rather than generic, could you share ${v.information_needed}? No need to have it all now.`); U(`I can send most of that over.`); apply.followups = [{ channel: 'email', content: 'what the team needs' }]; logTool('send_followup', apply.followups[0]); }
+      if (slots.length) {
+        const chosen = pick(slots.slice(0, 3));
+        A(`Great. I've got ${slots.slice(0, 3).join(', or ')} for a proper walkthrough. Would any of those suit?`); U(`${chosen} is good.`);
+        A(`${chosen}, then. That's booked, ${who}.`);
+        disposition = 'appointment_set'; sentiment = 'positive'; apply.appointment = { status: 'booked', date: chosen, time: '', type: 'specialist call' }; logTool('book_appointment', apply.appointment);
+      } else {
+        const day = pick(['Tuesday', 'next Thursday']), tm = pick(['eleven', 'three in the afternoon']);
+        A(`Great to hear, ${who}. Which day and time would suit you for a walkthrough with a specialist?`); U(`${day} at ${tm}?`);
+        A(`${day} at ${tm}. I'll check that with the team and we'll confirm it with you.`);
+        disposition = 'lead_qualified'; sentiment = 'positive'; apply.appointment = { status: 'proposed', date: day, time: tm, note: 'specialist call' }; logTool('propose_appointment_slot', { proposed_date: day, proposed_time: tm, note: 'specialist call' });
+      }
     } else if (b === 'exploring') {
       U(`Just exploring for now.`); A(`Totally fine, ${who} — I'll send over some info and check back when the time's right.`);
       disposition = 'callback_requested'; apply.lead = { qualified: 'maybe', interest: v.interest || '', timeline: 'exploring' }; apply.callback = { time: 'in a couple of weeks', reason: 'still exploring' }; logTool('capture_lead', apply.lead);
@@ -259,6 +300,7 @@ function summarise(disposition, apply, cust) {
   const first = (cust || 'Customer').split(' ')[0];
   if (apply.promiseToPay) return `${first} promised to pay ${apply.promiseToPay.amount || 'the amount'} ${apply.promiseToPay.date || ''}.`.replace(/\s+\./, '.');
   if (apply.callback) return `${first} asked for a callback (${apply.callback.time}).`;
+  if (apply.appointment && apply.appointment.status === 'proposed') return `${first} proposed ${apply.appointment.date}${apply.appointment.time ? ' at ' + apply.appointment.time : ''}; check and confirm.`;
   if (apply.appointment) return `Appointment ${apply.appointment.status} with ${first}.`;
   if (apply.survey) return `${first} rated ${apply.survey.score} (${apply.survey.sentiment}).`;
   if (apply.lead) return `${first} lead: ${apply.lead.qualified}.`;

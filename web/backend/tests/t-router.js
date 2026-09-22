@@ -30,7 +30,7 @@ const iso = d => { const x = new Date(NOW); x.setDate(x.getDate() + d); return i
 
 function profileFor(industry, opts) {
   const use_cases = {};
-  for (const u of CATALOG[industry]) use_cases[u.key] = { enabled: true, label: u.label, emoji: u.emoji, archetype: u.archetype, desc: u.desc, playbook: u.playbook, fields: u.fields || [] };
+  for (const u of CATALOG[industry]) use_cases[u.key] = { enabled: true, label: u.label, emoji: u.emoji, archetype: u.archetype, desc: u.desc, playbook: u.playbook, fields: u.fields || [], trigger: u.trigger };
   return { company: { name: 'Test ' + industry, industry }, locale: (opts && opts.locale) || {}, contact: {}, use_cases };
 }
 const analyse = (rows, profile) => {
@@ -42,11 +42,12 @@ const one = (row, profile) => analyse([row], profile).out[0];
 // ═══════════════════════════════════════════════════════
 console.log('\nTHE ROUND TRIP \u2014 every use case in the catalogue, asked for by its own declared data:');
 // Values chosen by the field's TYPE and the call's meaning, never by its industry.
-function valueFor(v, archetype) {
+function valueFor(v, archetype, uc) {
   const t = (R.FIELD[v] || {}).type || 'text';
   if (v === 'due_date') return archetype === 'overdue_followup' ? iso(-14) : iso(9);
   if (v === 'days_overdue') return '14';
-  if (v === 'appointment_date') return iso(4);
+  // A missed-appointment call is about a date that has already gone by.
+  if (v === 'appointment_date') return uc && uc.trigger === 'missed' ? iso(-2) : iso(4);
   if (v === 'renewal_date') return iso(21);
   if (v === 'interaction_date') return iso(-3);
   if (v === 'deadline' || v === 'expiry_date') return iso(12);
@@ -65,7 +66,7 @@ function valueFor(v, archetype) {
 }
 function rowFor(uc) {
   const row = { customer_name: 'Test Person', to_number: '+911234567890' };
-  for (const f of (uc.fields || [])) row[f.var] = valueFor(f.var, uc.archetype);
+  for (const f of (uc.fields || [])) row[f.var] = valueFor(f.var, uc.archetype, uc);
   return row;
 }
 
