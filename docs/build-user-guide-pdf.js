@@ -25,6 +25,9 @@ const { spawn, execSync } = require('child_process');
 const DOCS = __dirname;
 const SRC = path.join(DOCS, 'USER-GUIDE.html');
 const OUT = path.join(DOCS, 'OmniReach-User-Guide.pdf');
+// The copy the console serves: the How it works guide and the profile menu both link to it.
+// Written by the same build, so the download people get can never lag the manual in docs/.
+const PUBLISHED = path.join(DOCS, '..', 'web', 'frontend', 'guide', 'OmniReach-User-Manual.pdf');
 const PORT = 9333;
 
 // Page geometry, kept in step with the @page rule in the stylesheet so the cover still bleeds to
@@ -169,6 +172,8 @@ const pageCount = b64 => {
   const finalB64 = await render();
   const pages = pageCount(finalB64);
   fs.writeFileSync(OUT, Buffer.from(finalB64, 'base64'));
+  fs.mkdirSync(path.dirname(PUBLISHED), { recursive: true });
+  fs.copyFileSync(OUT, PUBLISHED);
 
   // The measurement assumed the contents stays one page. If numbering it had pushed the document
   // onto another page, every figure in it would be one short, so check rather than hope.
@@ -176,6 +181,7 @@ const pageCount = b64 => {
   if (pages !== expected) throw new Error(`Pagination shifted after numbering (${expected} -> ${pages}). The contents no longer fits on one page.`);
 
   console.log('\nwrote', path.relative(process.cwd(), OUT));
+  console.log('published', path.relative(process.cwd(), PUBLISHED), '(served at /guide/)');
   console.log('pages:', pages, '| size:', (fs.statSync(OUT).size / 1024).toFixed(0) + ' KB');
   console.log('\ncontents:');
   for (const id of ids) console.log('  ' + String(startPage[id]).padStart(3) + '  ' + id);

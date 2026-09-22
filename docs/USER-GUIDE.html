@@ -169,6 +169,9 @@
   <p>Your browser is remembered afterwards, so you will not be asked for a code every day. Signing
   out from the profile menu, top right, showing your initial, clears that.</p>
 
+  <div class="note">A short walkthrough is available at any time from <b>How it works</b> at the top
+  of the screen, and this manual can be downloaded from the profile menu.</div>
+
   <h3>Creating an account</h3>
   <p>Choose <b>Create an account</b> on the sign-in screen. What happens next depends on your email
   domain.</p>
@@ -296,8 +299,14 @@
 
   <h3>Other sources</h3>
   <p>Under <b>Data source</b>, contacts can also be drawn from a URL (CSV or JSON), a published
-  Google Sheet, or a REST API. Salesforce, HubSpot, Zoho and a direct database connection use the
-  same interface and require credentials before they can be enabled.</p>
+  Google Sheet, or a REST API.</p>
+
+  <h3>Connecting your own CRM or database</h3>
+  <p>OmniReach can read contacts straight from the CRM or database your team already works in, so
+  there is no file to export and upload, and it can write every call outcome back into the same
+  records. It is not tied to any particular vendor: whichever CRM, database, data warehouse or
+  billing system you use can be connected. Tell your Streebo representative which system you use
+  and it will be set up for your account.</p>
 </section>
 
 <!-- ═══════════ 6 ═══════════ -->
@@ -402,7 +411,7 @@
     <li><b>Preview in-app</b>, which writes nowhere and simply displays the rows. Use this first.</li>
     <li><b>Webhook</b>, posting JSON to any URL, with optional headers for authentication.</li>
     <li><b>Enriched CSV</b>, available as a download.</li>
-    <li>Salesforce, HubSpot, Zoho and SQL databases, which require credentials.</li>
+    <li><b>Your own CRM or database</b>, whichever you use, set up for your account on request.</li>
   </ul>
 
   <h3>What a row contains</h3>
@@ -472,8 +481,12 @@
   for a specific prospect, so that the configuration is ready next time rather than rebuilt from
   memory.</p>
 
-  <p>Saved configurations are visible across your organisation, so a team can work from one shared
-  library. Editing and deleting remain with whoever saved the configuration.</p>
+  <p>Saved setups are visible across your organisation, so a team can work from one shared library.
+  Load a setup, change whatever you need, and click <b>Save changes</b> to update it. To keep the
+  original as it is, give it a new name when asked and a separate copy is saved instead.</p>
+
+  <p>A setup can be updated or deleted by the person who saved it, or by an administrator. Anyone
+  else can load it and save a copy of their own.</p>
 </section>
 
 <!-- ═══════════ 13 ═══════════ -->
@@ -530,7 +543,7 @@
     <tr><td>Access requests</td><td>People from unapproved domains who have asked for access. Approving one assigns them to an organisation.</td></tr>
     <tr><td>Sign-up and limits</td><td>Approved domains, individually approved addresses, and the two settings governing self-registration. A summary states what the current combination allows.</td></tr>
     <tr><td>Guardrails</td><td>The default daily allowance, whether it is enforced, whether the platform is restricted to simulation, and whether partners may run bulk campaigns.</td></tr>
-    <tr><td>Daily report</td><td>A summary emailed once a day covering every partner: calls placed, who was called and in which country, talk time, industries demonstrated, and any allowance increases in force. Time, timezone and recipients are configurable.</td></tr>
+    <tr><td>Daily report</td><td>A summary emailed once a day covering every partner: calls placed, who was called and in which country, talk time, industries demonstrated, and any allowance increases in force. Time, timezone and recipients are configurable. Any day's report can be previewed, copied with its tables intact into an email or document, or downloaded as a file.</td></tr>
   </table>
 </section>
 
@@ -598,7 +611,6 @@
     <li><b>Numbers are not verified before dialling.</b> An unreachable number is identified by calling it, and is recorded as no answer.</li>
     <li><b>Calls are not retried automatically.</b> A call that reaches voicemail is recorded and left. Re-dialling is a separate decision.</li>
     <li><b>Data is not translated.</b> The agent speaks the language set in the profile. Product names held in another language will be read in the profile language.</li>
-    <li><b>Salesforce, HubSpot, Zoho and direct database write-back require credentials.</b> The mapping is ready; the connection cannot be enabled from the console alone.</li>
     <li><b>Dates cannot be disambiguated in a column where no date falls after the 12th.</b> Where this occurs, a warning is shown rather than an assumption being made silently.</li>
     <li><b>Missing values are not substituted.</b> Where an amount or a date is absent, the call either proceeds without it or the row is held back with the missing column named.</li>
   </ul>

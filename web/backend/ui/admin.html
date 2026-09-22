@@ -138,6 +138,8 @@
           <div class="btn-group">
             <button class="btn btn-primary btn-sm" onclick="saveDailyReportSettings()" id="dr-save">💾 Save</button>
             <button class="btn btn-secondary btn-sm" onclick="previewDailyReport()">👁 Preview</button>
+            <button class="btn btn-secondary btn-sm" onclick="copyDailyReport()" title="Copies the last completed day's report with its tables, ready to paste into an email or document">📋 Copy</button>
+            <button class="btn btn-secondary btn-sm" onclick="downloadDailyReport()" title="Saves the last completed day's report as a file that opens in any browser and prints to PDF">⬇ Download</button>
             <button class="btn btn-secondary btn-sm" onclick="sendDailyReportNow(true)" id="dr-test">✉ Send a test to me</button>
             <button class="btn btn-ghost btn-sm" onclick="sendDailyReportNow(false)" id="dr-sendall">Send to everyone now</button>
           </div>

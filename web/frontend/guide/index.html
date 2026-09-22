@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="color-scheme" content="light"><title>OmniReach: Quick Guide</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"><style>
+:root{color-scheme:light;--bg:#f4f6fb;--card:#ffffff;--ink:#16203a;--dim:#4a5670;--mute:#7b869d;--line:#e6eaf2;
+--a1:#4f46e5;--a2:#7c3aed;--soft:#eef0ff;--tip:#eef6ff;--tipb:#bcd7ff;--warn:#fff7e8;--warnb:#f6d38e;--ok:#ecfaf3;--okb:#a8e3c6}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--ink);font:16px/1.65 "Plus Jakarta Sans","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
+a{color:var(--a1)}
+.hero{background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;padding:44px 16px 92px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-120px;top:-120px;width:380px;height:380px;border-radius:50%;background:rgba(255,255,255,.08)}
+.hero::before{content:"";position:absolute;left:-80px;bottom:-140px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.06)}
+.hero .in{max-width:860px;margin:0 auto;position:relative;z-index:1}
+.pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:999px}
+.hero h1{font-size:36px;line-height:1.15;margin:16px 0 12px;letter-spacing:-.02em;font-weight:800}
+.hero p{font-size:17px;max-width:680px;margin:0;color:rgba(255,255,255,.92)}
+.ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.cta{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--a1);text-decoration:none;font-weight:700;padding:11px 18px;border-radius:12px;font-size:15px;box-shadow:0 6px 18px rgba(20,20,60,.18)}
+.cta:hover{transform:translateY(-1px)}
+.cta.inline{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;box-shadow:0 6px 16px rgba(79,70,229,.25)}
+.cta.ghost{background:#fff;color:var(--a1);border:1.5px solid var(--a1);box-shadow:none}
+.cta.ghost-light{background:rgba(255,255,255,.14);color:#fff;border:1.5px solid rgba(255,255,255,.55);box-shadow:none}
+.cta.ghost-light:hover{background:rgba(255,255,255,.22)}
+.manual{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.manual .txt{flex:1 1 320px}
+.manual ul{margin:10px 0 0;padding-left:20px;color:var(--dim);font-size:15px}
+.manual ul li{margin:0 0 4px}
+.wrap{max-width:860px;margin:-60px auto 0;padding:0 16px 56px;position:relative;z-index:2}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;background:var(--card);border-radius:16px;padding:12px;box-shadow:0 10px 30px rgba(22,32,58,.08);margin-bottom:20px}
+nav.toc a{flex:1 1 auto;text-align:center;text-decoration:none;color:var(--dim);font-weight:600;font-size:14px;padding:9px 14px;border-radius:10px;background:var(--bg)}
+nav.toc a:hover{background:var(--soft);color:var(--a1)}
+section.card{background:var(--card);border-radius:20px;padding:26px 28px;margin:0 0 18px;box-shadow:0 10px 30px rgba(22,32,58,.07);border:1px solid var(--line)}
+.sh{display:flex;align-items:center;gap:14px;margin:0 0 6px}
+.badge{flex:none;width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;display:grid;place-items:center;font-size:19px;font-weight:800;box-shadow:0 6px 14px rgba(79,70,229,.25)}
+h2{font-size:21px;margin:0;letter-spacing:-.01em}
+h3{font-size:15px;margin:22px 0 8px;text-transform:uppercase;letter-spacing:.07em;color:var(--mute)}
+.sub{color:var(--dim);margin:6px 0 10px}
+ol.steps{margin:14px 0 0;padding:0;list-style:none;counter-reset:s;position:relative}
+ol.steps>li{counter-increment:s;position:relative;padding:2px 0 16px 48px}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;background:var(--soft);color:var(--a1);font-weight:800;font-size:14px;display:grid;place-items:center;border:2px solid #d9dcff}
+ol.steps>li:not(:last-child)::after{content:"";position:absolute;left:15px;top:34px;bottom:2px;width:2px;background:#e3e6fb}
+ul.plain{margin:10px 0 0;padding-left:20px}ul.plain li{margin:0 0 8px}
+.ui{display:inline-block;font-weight:700;font-size:.92em;color:var(--a1);background:var(--soft);border:1px solid #d9dcff;border-radius:8px;padding:0 8px;white-space:nowrap}
+.note{display:flex;gap:12px;border-radius:14px;padding:14px 16px;margin:16px 0 0;font-size:15px;border:1px solid}
+.note .ic{flex:none;font-size:20px;line-height:1.3}
+.note b{display:block;margin-bottom:2px}
+.note.tip{background:var(--tip);border-color:var(--tipb)}.note.warn{background:var(--warn);border-color:var(--warnb)}.note.ok{background:var(--ok);border-color:var(--okb)}
+.q{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:8px}
+.q li{background:#fafbff;border:1px solid var(--line);border-left:4px solid var(--a2);border-radius:10px;padding:10px 14px;font-size:15px}
+.who{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#f3f2ff,#f7f0ff);border:1px solid #e2dcff;border-radius:14px;padding:12px 14px;margin:6px 0 4px}
+.who .av{flex:none;width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-weight:800;display:grid;place-items:center;font-size:14px}
+.who b{font-size:16px}.who small{display:block;color:var(--dim);font-size:13.5px}
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.feat div{background:#fafbff;border:1px solid var(--line);border-radius:14px;padding:14px}
+.feat b{display:block;margin-bottom:3px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.stat{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.stat span{background:var(--soft);color:var(--a1);font-weight:700;border-radius:999px;padding:6px 14px;font-size:14px}
+footer{color:var(--mute);font-size:13.5px;text-align:center;margin-top:28px}
+@media (max-width:680px){.hero{padding:34px 16px 84px}.hero h1{font-size:27px}.grid2,.feat{grid-template-columns:1fr}section.card{padding:20px}nav.toc a{flex:1 1 100%}}
+</style></head>
+<body>
+<header class="hero"><div class="in"><span class="pill">&#9889; Quick guide</span><h1>Place your first OmniReach call</h1><p>OmniReach places outbound calls handled by an AI voice agent. You choose who to call and what the call is about; the agent dials, holds a natural conversation, captures what was agreed and writes the outcome back. Three steps take you from a new account to a phone ringing.</p><div class="ctas"><a class="cta" href="../" target="_blank" rel="noopener">Open OmniReach &rarr;</a><a class="cta ghost-light" href="OmniReach-User-Manual.pdf" download="OmniReach-User-Manual.pdf">&#128216; Download the user manual (PDF)</a></div></div></header>
+<div class="wrap">
+
+<nav class="toc"><a href="#account">1 &middot; Create your account</a><a href="#builder">2 &middot; Build your agent</a><a href="#call">3 &middot; Place a call</a><a href="#know">Good to know</a><a href="#manual">User manual</a></nav>
+
+<section class="card" id="account">
+<div class="sh"><span class="badge">1</span><h2>Create your account</h2></div>
+<ol class="steps">
+<li>Open <a href="../" target="_blank" rel="noopener">omnireach.smartcogs.ai</a>. The first screen asks you to create an account.</li>
+<li>Enter your <span class="ui">Full name</span>, your <span class="ui">Company</span> and your <span class="ui">Work email</span>, then click <span class="ui">Create my account</span>.</li>
+<li>A six-digit code arrives in that inbox within a few seconds. Enter it and click <span class="ui">Sign in</span>. There is no password to set.</li>
+</ol>
+<div class="note warn"><span class="ic">&#9888;&#65039;</span><div><b>Use your company email address</b>Access is granted by company domain, so a personal address (Gmail, Outlook.com and similar) will not be approved.</div></div>
+<div class="note tip"><span class="ic">&#128161;</span><div><b>Seeing &ldquo;Request sent for review&rdquo;?</b>Your company domain simply needs a one-time approval. Just let us know and we will approve it right away.</div></div>
+</section>
+
+<section class="card" id="builder">
+<div class="sh"><span class="badge">2</span><h2>Build your voice agent in the Agent Builder tab</h2></div>
+<ol class="steps">
+<li>Open <span class="ui">Agent Builder</span> from the left menu.</li>
+<li>Under <span class="ui">1 &middot; Industry &amp; Region</span>, choose the <b>Industry</b> and the <b>Country / Region</b>. The currency, timezone, compliance framework and the use cases for that industry fill in automatically. Tick the use cases you want the agent to handle.</li>
+<li>Under <span class="ui">2 &middot; Voice, Language &amp; Brain</span>, choose the language the agent speaks, then its gender, accent and voice. You can also choose the platform it runs on, including IBM watsonx Orchestrate, Microsoft Copilot / Azure AI, AWS Bedrock and Google Cloud Vertex AI. If you are unsure, leave the defaults.</li>
+<li>Under <span class="ui">3 &middot; Brand &amp; Labels</span>, the company name, agent name, support number, website and product facts are filled in from the industry and region. Replace them with your own brand or your customer&rsquo;s.</li>
+<li>Click <span class="ui">&#10024; Generate Agent</span>. Every call from now on is placed by this agent. To reuse a setup later, save it under <span class="ui">Saved setups</span> at the top of the tab.</li>
+</ol>
+</section>
+
+<section class="card" id="call">
+<div class="sh"><span class="badge">3</span><h2>Place a call from the Single Call screen</h2></div>
+<ol class="steps">
+<li>Open <span class="ui">Single Call</span>, the first screen you land on after signing in.</li>
+<li>Choose a <b>use case</b>.</li>
+<li>Enter the customer name and the phone number in international format, with a plus sign and the country code, for example <b>+919820011001</b>.</li>
+<li>Complete the fields for that use case. Required fields are marked with an asterisk. If you do not know a value, leave it blank rather than typing a placeholder, because the agent speaks whatever is entered.</li>
+<li>Click <span class="ui">&#128222; Launch Call Now</span>. The phone rings within seconds, and the transcript, recording and captured outcome appear in <span class="ui">Call History</span> shortly after the call ends.</li>
+</ol>
+<div class="note tip"><span class="ic">&#129514;</span><div><b>Real call or dry run</b>Keep the <b>Simulation</b> switch at the top right turned off to receive a real call. Turn it on to run a no-cost dry run that produces the same transcript and outcome without a phone ringing.</div></div>
+</section>
+
+<section class="card" id="know">
+<div class="sh"><span class="badge">i</span><h2>Good to know</h2></div>
+<div class="feat">
+<div><b>Daily allowance</b>Three calls or ten minutes of talk time a day, whichever comes first. Plenty to try a few industries and use cases.</div>
+<div><b>Need more?</b>If you would like more for a customer demonstration, just let us know.</div>
+</div>
+<div class="stat"><span>31 industries</span><span>198 call types</span><span>204 countries</span><span>74 languages</span></div>
+</section>
+
+<section class="card" id="manual">
+<div class="sh"><span class="badge">&#128216;</span><h2>Want the full detail?</h2></div>
+<div class="manual">
+<div class="txt"><p class="sub" style="margin-top:4px">The user manual covers everything beyond the first call, section by section:</p>
+<ul>
+<li>Calling a whole list from your own file, with no columns to rename</li>
+<li>Reading the analysis before anything is dialled</li>
+<li>Call history, transcripts and recordings</li>
+<li>Writing every outcome back to your own systems</li>
+<li>Scheduling calls, analytics and troubleshooting</li>
+</ul></div>
+<a class="cta inline" href="OmniReach-User-Manual.pdf" download="OmniReach-User-Manual.pdf">&#11015; Download the manual (PDF)</a>
+</div>
+</section>
+
+<footer>Questions or need more access? Contact your Streebo representative and we will help right away.</footer>
+</div></body></html>

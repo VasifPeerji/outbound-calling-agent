@@ -2902,38 +2902,70 @@ app.post('/api/schedules/:id/stop', (req, res) => {
 function saveBookmarksNow() { store.saveBookmarks(bookmarks); }
 // Visible to the whole organisation, so colleagues work from one library of saved agents rather
 // than each rebuilding the same prospect. `shared` now means platform-wide (a template every org
-// can see), not merely "not private". Editing and deleting stay with the author on purpose: seeing
-// a colleague's work and being able to overwrite it are different privileges.
+// can see), not merely "not private".
 function ownBookmarks(req) {
   if (isPlatformAdmin(req.user)) return bookmarks;
   const mine = inMyOrg(req);
   return bookmarks.filter(b => mine(b) || b.shared);
 }
-app.get('/api/bookmarks', (req, res) => res.json({ bookmarks: ownBookmarks(req) }));
+/**
+ * Who may overwrite or delete a setup: its author, an administrator of the author's organisation,
+ * or a platform administrator. A colleague can see it and load it, and save their own copy, but
+ * cannot change somebody else's work.
+ *
+ * Author-only was the rule before, and the console did not know it, so every card offered Update
+ * and delete and most of them answered "Bookmark not found." One person with two accounts hit it
+ * on every setup saved from the other one.
+ */
+function mayModifyBookmark(req, b) {
+  if (!b || !req.user) return false;
+  if (b.userId === req.user.id) return true;
+  if (isPlatformAdmin(req.user)) return true;
+  return req.user.role === 'admin' && inMyOrg(req)(b);
+}
+function bookmarkOwnerName(b) {
+  const u = b.userId ? auth.findById(b.userId) : null;
+  return (u && (u.name || u.email)) || b.userName || 'a colleague';
+}
+/** A setup as this person may see it, with what they are allowed to do to it attached. */
+function bookmarkView(req, b) {
+  return { ...b, mine: b.userId === req.user.id, canModify: mayModifyBookmark(req, b), ownerName: bookmarkOwnerName(b) };
+}
+/** Find a setup this person can see, and say plainly why not when they cannot change it. */
+function modifiableBookmark(req, res) {
+  const bm = ownBookmarks(req).find(x => x.id === req.params.id);
+  if (!bm) { res.status(404).json({ error: 'That setup no longer exists. It may already have been deleted.' }); return null; }
+  if (!mayModifyBookmark(req, bm)) {
+    res.status(403).json({ error: `This setup belongs to ${bookmarkOwnerName(bm)}. Load it and save it under a name of your own to keep a copy you can change.` });
+    return null;
+  }
+  return bm;
+}
+app.get('/api/bookmarks', (req, res) => res.json({ bookmarks: ownBookmarks(req).map(b => bookmarkView(req, b)) }));
 app.post('/api/bookmarks', (req, res) => {
   const b = req.body || {};
   if (!b.name) return res.status(400).json({ error: 'Give this configuration a name.' });
   if (!b.config || typeof b.config !== 'object') return res.status(400).json({ error: 'Nothing to save.' });
   const existing = bookmarks.find(x => x.userId === req.user.id && x.name.toLowerCase() === String(b.name).toLowerCase());
-  if (existing) { existing.config = b.config; existing.shared = !!b.shared; existing.updatedAt = new Date().toISOString(); saveBookmarksNow(); return res.json({ success: true, bookmark: existing, replaced: true }); }
+  if (existing) { existing.config = b.config; existing.shared = !!b.shared; existing.updatedAt = new Date().toISOString(); saveBookmarksNow(); return res.json({ success: true, bookmark: bookmarkView(req, existing), replaced: true }); }
   const bm = { id: uuidv4(), userId: req.user.id, orgId: orgIdOf(req.user), userName: req.user.name || '', name: b.name, note: b.note || '', shared: !!b.shared, config: b.config, createdAt: new Date().toISOString() };
   bookmarks.unshift(bm); saveBookmarksNow();
-  res.json({ success: true, bookmark: bm });
+  res.json({ success: true, bookmark: bookmarkView(req, bm) });
 });
 app.post('/api/bookmarks/:id', (req, res) => {
-  const bm = bookmarks.find(x => x.id === req.params.id && x.userId === req.user.id);
-  if (!bm) return res.status(404).json({ error: 'Bookmark not found.' });
+  const bm = modifiableBookmark(req, res);
+  if (!bm) return;
   const b = req.body || {};
   if (b.name !== undefined) bm.name = b.name;
   if (b.note !== undefined) bm.note = b.note;
   if (b.shared !== undefined) bm.shared = !!b.shared;
   if (b.config) bm.config = b.config;
   bm.updatedAt = new Date().toISOString(); saveBookmarksNow();
-  res.json({ success: true, bookmark: bm });
+  res.json({ success: true, bookmark: bookmarkView(req, bm) });
 });
 app.delete('/api/bookmarks/:id', (req, res) => {
-  const bm = bookmarks.find(x => x.id === req.params.id && x.userId === req.user.id);
-  if (!bm) return res.status(404).json({ error: 'Bookmark not found.' });
+  const bm = modifiableBookmark(req, res);
+  if (!bm) return;
   bookmarks = bookmarks.filter(x => x.id !== bm.id); saveBookmarksNow();
   res.json({ success: true });
 });
