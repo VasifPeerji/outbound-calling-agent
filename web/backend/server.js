@@ -827,6 +827,38 @@ function providerConfigured(name) { try { return getProvider(name).isConfigured(
 // row with no suggested times, or an optional field nobody filled, would otherwise leave a
 // placeholder with no value, which the provider can reject or read out literally. Blank is what
 // the prompt expects: it is told to speak around empty values.
+// The languages this profile offers to SWITCH INTO mid-call. The language a call opens in is sent
+// with the call itself and needs nothing on the agent; the mirrored ones are the ones the agent must
+// be allowed to move to, which is what this is for.
+function mirrorCodesFor(profile) {
+  const l = (profile && profile.locale) || {};
+  const codes = (Array.isArray(l.mirror_languages) ? l.mirror_languages : [])
+    .map(m => languageCodeFor(m) || String(m || '').trim().toLowerCase())
+    .map(c => String(c).split('-')[0].toLowerCase())
+    .filter(Boolean);
+  const opening = String((profile && profile.voice && profile.voice.language) || languageCodeFor(l.primary_language) || 'en').split('-')[0].toLowerCase();
+  return [...new Set(codes.filter(c => c !== opening))];
+}
+
+// Registering a language is additive and carries nothing tenant-specific: no company, no script, no
+// voice. That is what makes it safe to do on a shared agent while other partners are mid-call.
+// Cached, and skipped entirely when a profile mirrors nothing, so an ordinary single-language
+// campaign still touches the agent not at all.
+const langsOnAgent = { codes: new Set(), at: 0 };
+const LANG_CACHE_MS = 5 * 60 * 1000;
+async function ensureCallLanguages(profile, adapter) {
+  if (!adapter || typeof adapter.ensureLanguages !== 'function') return;
+  const want = mirrorCodesFor(profile);
+  if (!want.length) return;
+  const fresh = Date.now() - langsOnAgent.at < LANG_CACHE_MS;
+  if (fresh && want.every(c => langsOnAgent.codes.has(c))) return;
+  const out = await adapter.ensureLanguages(config, want);
+  langsOnAgent.codes = new Set(out.present || want);
+  langsOnAgent.at = Date.now();
+  if (out.added && out.added.length) console.log(`🌐  Added ${out.added.join(', ')} to the agent so it can switch into ${out.added.length === 1 ? 'it' : 'them'} mid-call.`);
+  if (out.failed && out.failed.length) console.log(`🌐  ⚠  ${out.failed.join(', ')} could not be added: the agent will decline to switch into ${out.failed.length === 1 ? 'it' : 'them'}.`);
+}
+
 function fillReferencedVars(vars, ...texts) {
   for (const t of texts) for (const m of String(t || '').matchAll(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g))
     if (!(m[1] in vars) && !m[1].startsWith('system__')) vars[m[1]] = '';
@@ -873,6 +905,12 @@ async function placeCall(toNumber, callVars, profile, user) {
   if (prompt && toolsLive.known && !toolsLive.ok) prompt += '\n\n\n' + '='.repeat(60) + '\n\n\n' + NO_TOOLS_GUIDANCE;
   const firstMessage = providerName === 'elevenlabs' ? buildFirstMessage(profile, dynamicVars.time) : '';
   fillReferencedVars(dynamicVars, prompt, firstMessage);
+  // The opener offers the mirrored languages; this is what makes the offer real. A failure here is
+  // never allowed to stop the call: the call still works, it just stays in one language.
+  if (providerName === 'elevenlabs') {
+    try { await ensureCallLanguages(profile, adapter); }
+    catch (err) { console.log(`🌐  Could not check the agent's languages: ${err.message}`); }
+  }
   // null when this user has no minute budget, in which case the agent's own limit applies unchanged.
   const maxDurationSeconds = remainingSecondsToday(user);
   const result = await adapter.createCall({ toNumber, dynamicVars, prompt, firstMessage, llm, language, voice, config, maxDurationSeconds });
@@ -1978,6 +2016,32 @@ async function autoSyncTools() {
     if (sync.failed.length) console.log(`    ⚠  ${sync.failed.length} failed: ${sync.failed.map(f => f.name + ' (' + f.error + ')').join('; ')}`);
   } catch (e) { console.log(`🔧  Automatic tool sync failed: ${e.message}\n    Sync them by hand from Settings.`); }
 }
+
+// Every language anyone's saved profile might speak, so one sync covers the whole platform.
+function everyProfileLanguage() {
+  const scheduled = (Array.isArray(schedules) ? schedules : Object.values(schedules || {})).map(s => s && s.agentProfile);
+  const profiles = [activeProfile, ...Object.values(userProfiles || {}), ...scheduled].filter(Boolean);
+  return [...new Set(profiles.flatMap(mirrorCodesFor))];
+}
+
+// What the agent can switch into today, and a way to add the rest by hand.
+app.get('/api/elevenlabs/languages/status', requirePlatformAdmin, async (req, res) => {
+  const adapter = getProvider('elevenlabs');
+  if (!adapter.isConfigured(config)) return res.status(400).json({ error: 'ElevenLabs is not configured.' });
+  try { const l = await adapter.listLanguages(config); res.json({ success: true, primary: l.primary, extra: l.extra }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.post('/api/elevenlabs/languages/sync', requirePlatformAdmin, async (req, res) => {
+  const adapter = getProvider('elevenlabs');
+  if (!adapter.isConfigured(config)) return res.status(400).json({ error: 'ElevenLabs is not configured.' });
+  const codes = Array.isArray(req.body && req.body.codes) && req.body.codes.length ? req.body.codes : everyProfileLanguage();
+  try {
+    const out = await adapter.ensureLanguages(config, codes);
+    langsOnAgent.codes = new Set(out.present || codes); langsOnAgent.at = Date.now();
+    console.log(`🌐  Languages synced by ${req.user.email}: ${out.added.length} added (${out.added.join(', ') || 'none'}), ${out.present.length} now switchable.`);
+    res.json({ success: true, ...out });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
 
 app.post('/api/elevenlabs/tools/sync', requirePlatformAdmin, async (req, res) => {
   const adapter = getProvider('elevenlabs');

@@ -212,6 +212,9 @@ const day = d => { const x = new Date(); x.setDate(x.getDate() + d); return isoL
   console.log('\nNOTHING WAS WRITTEN TO THE SHARED AGENT WHILE THEY RAN:');
   // The whole safety argument rests on this: a call configures itself, it does not configure the
   // agent. A PATCH here would be one partner changing the agent underneath the other, mid-call.
+  // The one write the platform may make is registering a MIRRORED language on the agent, which
+  // carries nothing about a caller (t-language.js covers it). Neither partner here mirrors one, so
+  // this run must still be reads only.
   const writes = other.filter(o => o.method !== 'GET');
   ok(writes.length === 0, 'no request other than the calls themselves modified the agent' + (writes.length ? ': ' + writes.map(w => w.method + ' ' + w.url).join(', ') : ''));
   ok(other.every(o => o.method === 'GET'), `the ${other.length} other requests were all reads`);

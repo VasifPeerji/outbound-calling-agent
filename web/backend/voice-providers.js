@@ -426,6 +426,52 @@ const elevenlabs = {
   // Which TTS engine the agent is actually running. There is no per-call override for it, so the
   // console can only report what is set — but reporting the real value beats warning in the
   // abstract, especially when a language the engine cannot speak fails silently on a live call.
+  // ── LANGUAGES THE AGENT MAY SWITCH INTO ──
+  //
+  // The opener offers the mirrored languages, and `language_detection` is what actually switches.
+  // That tool will only accept the agent's own language or one listed in `language_presets`:
+  // anything else comes back as "Invalid language. Keep speaking English." and the agent, doing as
+  // it is told, apologises (often in the language it just refused) and carries on in English. That
+  // is what a profile with Italian mirrored produced on a live call.
+  //
+  // A preset with empty overrides is all that is needed. It adds the language to the permitted set
+  // and changes nothing else, so every per-call override still applies exactly as before.
+  async listLanguages(config) {
+    const e = config.elevenlabs || {};
+    const r = await fetch(`https://api.elevenlabs.io/v1/convai/agents/${e.agentId}`, { headers: { 'xi-api-key': e.apiKey } });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(elErr(d) || `Could not read the agent (${r.status}).`);
+    const conv = d.conversation_config || {};
+    return {
+      primary: String((conv.agent || {}).language || '').toLowerCase(),
+      extra: Object.keys(conv.language_presets || {}).map(c => String(c).toLowerCase()),
+      raw: conv
+    };
+  },
+
+  // Add any missing language, never remove one: other partners' calls are switching into the
+  // languages already listed, and this agent is shared.
+  async ensureLanguages(config, codes) {
+    const e = config.elevenlabs || {};
+    const want = [...new Set((codes || []).map(c => String(c || '').trim().toLowerCase()).filter(Boolean))];
+    const cur = await this.listLanguages(config);
+    const have = new Set([cur.primary, ...cur.extra].filter(Boolean));
+    const missing = want.filter(c => !have.has(c));
+    if (!missing.length) return { added: [], already: want, present: [...have] };
+
+    const presets = { ...(cur.raw.language_presets || {}) };
+    for (const c of missing) presets[c] = { overrides: {} };
+    const body = { conversation_config: { ...cur.raw, language_presets: presets } };
+    const r = await fetch(`https://api.elevenlabs.io/v1/convai/agents/${e.agentId}`, {
+      method: 'PATCH', headers: { 'xi-api-key': e.apiKey, 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    });
+    const out = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(elErr(out) || `Could not add ${missing.join(', ')} to the agent (${r.status}).`);
+    const after = Object.keys(((out.conversation_config || {}).language_presets) || {}).map(c => c.toLowerCase());
+    const still = missing.filter(c => !after.includes(c));
+    return { added: missing.filter(c => after.includes(c)), already: want.filter(c => have.has(c)), present: [...new Set([cur.primary, ...after])], failed: still };
+  },
+
   async getAgentEngine(config) {
     const e = config.elevenlabs || {};
     const r = await fetch(`https://api.elevenlabs.io/v1/convai/agents/${e.agentId}`, { headers: { 'xi-api-key': e.apiKey } });
