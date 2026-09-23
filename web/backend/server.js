@@ -857,6 +857,7 @@ async function ensureCallLanguages(profile, adapter) {
   langsOnAgent.at = Date.now();
   if (out.added && out.added.length) console.log(`🌐  Added ${out.added.join(', ')} to the agent so it can switch into ${out.added.length === 1 ? 'it' : 'them'} mid-call.`);
   if (out.failed && out.failed.length) console.log(`🌐  ⚠  ${out.failed.join(', ')} could not be added: the agent will decline to switch into ${out.failed.length === 1 ? 'it' : 'them'}.`);
+  warnUnsupported(out.unsupported);
 }
 
 function fillReferencedVars(vars, ...texts) {
@@ -2056,6 +2057,15 @@ app.post('/api/elevenlabs/languages/sync', requirePlatformAdmin, async (req, res
 
 // Every mirrored language on record, registered at boot. Idempotent, and loud either way: this is
 // the line to look for in the log when somebody reports that the agent refused to switch.
+// Mid-call switching is limited by the provider to a fixed set. A mirrored language outside it can
+// still be a call's OWN language, so this says that rather than failing silently.
+function warnUnsupported(codes) {
+  if (!codes || !codes.length) return;
+  const names = codes.map(c => languageDisplayName(c) || c).join(', ');
+  console.log(`🌐  ⚠  ${names}: the voice provider does not allow switching INTO ${codes.length === 1 ? 'this language' : 'these languages'} mid-call.`);
+  console.log(`    Run the call in ${codes.length === 1 ? 'it' : 'them'} instead by setting it as the profile's main language.`);
+}
+
 async function autoSyncLanguages() {
   const adapter = getProvider('elevenlabs');
   if (!adapter.isConfigured(config)) return;
@@ -2066,6 +2076,7 @@ async function autoSyncLanguages() {
     const list = [...langsOnAgent.codes].join(', ') || 'none';
     if (out.added.length) console.log(`🌐  Languages: added ${out.added.join(', ')}. The agent can now switch into: ${list}.`);
     else console.log(`🌐  Languages: nothing to add. The agent can switch into: ${list}.`);
+    warnUnsupported(out.unsupported);
   } catch (e) { console.log(`🌐  Languages could not be checked: ${e.message}\n    Calls still work; the agent will decline to switch language mid-call.`); }
 }
 

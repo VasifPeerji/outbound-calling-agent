@@ -147,6 +147,13 @@ async function fetchAllowedOverrides(e) {
   } catch (x) { return null; }
 }
 function digBool(o, path) { return path.split('.').reduce((a, k) => (a == null ? undefined : a[k]), o) === true; }
+// "Preset languages must be one of en, zh, es ... but got he, th" -> the list it will accept.
+function switchableFrom(message) {
+  const m = String(message || '').match(/must be one of (.+?) but got/i);
+  if (!m) return null;
+  const list = m[1].split(/[,\s]+/).map(x => x.trim().toLowerCase()).filter(Boolean);
+  return list.length ? list : null;
+}
 
 // ── ELEVENLABS ADAPTER ──
 const elevenlabs = {
@@ -451,25 +458,56 @@ const elevenlabs = {
 
   // Add any missing language, never remove one: other partners' calls are switching into the
   // languages already listed, and this agent is shared.
+  //
+  // Two things this has to get right, both learned the hard way on a live agent:
+  //
+  // 1. Send ONLY language_presets. Echoing the agent's whole conversation_config back fails the
+  //    moment the agent has tools on it, because that config carries both the legacy `tools` list
+  //    and `tool_ids`, and the API refuses a request holding both. On an agent with no tools it
+  //    passes, which is exactly how it survived testing and failed in production.
+  // 2. ElevenLabs permits mid-call switching into a FIXED set of languages, far fewer than the
+  //    voice model can speak, and rejects the whole request if one language is outside it. So the
+  //    unsupported ones are dropped and reported rather than taking the good ones down with them.
   async ensureLanguages(config, codes) {
     const e = config.elevenlabs || {};
     const want = [...new Set((codes || []).map(c => String(c || '').trim().toLowerCase()).filter(Boolean))];
     const cur = await this.listLanguages(config);
     const have = new Set([cur.primary, ...cur.extra].filter(Boolean));
     const missing = want.filter(c => !have.has(c));
-    if (!missing.length) return { added: [], already: want, present: [...have] };
+    if (!missing.length) return { added: [], already: want, present: [...have], unsupported: [] };
 
-    const presets = { ...(cur.raw.language_presets || {}) };
-    for (const c of missing) presets[c] = { overrides: {} };
-    const body = { conversation_config: { ...cur.raw, language_presets: presets } };
-    const r = await fetch(`https://api.elevenlabs.io/v1/convai/agents/${e.agentId}`, {
-      method: 'PATCH', headers: { 'xi-api-key': e.apiKey, 'Content-Type': 'application/json' }, body: JSON.stringify(body)
-    });
-    const out = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(elErr(out) || `Could not add ${missing.join(', ')} to the agent (${r.status}).`);
-    const after = Object.keys(((out.conversation_config || {}).language_presets) || {}).map(c => c.toLowerCase());
-    const still = missing.filter(c => !after.includes(c));
-    return { added: missing.filter(c => after.includes(c)), already: want.filter(c => have.has(c)), present: [...new Set([cur.primary, ...after])], failed: still };
+    const send = async list => {
+      const presets = { ...(cur.raw.language_presets || {}) };
+      for (const c of list) presets[c] = { overrides: {} };
+      const r = await fetch(`https://api.elevenlabs.io/v1/convai/agents/${e.agentId}`, {
+        method: 'PATCH', headers: { 'xi-api-key': e.apiKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ conversation_config: { language_presets: presets } })
+      });
+      return { ok: r.ok, status: r.status, body: await r.json().catch(() => ({})) };
+    };
+
+    let res = await send(missing);
+    let unsupported = [];
+    // The refusal names every language it will accept, so the retry is built from ElevenLabs' own
+    // answer rather than a list of ours that would go stale the day they add one.
+    if (!res.ok) {
+      const allowed = switchableFrom(elErr(res.body) || '');
+      if (allowed) {
+        unsupported = missing.filter(c => !allowed.includes(c));
+        const usable = missing.filter(c => allowed.includes(c));
+        if (!usable.length) return { added: [], already: want.filter(c => have.has(c)), present: [...have], unsupported, failed: [] };
+        res = await send(usable);
+      }
+    }
+    if (!res.ok) throw new Error(elErr(res.body) || `Could not add ${missing.join(', ')} to the agent (${res.status}).`);
+    const after = Object.keys(((res.body.conversation_config || {}).language_presets) || {}).map(c => c.toLowerCase());
+    return {
+      added: missing.filter(c => after.includes(c)),
+      already: want.filter(c => have.has(c)),
+      present: [...new Set([cur.primary, ...after])],
+      unsupported,
+      failed: missing.filter(c => !after.includes(c) && !unsupported.includes(c))
+    };
   },
 
   async getAgentEngine(config) {

@@ -29,7 +29,7 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 // ── a fake agent that keeps state, so a PATCH actually changes what the next call sees ──
 const agentState = {
   conversation_config: {
-    agent: { language: 'en', prompt: { prompt: 'base agent prompt', built_in_tools: { language_detection: { name: 'language_detection' } } } },
+    agent: { language: 'en', prompt: { prompt: 'base agent prompt', tools: [{ name: 'legacy_tool' }], tool_ids: ['tool_1', 'tool_2'], built_in_tools: { language_detection: { name: 'language_detection' } } } },
     tts: { voice_id: 'voice_BASE', model_id: 'eleven_v3_conversational' },
     language_presets: { es: { overrides: {} } }      // another partner already speaks Spanish
   },
@@ -40,6 +40,9 @@ const agentState = {
   } } }
 };
 const placed = [], patches = [];
+// The languages the provider permits mid-call switching into. Hebrew and Thai are deliberately
+// absent: the voice can speak them, the switch is not allowed, and that difference is the trap.
+const SWITCHABLE = ['en', 'zh', 'es', 'hi', 'pt', 'fr', 'de', 'ja', 'ar', 'ko', 'id', 'it', 'nl', 'tr', 'pl', 'ru', 'sv', 'ta', 'vi', 'fil'];
 let breakAgent = false;   // the provider having a bad day, flipped on at the end
 function reply(obj, status) { const t = JSON.stringify(obj); return { ok: (status || 200) < 400, status: status || 200, json: async () => JSON.parse(t), text: async () => t }; }
 function installFetchSpy(resolveFrom) {
@@ -55,7 +58,16 @@ function installFetchSpy(resolveFrom) {
     if (/\/convai\/agents\/[^/?]+$/.test(u) && method === 'GET') return reply(agentState);
     if (/\/convai\/agents\/[^/?]+$/.test(u) && method === 'PATCH') {
       patches.push(body);
-      agentState.conversation_config = { ...agentState.conversation_config, ...(body.conversation_config || {}) };
+      const cc = body.conversation_config || {};
+      // ElevenLabs refuses a config carrying both the legacy tool list and tool ids, which is what
+      // echoing the whole config back produces on an agent with tools attached.
+      const prompt = (cc.agent || {}).prompt || {};
+      if (prompt.tools && prompt.tool_ids) return reply({ detail: { message: 'Cannot specify both tools and tool IDs - please provide only one of these options.' } }, 400);
+      // And it only allows a switch into a fixed set, rejecting the whole request over one stray.
+      const asked = Object.keys(cc.language_presets || {});
+      const bad = asked.filter(c => !SWITCHABLE.includes(c));
+      if (bad.length) return reply({ detail: { message: `Invalid conversation config: Value error, Preset languages must be one of ${SWITCHABLE.join(', ')} but got ${bad.join(', ')}` } }, 400);
+      agentState.conversation_config = { ...agentState.conversation_config, ...cc };
       return reply(agentState);
     }
     return reply({});
@@ -142,7 +154,8 @@ const call = (token, ucKey, vars) => req('POST', '/api/call/single', token, { to
   const sent = JSON.stringify(patches[0]);
   ok(/"it"\s*:/.test(sent) && /"es"\s*:/.test(sent), "it adds the new language and keeps the one another partner's calls rely on");
   ok(!/Liberty|Mia|voice_Liberty|fibre/.test(sent), 'and carries nothing about the caller: no company, no script, no voice');
-  ok(/"language_presets"/.test(sent) && /"prompt"/.test(sent), 'the agent config is sent back whole, so nothing already on it is dropped');
+  ok(Object.keys(patches[0].conversation_config).join() === 'language_presets',
+    'only the language list is sent: echoing the whole config back is rejected on an agent that has tools, which is what happened on the live agent');
   const base = agentState.conversation_config.agent.prompt.prompt;
   ok(base === 'base agent prompt' && agentState.conversation_config.tts.voice_id === 'voice_BASE', "the agent's own prompt and voice are untouched");
   const first = placed[0];
@@ -163,6 +176,15 @@ const call = (token, ucKey, vars) => req('POST', '/api/call/single', token, { to
   await req('POST', '/api/profile', retail, { profile: profileFor('Liberty Retail', 'Retail', 'en', ['Italian', 'French']) });
   await call(retail, uc, { offer_type: 'a fibre upgrade' });
   ok(canSwitchTo('fr') && patches.length === 2, 'French is added the first time a call offers it');
+
+  console.log('\nA LANGUAGE THE PROVIDER WILL NOT SWITCH INTO IS DROPPED, NOT ALLOWED TO SINK THE REST:');
+  await req('POST', '/api/profile', retail, { profile: profileFor('Liberty Retail', 'Retail', 'en', ['Hebrew', 'Spanish']) });
+  for (let i = 0; i < 20 && !canSwitchTo('es'); i++) await wait(100);
+  ok(canSwitchTo('es'), 'Spanish is registered even though Hebrew was asked for in the same breath');
+  ok(!canSwitchTo('he'), 'Hebrew is not, because the provider does not allow switching into it');
+  const sync2 = await req('POST', '/api/elevenlabs/languages/sync', admin, { codes: ['he', 'th', 'ta'] });
+  ok(sync2.status === 200 && sync2.body.added.includes('ta') && (sync2.body.unsupported || []).includes('he'),
+    'and a sync says plainly which ones can never be switched into: ' + JSON.stringify(sync2.body.unsupported || []));
 
   console.log('\nSAVING A PROFILE REGISTERS ITS LANGUAGES THERE AND THEN:');
   const patchesBefore = patches.length;
