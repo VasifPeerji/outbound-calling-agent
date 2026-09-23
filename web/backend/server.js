@@ -1280,7 +1280,13 @@ async function schedulerTick() {
 }
 
 // ── API ROUTES ──────────────────────────────────────────
-app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString(), provider: activeProviderName(), configured: providerConfigured(activeProviderName()), company: (activeProfile.company || {}).name || '' }));
+// The commit this process is running, read once at boot. A deploy that did not take is otherwise
+// invisible from the outside, which is exactly how a fix can look "still broken" after a release.
+let BUILD = { commit: '', at: new Date().toISOString() };
+try {
+  BUILD.commit = require('child_process').execSync('git rev-parse --short HEAD', { cwd: path.resolve(__dirname, '../..'), stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+} catch (e) { BUILD.commit = ''; }
+app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString(), provider: activeProviderName(), configured: providerConfigured(activeProviderName()), company: (activeProfile.company || {}).name || '', build: BUILD.commit, startedAt: BUILD.at, languages: [...langsOnAgent.codes] }));
 
 // ── AUTH ────────────────────────────────────────────────
 // Password sign-in is the ONE route that bypasses every protection on the code flow: no five-attempt
@@ -1851,6 +1857,11 @@ app.post('/api/profile', (req, res) => {
   if (!p || !p.company || !p.company.name) return res.status(400).json({ error: 'A profile with company.name is required.' });
   setProfile(req, p);
   res.json({ success: true, profile: p, variables: flattenProfile(p), enabled: enabledUseCases(p), provider: activeProviderName(p) });
+  // Saving a profile that mirrors a language is the moment to make that language real on the agent.
+  // After the response, so the builder never waits on ElevenLabs, and never fails because of it.
+  if (activeProviderName(p) === 'elevenlabs') {
+    ensureCallLanguages(p, getProvider('elevenlabs')).catch(e => console.log(`🌐  Could not register this profile's languages: ${e.message}`));
+  }
 });
 app.post('/api/profile/preset/:id', (req, res) => {
   try { const p = loadPreset(req.params.id); setProfile(req, p); res.json({ success: true, profile: p, variables: flattenProfile(p), enabled: enabledUseCases(p), provider: activeProviderName(p) }); }
@@ -2042,6 +2053,21 @@ app.post('/api/elevenlabs/languages/sync', requirePlatformAdmin, async (req, res
     res.json({ success: true, ...out });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
+
+// Every mirrored language on record, registered at boot. Idempotent, and loud either way: this is
+// the line to look for in the log when somebody reports that the agent refused to switch.
+async function autoSyncLanguages() {
+  const adapter = getProvider('elevenlabs');
+  if (!adapter.isConfigured(config)) return;
+  const codes = everyProfileLanguage();
+  try {
+    const out = await adapter.ensureLanguages(config, codes);
+    langsOnAgent.codes = new Set(out.present || codes); langsOnAgent.at = Date.now();
+    const list = [...langsOnAgent.codes].join(', ') || 'none';
+    if (out.added.length) console.log(`🌐  Languages: added ${out.added.join(', ')}. The agent can now switch into: ${list}.`);
+    else console.log(`🌐  Languages: nothing to add. The agent can switch into: ${list}.`);
+  } catch (e) { console.log(`🌐  Languages could not be checked: ${e.message}\n    Calls still work; the agent will decline to switch language mid-call.`); }
+}
 
 app.post('/api/elevenlabs/tools/sync', requirePlatformAdmin, async (req, res) => {
   const adapter = getProvider('elevenlabs');
@@ -3227,6 +3253,7 @@ async function start() {
     setInterval(() => refreshLanguageCoverage(true), 12 * 60 * 60 * 1000);
     // Register and attach the action tools on boot, so a deployed instance needs no button press.
     setTimeout(() => autoSyncTools(), 12000);
+    setTimeout(() => autoSyncLanguages(), 4000);
   });
 }
 // Don't lose queued writes when the host stops the process (deploys, Ctrl+C).

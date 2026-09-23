@@ -164,6 +164,19 @@ const call = (token, ucKey, vars) => req('POST', '/api/call/single', token, { to
   await call(retail, uc, { offer_type: 'a fibre upgrade' });
   ok(canSwitchTo('fr') && patches.length === 2, 'French is added the first time a call offers it');
 
+  console.log('\nSAVING A PROFILE REGISTERS ITS LANGUAGES THERE AND THEN:');
+  const patchesBefore = patches.length;
+  await req('POST', '/api/profile', retail, { profile: profileFor('Liberty Retail', 'Retail', 'en', ['Italian', 'French', 'Portuguese']) });
+  for (let i = 0; i < 20 && patches.length === patchesBefore; i++) await wait(100);
+  ok(canSwitchTo('pt'), 'adding a language in the builder registers it without waiting for the first call');
+  const saved = await req('POST', '/api/profile', retail, { profile: profileFor('Liberty Retail', 'Retail', 'en', ['Italian', 'French']) });
+  ok(saved.status === 200 && saved.body.success, 'and saving still answers immediately, whatever ElevenLabs is doing');
+
+  console.log('\nTHE RUNNING BUILD IS VISIBLE WITHOUT A SHELL ON THE SERVER:');
+  const health = (await req('GET', '/api/health')).body;
+  ok(typeof health.build === 'string', 'health reports the commit it is running: "' + health.build + '"');
+  ok(Array.isArray(health.languages) && health.languages.includes('it'), 'and which languages the agent can switch into: ' + JSON.stringify(health.languages));
+
   console.log('\nADMINISTRATORS CAN SEE AND SYNC THE LOT:');
   const st = await req('GET', '/api/elevenlabs/languages/status', admin);
   ok(st.status === 200 && st.body.extra.includes('it') && st.body.extra.includes('fr'), 'status lists what the agent can switch into: ' + JSON.stringify(st.body.extra || st.body));
@@ -174,8 +187,9 @@ const call = (token, ucKey, vars) => req('POST', '/api/call/single', token, { to
 
   console.log('\nA FAILURE TO REGISTER NEVER STOPS THE CALL:');
   const before = placed.length;
-  await req('POST', '/api/profile', retail, { profile: profileFor('Liberty Retail', 'Retail', 'en', ['Japanese']) });
   breakAgent = true;
+  await req('POST', '/api/profile', retail, { profile: profileFor('Liberty Retail', 'Retail', 'en', ['Japanese']) });
+  await wait(150);
   const r2 = await call(retail, uc, { offer_type: 'a fibre upgrade' });
   breakAgent = false;
   ok(!canSwitchTo('ja'), 'nothing was registered, since the agent could not be read');
